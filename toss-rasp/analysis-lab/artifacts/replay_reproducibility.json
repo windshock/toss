@@ -1,0 +1,23 @@
+{
+  "_note": "ANALYSIS MODE PoC \u2014 upstream QEMU 11.0.1 + TCG, bare-metal finite toy. Plugin BB-trace + deterministic record/replay.",
+  "qemu": "11.0.1",
+  "accel": "tcg",
+  "machine": "virt",
+  "cpu": "max",
+  "tcg_boot": "OK (finite toy exits 0 via PSCI SYSTEM_OFF/HVC)",
+  "plugin_api": "OK (target_trace/libtrace.so; tb_trans + tb_exec cb; range filter)",
+  "bb_trace_deterministic_2runs": true,
+  "record": {
+    "rrfile_bytes": 110,
+    "target_bb_count": 999
+  },
+  "replay_runs": 3,
+  "replay_bb_counts": [
+    999,
+    999,
+    999
+  ],
+  "replay_reproducible": true,
+  "record_replay_requirements": "-icount shift=N (deterministic timing) + rr=record/replay,rrfile=PATH. Worked on bare-metal -kernel with NO block device/snapshot needed for this toy. For full Android: icount + a base snapshot/blockdev recommended (devices/interrupts are the non-deterministic inputs rr captures).",
+  "ANALYSIS_MODE_VERDICT": "CONFIRMED \u2014 TCG deterministic record/replay + stable plugin instrumentation on upstream QEMU 11 / M1."
+}

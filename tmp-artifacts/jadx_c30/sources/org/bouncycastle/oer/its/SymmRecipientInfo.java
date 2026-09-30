@@ -1,0 +1,27 @@
+package org.bouncycastle.oer.its;
+
+import org.bouncycastle.asn1.ASN1Object;
+import org.bouncycastle.asn1.ASN1Primitive;
+
+/* loaded from: /tmp/toss_alldex/classes30.dex */
+public class SymmRecipientInfo extends ASN1Object {
+    private final SymmetricCiphertext encKey;
+    private final HashedId recipientId;
+
+    public SymmRecipientInfo(HashedId hashedId, SymmetricCiphertext symmetricCiphertext) {
+        this.recipientId = hashedId;
+        this.encKey = symmetricCiphertext;
+    }
+
+    public SymmetricCiphertext getEncKey() {
+        return this.encKey;
+    }
+
+    public HashedId getRecipientId() {
+        return this.recipientId;
+    }
+
+    public ASN1Primitive toASN1Primitive() {
+        return Utils.toSequence(this.recipientId, this.encKey);
+    }
+}

@@ -1,0 +1,8 @@
+{
+  "probe": "S105b bank-slot writer watch",
+  "bank_writes": [],
+  "slotA_4writes": [],
+  "errors": [],
+  "x27_at_46": "0x30a",
+  "x12_at_46": "0x8"
+}

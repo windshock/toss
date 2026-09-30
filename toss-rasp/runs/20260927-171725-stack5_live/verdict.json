@@ -1,0 +1,74 @@
+{
+  "_evidence": "original-session logstore + PID-scoped logcat + same-thread debuggerd frames",
+  "verdict_state": "DETECTED",
+  "capture_quality": {
+    "state": "VALID",
+    "evidence_valid": true,
+    "logstore_captured": true,
+    "logstore_snapshot_count": 14,
+    "logstore_merged_snapshot_count": 1,
+    "logstore_selected_snapshot": "t0002_pid7473_start632539.txt",
+    "logstore_malformed_lines": 0,
+    "original_session_seen": true,
+    "incarnation_verified": true,
+    "restart_count": 0,
+    "other_logstore_session_seen": false,
+    "maps_pid_matches_session": true,
+    "stack_samples_requested": 5,
+    "stack_samples_completed": 1,
+    "stack_session_mismatches": [],
+    "params_readback_ok": true,
+    "target_uid_covered": true,
+    "launch_command_ok": true,
+    "complete_sampled_window": false,
+    "explicit_non_emulator_result": false,
+    "legacy_capture": false
+  },
+  "raspEmulatorCallback": "34359738558",
+  "raspEmulatorCallbacks": [
+    "34359738558"
+  ],
+  "raspHookCallback": null,
+  "detected": null,
+  "guardLevel": null,
+  "attendingDetectorSet": null,
+  "fds_result": null,
+  "fds_results": [],
+  "fds_from": null,
+  "exit_caller": null,
+  "exitPlan": null,
+  "exit_plans": [],
+  "emulator_observed": true,
+  "emulator_detected": true,
+  "displayed_at": "17:17:28.512",
+  "system_exit": [
+    "17:17:38.986",
+    "0"
+  ],
+  "system_exit_count": 1,
+  "stack_not_found": false,
+  "top_activities": [
+    "viva.republica.toss/.splash.SplashActivity"
+  ],
+  "last_alive_s": 10.928,
+  "handler_presence": {
+    "afed8": 0,
+    "0xa8f70": 0,
+    "0x95224": 0,
+    "AbsAppGuard": 1,
+    "libtg": 1,
+    "libea56": 1
+  },
+  "libea56_stack_frames": {
+    "13a4bc": 1
+  },
+  "libea56_thread_frame_groups": [
+    {
+      "sample": "t2s_pid7473_start632539.txt",
+      "tid": "7729",
+      "frames": [
+        "0x13a4bc"
+      ]
+    }
+  ]
+}

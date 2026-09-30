@@ -1,0 +1,50 @@
+package com.iap.android.jsapi;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import androidx.annotation.NonNull;
+import java.lang.ref.WeakReference;
+import org.json.JSONObject;
+
+/* loaded from: /tmp/toss_alldex/classes16.dex */
+public class IAPConnectPluginContext {
+    public JSONObject acParams;
+    public String acquireSite;
+    public boolean isMiniProgram;
+    public JSONObject jsParameters;
+    private Context mContext;
+    private WeakReference<Activity> mWeakReferenceAct;
+    public String miniProgramAppID;
+    public String miniProgramName;
+    public String miniProgramPageURL;
+    public String newSourceSite;
+    public String pluginId;
+    public String sourceSite;
+    public Bundle startParams;
+
+    public IAPConnectPluginContext(@NonNull Context context) {
+        this.mContext = context.getApplicationContext();
+        if (context instanceof Activity) {
+            this.mWeakReferenceAct = new WeakReference<>((Activity) context);
+        }
+    }
+
+    public void setActivity(Activity activity) {
+        if (activity != null) {
+            this.mWeakReferenceAct = new WeakReference<>(activity);
+        }
+    }
+
+    public Activity getActivity() {
+        WeakReference<Activity> weakReference = this.mWeakReferenceAct;
+        if (weakReference != null) {
+            return weakReference.get();
+        }
+        return null;
+    }
+
+    public Context getContext() {
+        return this.mContext;
+    }
+}

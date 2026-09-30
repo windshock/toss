@@ -1,0 +1,39 @@
+package com.google.android.gms.wearable.internal;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelReader;
+
+/* loaded from: /tmp/toss_alldex/classes19.dex */
+public final class zzbk implements Parcelable.Creator {
+    @Override // android.os.Parcelable.Creator
+    public final /* synthetic */ Object createFromParcel(Parcel parcel) {
+        int iValidateObjectHeader = SafeParcelReader.validateObjectHeader(parcel);
+        int i2 = 0;
+        int i3 = 0;
+        zzbu zzbuVar = null;
+        int i4 = 0;
+        while (parcel.dataPosition() < iValidateObjectHeader) {
+            int header = SafeParcelReader.readHeader(parcel);
+            int fieldId = SafeParcelReader.getFieldId(header);
+            if (fieldId == 2) {
+                zzbuVar = (zzbu) SafeParcelReader.createParcelable(parcel, header, zzbu.CREATOR);
+            } else if (fieldId == 3) {
+                i2 = SafeParcelReader.readInt(parcel, header);
+            } else if (fieldId == 4) {
+                i4 = SafeParcelReader.readInt(parcel, header);
+            } else if (fieldId != 5) {
+                SafeParcelReader.skipUnknownField(parcel, header);
+            } else {
+                i3 = SafeParcelReader.readInt(parcel, header);
+            }
+        }
+        SafeParcelReader.ensureAtEnd(parcel, iValidateObjectHeader);
+        return new zzbj(zzbuVar, i2, i4, i3);
+    }
+
+    @Override // android.os.Parcelable.Creator
+    public final /* synthetic */ Object[] newArray(int i2) {
+        return new zzbj[i2];
+    }
+}

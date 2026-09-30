@@ -1,0 +1,8 @@
+{
+  "probe": "S104 marshal chain",
+  "campaigns": [],
+  "dup_hits": [],
+  "errors": [],
+  "x0_transitions": [],
+  "slotA_reads": []
+}

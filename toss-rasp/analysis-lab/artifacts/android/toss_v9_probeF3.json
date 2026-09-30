@@ -1,0 +1,5 @@
+{
+  "provenance": "runtime",
+  "probe": "boot-robust scratch0 writer",
+  "verdict": "NO_LIBEA56"
+}

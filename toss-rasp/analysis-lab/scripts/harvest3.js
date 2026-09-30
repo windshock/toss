@@ -1,0 +1,75 @@
+// harvest3.js — comprehensive Android API constant harvest
+Java.perform(function () {
+    var out = {};
+    function T(name, fn) { try { out[name] = "" + fn(); } catch (e) { out[name] = "?"; } }
+
+    var VC = Java.use("android.view.ViewConfiguration");
+    var KE = Java.use("android.view.KeyEvent");
+    var TU = Java.use("android.text.TextUtils");
+    var IF = Java.use("android.graphics.ImageFormat");
+    var CO = Java.use("android.graphics.Color");
+    var VW = Java.use("android.view.View");
+    var MS = Java.use("android.view.View$MeasureSpec");
+    var TV = Java.use("android.util.TypedValue");
+    var EL = Java.use("android.widget.ExpandableListView");
+    var PR = Java.use("android.os.Process");
+    var SC = Java.use("android.os.SystemClock");
+    var AT = Java.use("android.media.AudioTrack");
+    var PF = Java.use("android.graphics.PointF");
+    var DR = Java.use("android.graphics.drawable.Drawable");
+
+    T("View.getDefaultSize(0,0)", function(){ return VW.getDefaultSize(0,0); });
+    T("View.resolveSize(0,0)", function(){ return VW.resolveSize(0,0); });
+    T("View.resolveSizeAndState(0,0,0)", function(){ return VW.resolveSizeAndState(0,0,0); });
+    T("Color.green(0)", function(){ return CO.green(0); });
+    T("Color.red(0)", function(){ return CO.red(0); });
+    T("Color.blue(0)", function(){ return CO.blue(0); });
+    T("Color.alpha(0)", function(){ return CO.alpha(0); });
+    T("MeasureSpec.getMode(0)", function(){ return MS.getMode(0); });
+    T("MeasureSpec.getSize(0)", function(){ return MS.getSize(0); });
+    T("MeasureSpec.makeMeasureSpec(0,0)", function(){ return MS.makeMeasureSpec(0,0); });
+    T("TypedValue.complexToFloat(0)", function(){ return TV.complexToFloat(0); });
+    T("TypedValue.complexToFraction(0,0f,0f)", function(){ return TV.complexToFraction(0,0.0,0.0); });
+    T("ExpandableListView.getPackedPositionGroup(0L)", function(){ return EL.getPackedPositionGroup(java.lang.Long.valueOf(0).longValue()); });
+    T("ExpandableListView.getPackedPositionForGroup(0)", function(){ return EL.getPackedPositionForGroup(0); });
+    T("ExpandableListView.getPackedPositionChild(0L)", function(){ return EL.getPackedPositionChild(java.lang.Long.valueOf(0).longValue()); });
+    T("Process.getGidForName(\"\")", function(){ return PR.getGidForName(""); });
+    T("Process.getUidForName(\"\")", function(){ return PR.getUidForName(""); });
+    T("Process.myPid()", function(){ return PR.myPid(); });
+    T("Process.myTid()", function(){ return PR.myTid(); });
+    T("Process.myUid()", function(){ return PR.myUid(); });
+    T("SystemClock.uptimeMillis()", function(){ return SC.uptimeMillis(); });
+    T("SystemClock.elapsedRealtime()", function(){ return SC.elapsedRealtime(); });
+    T("SystemClock.elapsedRealtimeNanos()", function(){ return SC.elapsedRealtimeNanos(); });
+    T("SystemClock.currentThreadTimeMillis()", function(){ return SC.currentThreadTimeMillis(); });
+    T("AudioTrack.getMinVolume()", function(){ return AT.getMinVolume(); });
+    T("AudioTrack.getMaxVolume()", function(){ return AT.getMaxVolume(); });
+    T("PointF.length(0f,0f)", function(){ return PF.length(0.0,0.0); });
+    T("Drawable.resolveOpacity(0,0)", function(){ return DR.resolveOpacity(0,0); });
+    T("ViewConfiguration.getScrollFriction()", function(){ return VC.getScrollFriction(); });
+    T("ViewConfiguration.getScrollBarSize()", function(){ return VC.getScrollBarSize(); });
+    T("ViewConfiguration.getTapTimeout()", function(){ return VC.getTapTimeout(); });
+    T("ViewConfiguration.getLongPressTimeout()", function(){ return VC.getLongPressTimeout(); });
+    T("ViewConfiguration.getKeyRepeatDelay()", function(){ return VC.getKeyRepeatDelay(); });
+    T("ViewConfiguration.getKeyRepeatTimeout()", function(){ return VC.getKeyRepeatTimeout(); });
+    T("ViewConfiguration.getDoubleTapTimeout()", function(){ return VC.getDoubleTapTimeout(); });
+    T("ViewConfiguration.getJumpTapTimeout()", function(){ return VC.getJumpTapTimeout(); });
+    T("ViewConfiguration.getGlobalActionKeyTimeout()", function(){ return VC.getGlobalActionKeyTimeout(); });
+    T("ViewConfiguration.getPressedStateDuration()", function(){ return VC.getPressedStateDuration(); });
+    T("ViewConfiguration.getMaximumFlingVelocity()", function(){ return VC.getMaximumFlingVelocity(); });
+    T("ViewConfiguration.getMinimumFlingVelocity()", function(){ return VC.getMinimumFlingVelocity(); });
+    T("ViewConfiguration.getEdgeSlop()", function(){ return VC.getEdgeSlop(); });
+    T("ViewConfiguration.getFadingEdgeLength()", function(){ return VC.getFadingEdgeLength(); });
+    T("KeyEvent.getMaxKeyCode()", function(){ return KE.getMaxKeyCode(); });
+    T("KeyEvent.getModifierMetaStateMask()", function(){ return KE.getModifierMetaStateMask(); });
+    T("KeyEvent.KEYCODE_UNKNOWN", function(){ return 0; });
+    T("ImageFormat.getBitsPerPixel(0)", function(){ return IF.getBitsPerPixel(0); });
+    T("TextUtils.indexOf(\"\",\"\")", function(){ return TU.indexOf("",""); });
+    T("TextUtils.lastIndexOf(\"\",'0')", function(){ return TU.lastIndexOf("",'0'); });
+    T("TextUtils.lastIndexOf(\"\",'0',0,0)", function(){ return TU.lastIndexOf("", '0', 0, 0); });
+    T("TextUtils.getCapsMode(\"\",0,0)", function(){ return TU.getCapsMode("",0,0); });
+    T("TextUtils.getTrimmedLength(\"\")", function(){ return TU.getTrimmedLength(""); });
+    T("View.COMPORT?", function(){ return "N/A"; });
+
+    send({ev: "consts3", values: out});
+});

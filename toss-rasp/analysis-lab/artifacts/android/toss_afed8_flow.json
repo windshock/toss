@@ -1,0 +1,158 @@
+{
+  "provenance": "runtime",
+  "mode": "afed8_direct",
+  "afed8_window": {
+    "start": "0xafed8",
+    "end": "0xb0900"
+  },
+  "static_indirect_sites": [
+    {
+      "off": "0xaff7c",
+      "op": "br",
+      "reg": "x9"
+    },
+    {
+      "off": "0xaffa0",
+      "op": "blr",
+      "reg": "x8"
+    },
+    {
+      "off": "0xafff0",
+      "op": "br",
+      "reg": "x9"
+    },
+    {
+      "off": "0xb0020",
+      "op": "br",
+      "reg": "x8"
+    },
+    {
+      "off": "0xb0070",
+      "op": "br",
+      "reg": "x10"
+    },
+    {
+      "off": "0xb020c",
+      "op": "blr",
+      "reg": "x8"
+    },
+    {
+      "off": "0xb0290",
+      "op": "br",
+      "reg": "x9"
+    },
+    {
+      "off": "0xb02ac",
+      "op": "br",
+      "reg": "x10"
+    },
+    {
+      "off": "0xb02c4",
+      "op": "blr",
+      "reg": "x8"
+    },
+    {
+      "off": "0xb03c4",
+      "op": "blr",
+      "reg": "x8"
+    },
+    {
+      "off": "0xb041c",
+      "op": "br",
+      "reg": "x9"
+    },
+    {
+      "off": "0xb04e4",
+      "op": "blr",
+      "reg": "x8"
+    },
+    {
+      "off": "0xb0520",
+      "op": "br",
+      "reg": "x12"
+    },
+    {
+      "off": "0xb0528",
+      "op": "blr",
+      "reg": "x8"
+    },
+    {
+      "off": "0xb063c",
+      "op": "blr",
+      "reg": "x8"
+    },
+    {
+      "off": "0xb074c",
+      "op": "blr",
+      "reg": "x8"
+    }
+  ],
+  "libea56": {
+    "base": "0xebc593e26000",
+    "afed8": "0xebc593ed5ed8",
+    "name": "/data/app/~~AP0zqkvGxB4R1OMpQD_w8Q==/viva.republica.toss-AAEeY06KkKvBi0DDpbVYAA==/lib/arm64/libea56.so"
+  },
+  "afed8_stop": "T05thread:04;",
+  "afed8_entry": {
+    "regs": {
+      "pc": "0xebc593ed5ed8",
+      "sp": "0xebc4dc256550",
+      "x0": "0x0",
+      "x1": "0x5c000000",
+      "x2": "0xb400ebc69b221a50",
+      "x3": "0x10",
+      "x8": "0x1",
+      "x9": "0xebc593ed5ed8",
+      "x10": "0xffffffff",
+      "x19": "0xb400ebc7bb23b0b0",
+      "x30": "0xebc593f1ea9c"
+    },
+    "thread": "T05thread:04;",
+    "x0_mem": {
+      "addr": "0x0",
+      "hex": ""
+    },
+    "x19_mem": {
+      "addr": "0xb400ebc7bb23b0b0",
+      "hex": "c8dfc139c6eb0000b00f2f4bc7eb00b49057210bc8eb00b4000000000000000080000000fcffffff00b67ef9c8eb0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000106d6f6e69746f72"
+    }
+  },
+  "branch_bp_insert": {
+    "0xebc593ed6290": "E22",
+    "0xebc593ed62ac": "E22",
+    "0xebc593ed62c4": "E22",
+    "0xebc593ed63c4": "E22",
+    "0xebc593ed641c": "E22",
+    "0xebc593ed64e4": "E22",
+    "0xebc593ed6520": "E22",
+    "0xebc593ed6528": "E22",
+    "0xebc593ed663c": "E22",
+    "0xebc593ed674c": "E22"
+  },
+  "branch_stop": null,
+  "branches": [
+    {
+      "site": "0xaff7c",
+      "op": "br",
+      "reg": "x9",
+      "target": "0xebc593ed6284",
+      "target_off": "0xb0284",
+      "pre": {
+        "pc": "0xebc593ed5f7c",
+        "sp": "0xebc4dc257060",
+        "x0": "0x4",
+        "x1": "0xebc5400b3a90",
+        "x2": "0xb400ebc7bb23b0b0",
+        "x3": "0xebc5400b3a90",
+        "x8": "0xebc593ebb224",
+        "x9": "0xebc593ed6284",
+        "x10": "0x1b",
+        "x19": "0xb400ebc7bb23b0b0",
+        "x30": "0xebc639586d04"
+      },
+      "step": "T05thread:02;",
+      "post_pc_off": "0xb0284"
+    }
+  ],
+  "verdict": "NO_SELECTED_HANDLER"
+}

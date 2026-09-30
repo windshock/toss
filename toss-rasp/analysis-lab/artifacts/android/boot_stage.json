@@ -1,0 +1,14 @@
+{
+  "_note": "Direct-GSI-on-virt boot-stage assessment (\u00a77/\u00a78/\u00a712). Not booted; STOP RULE applied.",
+  "stages": {
+    "kernel_boot": "CONFIRMED (Linux 6.6 boots on HVF; \u00a791)",
+    "android_init": "OPEN",
+    "servicemanager": "OPEN",
+    "zygote": "OPEN",
+    "adbd": "OPEN",
+    "boot_completed": "OPEN"
+  },
+  "failure_class": "PARTITION/RAMDISK/VENDOR \u2014 standalone GSI lacks a virt-compatible kernel/ramdisk/vendor bundle",
+  "stop_rule": "\u00a727 TRIGGERED: direct GSI needs a self-built AOSP virt board (device-tree/vendor/HAL bring-up) which exceeds the analysis goal.",
+  "verdict": "DIRECT_GSI = NOT COST-EFFECTIVE in-session -> fallback to Redroid/Waydroid (\u00a728)."
+}

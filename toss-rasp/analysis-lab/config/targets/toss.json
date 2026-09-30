@@ -1,0 +1,22 @@
+{
+  "_note": "Toss target descriptor for the RE lab. Android+Toss stage is OPEN (not booted in-session).",
+  "app": "viva.republica.toss",
+  "protection": "dexguard_native_arm64 (APKiD)",
+  "native_lib": "libea56.so",
+  "provenance_chain": "Java (AbsAppGuard/RxJava/reflection) -> JNI (o.ReusableBufferedOutputStream.R) -> libea56 afed8 dispatcher -> handlers -> raspEmulatorCallback",
+  "verdict_signal": "raspEmulatorCallback debugInfo ~ 0x8_000000BE (data-driven, NOT a code literal)",
+  "native_anchor": {
+    "offset": "0x13a4bc",
+    "static_reconstruction": {"x0": "sp + 0x1a8", "w2": 4000},
+    "sanity": {"*(sp+0x1ac)": 1, "*(sp+0x1ae)": 0},
+    "caveat": "offset is valid ONLY if the SAME Toss build/libea56 loads in the lab; compute runtime bias from ELF PT_LOAD, not maps[0]+offset"
+  },
+  "live_capture_plan": {
+    "bp_type": "hardware (Z1) via upstream QEMU+HVF gdbstub",
+    "continue_method": "explicit step-over (z1/s/Z1/c) — CONFIRMED required",
+    "asid_filter": "HW bp is unlinked address-match; on each stop read TTBR0_EL1/CONTEXTIDR_EL1 and continue unless it is the Toss process (per §90)",
+    "validate": ["x0==sp+0x1a8", "x2==4000", "*(x0+4)==1", "*(x0+6)==0"]
+  },
+  "compat_grade": "OPEN (needs Android boot). Grades A/B/C/D per docs section 28.",
+  "scope": "local RASP RE / observability only; NO server-side FDS / auth / verdict-patching"
+}

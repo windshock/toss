@@ -1,0 +1,13 @@
+{
+  "probe": "G2d dual-Z2 direct writer capture (no bridge)",
+  "arm": {
+    "at_call": 46,
+    "sp46": "0xe14b1b17f7c0",
+    "slotA": "0xe14b1b17f3e0",
+    "slotB": "0xe14b1b17fd18",
+    "z2a": "OK",
+    "z2b": "OK",
+    "snapA": "0x0",
+    "snapB": "0xe14e7e356270"
+  }
+}

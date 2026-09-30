@@ -1,0 +1,131 @@
+{
+  "probe": "S103 SIMD provenance of final 4",
+  "s102_writer_sig": "4044a06e4144a12e001c234e211c240ee083823ce18303fcaf696eb8ff310071421a0054ce110091df7100f161ffff54ed534079ee5b4079ef634079f06b4079",
+  "target_xml": {
+    "target.xml": "<?xml version=\"1.0\"?><!DOCTYPE target SYSTEM \"gdb-target.dtd\"><target><architecture>aarch64</architecture><xi:include href=\"aarch64-core.xml\"/><xi:include href=\"aarch64-fpu.xml\"/><xi:include href=\"aarch64-pauth.xml\"/><xi:include href=\"tls-registers.xml\"/><xi:include href=\"system-registers.xml\"/></target>",
+    "aarch64-core.xml": "<?xml version=\"1.0\"?>\n<!-- Copyright (C) 2009-2025 Free Software Foundation, Inc.\n     Contributed by ARM Ltd.\n\n     Copying and distribution of this file, with or without modification,\n     are permitted in any medium without royalty provided the copyright\n     notice and this notice are preserved.  -->\n\n<!DOCTYPE feature SYSTEM \"gdb-target.dtd\">\n<feature name=\"org.gnu.gdb.aarch64.core\">\n  <reg name=\"x0\" bitsize=\"64\"/>\n  <reg name=\"x1\" bitsize=\"64\"/>\n  <reg name=\"x2\" bitsize=\"64\"/>\n  <reg name=\"x3\" bitsize=\"64\"/>\n  <reg name=\"x4\" bitsize=\"64\"/>\n  <reg name=\"x5\" bitsize=\"64\"/>\n  <reg name=\"x6\" bitsize=\"64\"/>\n  <reg name=\"x7\" bitsize=\"64\"/>\n  <reg name=\"x8\" bitsize=\"64\"/>\n  <reg name=\"x9\" bitsize=\"64\"/>\n  <reg name=\"x10\" bitsize=\"64\"/>\n  <reg name=\"x11\" bitsize=\"64\"/>\n  <reg name=\"x12\" bitsize=\"64\"/>\n  <reg name=\"x13\" bitsize=\"64\"/>\n  <reg name=\"x14\" bitsize=\"64\"/>\n  <reg name=\"x15\" bitsize=\"64\"/>\n  <reg name=\"x16\" bitsize=\"64\"/>\n  <reg name=\"x17\" bitsize=\"64\"/>\n  <reg name=\"x18\" bitsize=\"64\"/>\n  <reg name=\"x19\" bitsize=\"64\"/>\n  <reg name=\"x20\" bitsize=\"64\"/>\n  <reg name=\"x21\" bitsize=\"64\"/>\n  <reg name=\"x22\" bitsize=\"64\"/>\n  <reg name=\"x23\" bitsize=\"64\"/>\n  <reg name=\"x24\" bitsize=\"64\"/>\n  <reg name=\"x25\" bitsize=\"64\"/>\n  <reg name=\"x26\" bitsize=\"64\"/>\n  <reg name=\"x27\" bitsize=\"64\"/>\n  <reg name=\"x28\" bitsize=\"64\"/>\n  <reg name=\"x29\" bitsize=\"64\"/>\n  <reg name=\"x30\" bitsize=\"64\"/>\n  <reg name=\"sp\" bitsize=\"64\" type=\"data_ptr\"/>\n\n  <reg name=\"pc\" bitsize=\"64\" type=\"code_ptr\"/>\n\n  <flags id=\"cpsr_flags\" size=\"4\">\n    <!-- Stack Pointer.  -->\n    <field name=\"SP\" start=\"0\" end=\"0\"/>\n\n    <!-- Exception Level.  -->\n    <field name=\"EL\" start=\"2\" end=\"3\"/>\n    <!-- Execution state.  -->\n    <field name=\"nRW\" start=\"4\" end=\"4\"/>\n\n    <!-- FIQ interrupt mask.  -->\n    <field name=\"F\" start=\"6\" end=\"6\"/>\n    <!-- IRQ interrupt mask.  -->\n    <field name=\"I\" start=\"7\" end=\"7\"/>\n    <!-- SError interrupt mask.  -->\n    <field name=\"A\" start=\"8\" end=\"8\"/>\n    <!-- Debug excep",
+    "aarch64-fpu.xml": "<?xml version=\"1.0\"?>\n<!-- Copyright (C) 2009-2012 Free Software Foundation, Inc.\n     Contributed by ARM Ltd.\n\n     Copying and distribution of this file, with or without modification,\n     are permitted in any medium without royalty provided the copyright\n     notice and this notice are preserved.  -->\n\n<!DOCTYPE feature SYSTEM \"gdb-target.dtd\">\n<feature name=\"org.gnu.gdb.aarch64.fpu\">\n  <vector id=\"v2d\" type=\"ieee_double\" count=\"2\"/>\n  <vector id=\"v2u\" type=\"uint64\" count=\"2\"/>\n  <vector id=\"v2i\" type=\"int64\" count=\"2\"/>\n  <vector id=\"v4f\" type=\"ieee_single\" count=\"4\"/>\n  <vector id=\"v4u\" type=\"uint32\" count=\"4\"/>\n  <vector id=\"v4i\" type=\"int32\" count=\"4\"/>\n  <vector id=\"v8u\" type=\"uint16\" count=\"8\"/>\n  <vector id=\"v8i\" type=\"int16\" count=\"8\"/>\n  <vector id=\"v16u\" type=\"uint8\" count=\"16\"/>\n  <vector id=\"v16i\" type=\"int8\" count=\"16\"/>\n  <vector id=\"v1u\" type=\"uint128\" count=\"1\"/>\n  <vector id=\"v1i\" type=\"int128\" count=\"1\"/>\n  <union id=\"vnd\">\n    <field name=\"f\" type=\"v2d\"/>\n    <field name=\"u\" type=\"v2u\"/>\n    <field name=\"s\" type=\"v2i\"/>\n  </union>\n  <union id=\"vns\">\n    <field name=\"f\" type=\"v4f\"/>\n    <field name=\"u\" type=\"v4u\"/>\n    <field name=\"s\" type=\"v4i\"/>\n  </union>\n  <union id=\"vnh\">\n    <field name=\"u\" type=\"v8u\"/>\n    <field name=\"s\" type=\"v8i\"/>\n  </union>\n  <union id=\"vnb\">\n    <field name=\"u\" type=\"v16u\"/>\n    <field name=\"s\" type=\"v16i\"/>\n  </union>\n  <union id=\"vnq\">\n    <field name=\"u\" type=\"v1u\"/>\n    <field name=\"s\" type=\"v1i\"/>\n  </union>\n  <union id=\"aarch64v\">\n    <field name=\"d\" type=\"vnd\"/>\n    <field name=\"s\" type=\"vns\"/>\n    <field name=\"h\" type=\"vnh\"/>\n    <field name=\"b\" type=\"vnb\"/>\n    <field name=\"q\" type=\"vnq\"/>\n  </union>\n  <reg name=\"v0\" bitsize=\"128\" type=\"aarch64v\" regnum=\"34\"/>\n  <reg name=\"v1\" bitsize=\"128\" type=\"aarch64v\" />\n  <reg name=\"v2\" bitsize=\"128\" type=\"aarch64v\" />\n  <reg name=\"v3\" bitsize=\"128\" type=\"aarch64v\" />\n  <reg name=\"v4\" bitsize=\"128\" type=\"aarch64v\" />\n  <reg name=\"v5\" bitsize=\"128\" type=\"aarch64v\" />\n ",
+    "aarch64-pauth.xml": "<?xml version=\"1.0\"?>\n<!-- Copyright (C) 2018-2022 Free Software Foundation, Inc.\n\n     Copying and distribution of this file, with or without modification,\n     are permitted in any medium without royalty provided the copyright\n     notice and this notice are preserved.  -->\n\n<!DOCTYPE feature SYSTEM \"gdb-target.dtd\">\n<feature name=\"org.gnu.gdb.aarch64.pauth_v2\">\n  <reg name=\"pauth_dmask\" bitsize=\"64\"/>\n  <reg name=\"pauth_cmask\" bitsize=\"64\"/>\n  <reg name=\"pauth_dmask_high\" bitsize=\"64\"/>\n  <reg name=\"pauth_cmask_high\" bitsize=\"64\"/>\n</feature>\n\n",
+    "tls-registers.xml": "<?xml version=\"1.0\"?><!DOCTYPE feature SYSTEM \"gdb-target.dtd\"><feature name=\"org.gnu.gdb.aarch64.tls\"><reg name=\"tpidr\" bitsize=\"64\" regnum=\"72\" type=\"data_ptr\"/></feature>",
+    "system-registers.xml": "<?xml version=\"1.0\"?><!DOCTYPE feature SYSTEM \"gdb-target.dtd\"><feature name=\"org.qemu.gdb.arm.sys.regs\"><reg name=\"ID_MMFR5\" bitsize=\"64\" regnum=\"73\" type=\"int\" group=\"cp_regs\"/><reg name=\"RES_0_C0_C3_7\" bitsize=\"64\" regnum=\"74\" type=\"int\" group=\"cp_regs\"/><reg name=\"MAIR_EL3\" bitsize=\"64\" regnum=\"75\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64PFR1_EL1\" bitsize=\"64\" regnum=\"76\" type=\"int\" group=\"cp_regs\"/><reg name=\"VSESR_EL2\" bitsize=\"64\" regnum=\"77\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64PFR2_EL1\" bitsize=\"64\" regnum=\"78\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64PFR3_EL1_RESERVED\" bitsize=\"64\" regnum=\"79\" type=\"int\" group=\"cp_regs\"/><reg name=\"SCTLR_EL1\" bitsize=\"64\" regnum=\"80\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64ZFR0_EL1\" bitsize=\"64\" regnum=\"81\" type=\"int\" group=\"cp_regs\"/><reg name=\"ACTLR_EL1\" bitsize=\"64\" regnum=\"82\" type=\"int\" group=\"cp_regs\"/><reg name=\"CNTKCTL_EL1\" bitsize=\"64\" regnum=\"83\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64SMFR0_EL1\" bitsize=\"64\" regnum=\"84\" type=\"int\" group=\"cp_regs\"/><reg name=\"CPACR_EL1\" bitsize=\"64\" regnum=\"85\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64PFR6_EL1_RESERVED\" bitsize=\"64\" regnum=\"86\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64PFR7_EL1_RESERVED\" bitsize=\"64\" regnum=\"87\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64DFR0_EL1\" bitsize=\"64\" regnum=\"88\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64DFR1_EL1\" bitsize=\"64\" regnum=\"89\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64DFR2_EL1_RESERVED\" bitsize=\"64\" regnum=\"90\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64DFR3_EL1_RESERVED\" bitsize=\"64\" regnum=\"91\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64AFR0_EL1\" bitsize=\"64\" regnum=\"92\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64AFR1_EL1\" bitsize=\"64\" regnum=\"93\" type=\"int\" group=\"cp_regs\"/><reg name=\"ID_AA64AFR2_EL1_RESERVED\" bitsize=\"64\" regnum=\"94\" type=\"int\" group=\"cp_regs\"/><reg name=\"CNTFRQ_EL0\" bitsize=\"64\" regnum=\"95\" type=\"int\" group=\"cp_regs\"/><reg name=\"OSDTRRX_EL1\" bi"
+  },
+  "regmap_selfcheck": true,
+  "regmap": {
+    "x0": [
+      0,
+      64
+    ],
+    "x5": [
+      40,
+      64
+    ],
+    "x12": [
+      96,
+      64
+    ],
+    "x15": [
+      120,
+      64
+    ],
+    "x16": [
+      128,
+      64
+    ],
+    "x17": [
+      136,
+      64
+    ],
+    "sp": [
+      248,
+      64
+    ],
+    "pc": [
+      256,
+      64
+    ],
+    "cpsr": [
+      264,
+      32
+    ],
+    "v0": [
+      268,
+      128
+    ],
+    "v1": [
+      284,
+      128
+    ],
+    "v2": [
+      300,
+      128
+    ],
+    "v3": [
+      316,
+      128
+    ],
+    "v4": [
+      332,
+      128
+    ],
+    "v31": [
+      764,
+      128
+    ],
+    "fpsr": [
+      780,
+      32
+    ],
+    "fpcr": [
+      784,
+      32
+    ]
+  },
+  "g_packet_bytes": 2156,
+  "live_writer_sig": "4044a06e4144a12e001c234e211c240ee083823ce18303fcaf696eb8ff310071421a0054ce110091df7100f161ffff54ed534079ee5b4079ef634079f06b4079",
+  "n_ids": 47,
+  "stur_hits": 1,
+  "four_producers": [],
+  "kept_rows": {
+    "hit1_non4": {
+      "inv": 1,
+      "t": 22.6,
+      "pc": "0xfffd35518f70",
+      "sp": "0xfffbef6f00c0",
+      "lr": "0xfffd34efbbd4",
+      "x5": "0xffffffff",
+      "x8": "0xfffbef6f1a80",
+      "x9": "0x710f1ba0",
+      "x12": "0x932",
+      "x13": "0xfffbef6f00e4",
+      "x15": "0xc000000000000000",
+      "x16": "0x22",
+      "x17": "0x9580114730000000",
+      "x20": "0xfffbef6f1a80",
+      "x28": "0xfffbef6f1a80",
+      "vec": {
+        "v0": null,
+        "v1": null,
+        "v2": null,
+        "v3": null,
+        "v4": null
+      },
+      "slotA": "0x400000007",
+      "sp28_16B": "01000000090000000700000004000000",
+      "post_pc": "0xfffd35518f74",
+      "slotA_after": "0x4",
+      "sp28_16B_after": "01000000050000000400000000000000"
+    }
+  },
+  "afed8_4": {
+    "t": 22.61,
+    "call_no": 47,
+    "sp": "0xfffbfc7aa0f0",
+    "lr": "0xfffd34f86d04",
+    "x0": "0x4",
+    "x1": "0xfffc400b3a90",
+    "x5": "0x0",
+    "slotA": "0x4",
+    "q0": null
+  },
+  "verdict": "AF4_NO_PRODUCER"
+}

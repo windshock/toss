@@ -1,0 +1,10 @@
+package o;
+
+import o.SnackbarKtExternalSyntheticLambda3;
+
+/* loaded from: /tmp/toss_alldex/classes19.dex */
+public interface SnackbarHostKtExternalSyntheticLambda4 {
+    void onExtraCallbackWithResult(TextFieldDecoratorModifierNodeExternalSyntheticLambda20 textFieldDecoratorModifierNodeExternalSyntheticLambda20);
+
+    void onWarmupCompleted(TextFieldDecoratorModifierNodeExternalSyntheticLambda24 textFieldDecoratorModifierNodeExternalSyntheticLambda24, DrawerStateExternalSyntheticLambda1 drawerStateExternalSyntheticLambda1, SnackbarKtExternalSyntheticLambda3.onExtraCallbackWithResult onextracallbackwithresult);
+}

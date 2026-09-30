@@ -1,0 +1,18 @@
+{
+  "probe": "G2g slot-B sensor, late slot-A arm",
+  "arm": {
+    "at_call": 46,
+    "sp46": "0xe14b184c57c0",
+    "slotB": "0xe14b184c5d18",
+    "z2": "OK",
+    "snapB": "0xe14e7e356270"
+  },
+  "n_ids": 46,
+  "b_traps": 0,
+  "b_unchanged": 0,
+  "a_traps": 0,
+  "b_writer": false,
+  "a_writer": false,
+  "afed8_4": null,
+  "verdict": "NO_NATIVE"
+}

@@ -1,0 +1,88 @@
+{
+  "target": "0x4008000c",
+  "steps": [
+    {
+      "?": "T05core:01;"
+    },
+    {
+      "reset_pc": "0x40080000",
+      "expect": "0x40080000"
+    },
+    {
+      "bytes_before": "0000018b"
+    },
+    {
+      "Z1_insert": "OK",
+      "expect": "OK"
+    },
+    {
+      "bytes_after_install": "0000018b"
+    },
+    {
+      "bytes_at_stop": "0000018b"
+    },
+    {
+      "bytes_after_remove": "0000018b"
+    }
+  ],
+  "hit_states": [
+    {
+      "hit": 0,
+      "stop_reply": "T05thread:01;",
+      "pc": "0x4008000c",
+      "x0": 0,
+      "x1": 1,
+      "x2": 4000,
+      "sp": "0x0"
+    },
+    {
+      "hit": 1,
+      "stop_reply": "T05thread:01;",
+      "pc": "0x4008000c",
+      "x0": 0,
+      "x1": 1,
+      "x2": 4000,
+      "sp": "0x0"
+    },
+    {
+      "hit": 2,
+      "stop_reply": "T05thread:01;",
+      "pc": "0x4008000c",
+      "x0": 0,
+      "x1": 1,
+      "x2": 4000,
+      "sp": "0x0"
+    },
+    {
+      "hit": 3,
+      "stop_reply": "T05thread:01;",
+      "pc": "0x4008000c",
+      "x0": 0,
+      "x1": 1,
+      "x2": 4000,
+      "sp": "0x0"
+    },
+    {
+      "hit": 4,
+      "stop_reply": "T05thread:01;",
+      "pc": "0x4008000c",
+      "x0": 0,
+      "x1": 1,
+      "x2": 4000,
+      "sp": "0x0"
+    }
+  ],
+  "reset_pc": "0x40080000",
+  "code_mutation": {
+    "before": "0000018b",
+    "after_install": "0000018b",
+    "unchanged": true,
+    "at_stop": "0000018b",
+    "after_remove": "0000018b",
+    "unchanged_full": true
+  },
+  "all_hits_at_target": true,
+  "x0_progresses": false,
+  "x2_is_4000": true,
+  "VERDICT": "GENUINE_HW_BP"
+}

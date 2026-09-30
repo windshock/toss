@@ -1,0 +1,10 @@
+{
+  "probe": "G2e slot-A-only Z2, cheap traps, writer capture",
+  "arm": {
+    "at_call": 46,
+    "sp46": "0xe14a382d37c0",
+    "slotA": "0xe14a382d33e0",
+    "z2": "OK",
+    "snap": "0x0"
+  }
+}

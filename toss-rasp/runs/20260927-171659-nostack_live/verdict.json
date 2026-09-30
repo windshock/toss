@@ -1,0 +1,67 @@
+{
+  "_evidence": "original-session logstore + PID-scoped logcat + same-thread debuggerd frames",
+  "verdict_state": "DETECTED",
+  "capture_quality": {
+    "state": "VALID",
+    "evidence_valid": true,
+    "logstore_captured": true,
+    "logstore_snapshot_count": 14,
+    "logstore_merged_snapshot_count": 3,
+    "logstore_selected_snapshot": "t0004_pid5141_start629997.txt",
+    "logstore_malformed_lines": 0,
+    "original_session_seen": true,
+    "incarnation_verified": true,
+    "restart_count": 0,
+    "other_logstore_session_seen": false,
+    "maps_pid_matches_session": true,
+    "stack_samples_requested": 0,
+    "stack_samples_completed": 0,
+    "stack_session_mismatches": [],
+    "params_readback_ok": true,
+    "target_uid_covered": true,
+    "launch_command_ok": true,
+    "complete_sampled_window": false,
+    "explicit_non_emulator_result": false,
+    "legacy_capture": false
+  },
+  "raspEmulatorCallback": "34359738558",
+  "raspEmulatorCallbacks": [
+    "34359738558"
+  ],
+  "raspHookCallback": null,
+  "detected": "emulator",
+  "guardLevel": "LOW",
+  "attendingDetectorSet": "debugger, emulator, root, hook, cert, virtual_environment",
+  "fds_result": "[EMULATOR]",
+  "fds_results": [
+    "[EMULATOR]",
+    "[EMULATOR]"
+  ],
+  "fds_from": "SplashActivity",
+  "exit_caller": null,
+  "exitPlan": null,
+  "exit_plans": [],
+  "emulator_observed": true,
+  "emulator_detected": true,
+  "displayed_at": "17:17:03.812",
+  "system_exit": [
+    "17:17:14.557",
+    "0"
+  ],
+  "system_exit_count": 1,
+  "stack_not_found": false,
+  "top_activities": [
+    "viva.republica.toss/.splash.SplashActivity"
+  ],
+  "last_alive_s": 12.679,
+  "handler_presence": {
+    "afed8": 0,
+    "0xa8f70": 0,
+    "0x95224": 0,
+    "AbsAppGuard": 0,
+    "libtg": 0,
+    "libea56": 0
+  },
+  "libea56_stack_frames": {},
+  "libea56_thread_frame_groups": []
+}

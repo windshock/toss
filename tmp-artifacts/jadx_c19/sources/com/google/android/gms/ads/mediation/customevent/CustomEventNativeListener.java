@@ -1,0 +1,12 @@
+package com.google.android.gms.ads.mediation.customevent;
+
+import androidx.annotation.NonNull;
+import com.google.android.gms.ads.mediation.UnifiedNativeAdMapper;
+
+@Deprecated
+/* loaded from: /tmp/toss_alldex/classes19.dex */
+public interface CustomEventNativeListener extends CustomEventListener {
+    void onAdImpression();
+
+    void onAdLoaded(@NonNull UnifiedNativeAdMapper unifiedNativeAdMapper);
+}

@@ -1,0 +1,1186 @@
+{
+ "api_consts": {
+  "ImageFormat.getBitsPerPixel(0)": -1,
+  "ViewConfiguration.getKeyRepeatDelay()": 50,
+  "ViewConfiguration.getDoubleTapTimeout()": 300,
+  "ExpandableListView.getPackedPositionForGroup(0)": 0,
+  "KeyEvent.getModifierMetaStateMask()": 487679,
+  "KeyEvent.getMaxKeyCode()": 337,
+  "AudioTrack.getMinVolume()": 0,
+  "TypedValue.complexToFloat(0)": 0,
+  "TextUtils.indexOf(\"\", \"\")": 0,
+  "TextUtils.getOffsetBefore(\"\", 0)": -1,
+  "ViewConfiguration.getKeyRepeatTimeout()": 400,
+  "Drawable.resolveOpacity(0, 0)": 0,
+  "View.resolveSizeAndState(0, 0, 0)": 0,
+  "ViewConfiguration.getMaximumDrawingCacheSize()": 1536000,
+  "ViewConfiguration.getScrollBarFadeDuration()": 250,
+  "ViewConfiguration.getZoomControlsTimeout()": 3000,
+  "ViewConfiguration.getTouchSlop()": 8,
+  "ViewConfiguration.getWindowTouchSlop()": 16,
+  "ViewConfiguration.getTapTimeout()": 100,
+  "ViewConfiguration.getScrollBarSize()": 4,
+  "ViewConfiguration.getLongPressTimeout()": 400,
+  "ViewConfiguration.getEdgeSlop()": 12,
+  "ViewConfiguration.getFadingEdgeLength()": 12,
+  "ViewConfiguration.getScrollFriction()": 0.015,
+  "ViewConfiguration.getJumpTapTimeout()": 500,
+  "ViewConfiguration.getGlobalActionKeyTimeout()": 500,
+  "ViewConfiguration.getPressedStateDuration()": 64,
+  "ViewConfiguration.getMaximumFlingVelocity()": 8000,
+  "ViewConfiguration.getMinimumFlingVelocity()": 50,
+  "KeyEvent.getDeadChar(0, 0)": 0,
+  "KeyEvent.normalizeMetaState(0)": 0,
+  "Process.getElapsedCpuTime()": 815,
+  "AndroidCharacter.getMirror('0')": 48,
+  "View.getDefaultSize(0, 0)": 0,
+  "View.resolveSize(0, 0)": 0,
+  "Color.green(0)": 0,
+  "Color.red(0)": 0,
+  "Color.blue(0)": 0,
+  "Color.alpha(0)": 0,
+  "Color.argb(0, 0, 0, 0)": 0,
+  "Color.rgb(0, 0, 0)": -16777216,
+  "PointF.length(0.0f, 0.0f)": 0,
+  "SystemClock.uptimeMillis()": 1,
+  "SystemClock.elapsedRealtime()": 1,
+  "SystemClock.elapsedRealtimeNanos()": 1,
+  "SystemClock.currentThreadTimeMillis()": 1,
+  "Process.myPid()": 100000,
+  "Process.myTid()": 100000,
+  "Process.myUid()": 1000,
+  "Process.getGidForName(\"\")": -1,
+  "Process.getUidForName(\"\")": -1,
+  "AudioTrack.getMaxVolume()": 1,
+  "ExpandableListView.getPackedPositionGroup(0L)": -1,
+  "ExpandableListView.getPackedPositionForChild(0, 0)": -9223372036854776000,
+  "ExpandableListView.getPackedPositionChild(0L)": -1,
+  "TypedValue.complexToFraction(0, 0.0f, 0.0f)": 0,
+  "MeasureSpec.getMode(0)": 0,
+  "MeasureSpec.getSize(0)": 0,
+  "MeasureSpec.makeMeasureSpec(0, 0)": 0,
+  "View.MeasureSpec.getMode(0)": 0,
+  "View.MeasureSpec.getSize(0)": 0,
+  "View.MeasureSpec.makeMeasureSpec(0, 0)": 0
+ },
+ "tbl_ok": 104,
+ "tea_ok": 12,
+ "failed": 65,
+ "sites": [
+  {
+   "file": "o/AudioFocusManagerExternalSyntheticLambda0.java",
+   "kind": "v3",
+   "b": 118,
+   "n": 20,
+   "str": "/system/vphone_space",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/AudioFocusManagerExternalSyntheticLambda0.java",
+   "kind": "v3",
+   "b": 63,
+   "n": 36,
+   "str": "/data/data/com.gbox.android/vfs_data",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/AudioFocusManagerExternalSyntheticLambda0.java",
+   "kind": "v3",
+   "b": 80,
+   "n": 18,
+   "str": "/etc/init.titan.sh",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/AudioFocusManagerExternalSyntheticLambda0.java",
+   "kind": "v3",
+   "b": 61,
+   "n": 20,
+   "str": "package:com.android.",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ExoPlayerBuilderExternalSyntheticLambda20.java",
+   "kind": "tea",
+   "n": 17,
+   "str": "android.os.Parcel",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ExoPlayerBuilderExternalSyntheticLambda20.java",
+   "kind": "tea",
+   "n": 23,
+   "str": "android.content.Context",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ExoPlayerBuilderExternalSyntheticLambda20.java",
+   "kind": "tea",
+   "n": 16,
+   "str": "getSystemService",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ExoPlayerBuilderExternalSyntheticLambda20.java",
+   "kind": "tea",
+   "n": 8,
+   "str": "transact",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ExoPlayerBuilderExternalSyntheticLambda20.java",
+   "kind": "tea",
+   "n": 15,
+   "str": "setDataPosition",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ExoPlayerBuilderExternalSyntheticLambda20.java",
+   "kind": "tea",
+   "n": 13,
+   "str": "readException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ExoPlayerBuilderExternalSyntheticLambda20.java",
+   "kind": "tea",
+   "n": 19,
+   "str": "java.lang.Throwable",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 166,
+   "n": 16,
+   "c": 0,
+   "str": "android.Manifest",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 182,
+   "n": 19,
+   "c": 0,
+   "str": "android.app.Service",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 236,
+   "n": 23,
+   "c": 56694,
+   "str": "android.content.Context",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 259,
+   "n": 30,
+   "c": 11045,
+   "str": "android.content.ContextWrapper",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 345,
+   "n": 32,
+   "c": 33824,
+   "str": "android.content.pm.ComponentInfo",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 407,
+   "n": 34,
+   "c": 0,
+   "str": "android.content.pm.PackageItemInfo",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 441,
+   "n": 33,
+   "c": 0,
+   "str": "android.content.pm.PackageManager",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 474,
+   "n": 30,
+   "c": 0,
+   "str": "android.content.pm.ResolveInfo",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 504,
+   "n": 28,
+   "c": 0,
+   "str": "android.content.pm.Signature",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 532,
+   "n": 16,
+   "c": 0,
+   "str": "android.os.Build",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 548,
+   "n": 16,
+   "c": 46762,
+   "str": "android.os.Debug",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 564,
+   "n": 18,
+   "c": 0,
+   "str": "android.os.Handler",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 582,
+   "n": 18,
+   "c": 17269,
+   "str": "android.os.IBinder",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 600,
+   "n": 17,
+   "c": 29049,
+   "str": "android.os.Looper",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 617,
+   "n": 18,
+   "c": 0,
+   "str": "android.os.Message",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 635,
+   "n": 20,
+   "c": 0,
+   "str": "android.os.Messenger",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 655,
+   "n": 21,
+   "c": 65535,
+   "str": "ﾞﾑﾛﾍﾐﾖﾛ￑ﾐﾌ￑ﾯﾞﾍﾜﾚﾓﾞﾝﾓﾚ",
+   "printable_ratio": 0.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 676,
+   "n": 18,
+   "c": 40188,
+   "str": "android.os.Process",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 694,
+   "n": 22,
+   "c": 0,
+   "str": "android.os.SystemClock",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 716,
+   "n": 27,
+   "c": 55027,
+   "str": "android.os.SystemProperties",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 743,
+   "n": 22,
+   "c": 64353,
+   "str": "android.text.TextUtils",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 765,
+   "n": 23,
+   "c": 65141,
+   "str": "android.util.TypedValue",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 836,
+   "n": 27,
+   "c": 0,
+   "str": "java.io.BufferedInputStream",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 885,
+   "n": 28,
+   "c": 49641,
+   "str": "java.io.ByteArrayInputStream",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 913,
+   "n": 17,
+   "c": 18313,
+   "str": "java.io.Closeable",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 930,
+   "n": 18,
+   "c": 31103,
+   "str": "java.io.DataOutput",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 948,
+   "n": 24,
+   "c": 15372,
+   "str": "java.io.DataOutputStream",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 972,
+   "n": 12,
+   "c": 36582,
+   "str": "java.io.File",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 984,
+   "n": 18,
+   "c": 0,
+   "str": "java.io.FileFilter",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1002,
+   "n": 23,
+   "c": 60689,
+   "str": "java.io.FileInputStream",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1025,
+   "n": 18,
+   "c": 0,
+   "str": "java.io.FileReader",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1043,
+   "n": 25,
+   "c": 59200,
+   "str": "java.io.FilterInputStream",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1068,
+   "n": 26,
+   "c": 0,
+   "str": "java.io.FilterOutputStream",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1111,
+   "n": 19,
+   "c": 0,
+   "str": "java.io.IOException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1130,
+   "n": 19,
+   "c": 0,
+   "str": "java.io.InputStream",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1149,
+   "n": 25,
+   "c": 13099,
+   "str": "java.io.InputStreamReader",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1174,
+   "n": 20,
+   "c": 0,
+   "str": "java.io.OutputStream",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1208,
+   "n": 20,
+   "c": 0,
+   "str": "java.io.Serializable",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1259,
+   "n": 29,
+   "c": 0,
+   "str": "java.lang.ArithmeticException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1319,
+   "n": 22,
+   "c": 48443,
+   "str": "java.lang.CharSequence",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1341,
+   "n": 14,
+   "c": 33372,
+   "str": "mfqf)kfi`)Dkft",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1356,
+   "n": 21,
+   "c": 8810,
+   "str": "ibub-obmd-@obppOlbgfq",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1377,
+   "n": 31,
+   "c": 0,
+   "str": "java.lang.ClassNotFoundExceptio",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1409,
+   "n": 19,
+   "c": 0,
+   "str": "java.lang.Cloneable",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1428,
+   "n": 20,
+   "c": 0,
+   "str": "java.lang.Comparable",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1448,
+   "n": 14,
+   "c": 7765,
+   "str": "java.lang.Enum",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1462,
+   "n": 15,
+   "c": 0,
+   "str": "java.lang.Error",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1496,
+   "n": 32,
+   "c": 0,
+   "str": "java.lang.IllegalAccessException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1599,
+   "n": 38,
+   "c": 0,
+   "str": "java.lang.IncompatibleClassChangeError",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1637,
+   "n": 32,
+   "c": 58696,
+   "str": "java.lang.InstantiationException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1669,
+   "n": 17,
+   "c": 5333,
+   "str": "java.lang.Integer",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1738,
+   "n": 14,
+   "c": 50578,
+   "str": "java.lang.Long",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1766,
+   "n": 26,
+   "c": 39249,
+   "str": "java.lang.NoSuchFieldError",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1792,
+   "n": 31,
+   "c": 0,
+   "str": "java.lang.NoSuchMethodException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1823,
+   "n": 30,
+   "c": 25102,
+   "str": "java.lang.NullPointerException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1853,
+   "n": 16,
+   "c": 7897,
+   "str": "java.lang.Number",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1869,
+   "n": 31,
+   "c": 34482,
+   "str": "java.lang.NumberFormatException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1900,
+   "n": 16,
+   "c": 0,
+   "str": "java.lang.Object",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1916,
+   "n": 17,
+   "c": 0,
+   "str": "java.lang.Process",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1951,
+   "n": 38,
+   "c": 57770,
+   "str": "java.lang.ReflectiveOperationException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 1989,
+   "n": 18,
+   "c": 32363,
+   "str": "java.lang.Runnable",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2024,
+   "n": 26,
+   "c": 0,
+   "str": "java.lang.RuntimeException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2077,
+   "n": 27,
+   "c": 61684,
+   "str": "java.lang.StackTraceElement",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2104,
+   "n": 16,
+   "c": 0,
+   "str": "java.lang.String",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2120,
+   "n": 23,
+   "c": 48539,
+   "str": "java.lang.StringBuilder",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2143,
+   "n": 16,
+   "c": 54444,
+   "str": "java.lang.System",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2159,
+   "n": 16,
+   "c": 54994,
+   "str": "java.lang.Thread",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2175,
+   "n": 19,
+   "c": 0,
+   "str": "java.lang.Throwable",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2194,
+   "n": 30,
+   "c": 0,
+   "str": "java.lang.UnsatisfiedLinkError",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2258,
+   "n": 34,
+   "c": 64276,
+   "str": "java.lang.reflect.AnnotatedElement",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2292,
+   "n": 29,
+   "c": 0,
+   "str": "java.lang.reflect.Constructor",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2321,
+   "n": 23,
+   "c": 48480,
+   "str": "java.lang.reflect.Field",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2344,
+   "n": 36,
+   "c": 0,
+   "str": "java.lang.reflect.GenericDeclaration",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2380,
+   "n": 43,
+   "c": 0,
+   "str": "java.lang.reflect.InvocationTargetException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2423,
+   "n": 24,
+   "c": 41022,
+   "str": "녪녡녶녡넮녬녡녮녧넮녲녥녦녬녥녣녴넮녍녥녭녢녥녲",
+   "printable_ratio": 0.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2447,
+   "n": 24,
+   "c": 37104,
+   "str": "java.lang.reflect.Method",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2471,
+   "n": 22,
+   "c": 26155,
+   "str": "java.lang.reflect.Type",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2493,
+   "n": 23,
+   "c": 0,
+   "str": "java.lang.reflect.Proxy",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2516,
+   "n": 20,
+   "c": 39971,
+   "str": "java.math.BigInteger",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2536,
+   "n": 15,
+   "c": 65535,
+   "str": "ﾕﾞﾉﾞ￑ﾑﾖﾐ￑ﾽﾊﾙﾙﾚﾍ",
+   "printable_ratio": 0.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2551,
+   "n": 19,
+   "c": 0,
+   "str": "java.nio.ByteBuffer",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2570,
+   "n": 18,
+   "c": 16663,
+   "str": "java.nio.IntBuffer",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2653,
+   "n": 31,
+   "c": 28928,
+   "str": "煪煡煶煡焮煮煩煯焮煣煨煡煲煳煥煴焮煃煨煡煲煳煥煴煄煥煣煯煤煥煲",
+   "printable_ratio": 0.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2684,
+   "n": 38,
+   "c": 0,
+   "str": "java.security.GeneralSecurityException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2722,
+   "n": 27,
+   "c": 0,
+   "str": "java.security.MessageDigest",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2749,
+   "n": 30,
+   "c": 0,
+   "str": "java.security.MessageDigestSpi",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2779,
+   "n": 38,
+   "c": 4611,
+   "str": "java.security.NoSuchAlgorithmException",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2817,
+   "n": 23,
+   "c": 39192,
+   "str": "java.security.Principal",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2840,
+   "n": 30,
+   "c": 0,
+   "str": "java.security.cert.Certificate",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2870,
+   "n": 37,
+   "c": 0,
+   "str": "java.security.cert.CertificateFactory",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2941,
+   "n": 32,
+   "c": 26595,
+   "str": "java.security.cert.X509Extension",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 2973,
+   "n": 28,
+   "c": 30544,
+   "str": "java.util.AbstractCollection",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3001,
+   "n": 22,
+   "c": 10949,
+   "str": "ibub-vwjo-Bapwqb`wOjpw",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3044,
+   "n": 21,
+   "c": 0,
+   "str": "java.util.AbstractSet",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3065,
+   "n": 19,
+   "c": 60453,
+   "str": "java.util.ArrayList",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3084,
+   "n": 16,
+   "c": 19195,
+   "str": "java.util.Arrays",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3100,
+   "n": 20,
+   "c": 28757,
+   "str": "java.util.Collection",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3120,
+   "n": 17,
+   "c": 19899,
+   "str": "java.util.EnumSet",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3137,
+   "n": 17,
+   "c": 0,
+   "str": "java.util.HashMap",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3171,
+   "n": 18,
+   "c": 12054,
+   "str": "java.util.Iterator",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3203,
+   "n": 14,
+   "c": 41875,
+   "str": "java.util.Map垴",
+   "printable_ratio": 0.93
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3238,
+   "n": 17,
+   "c": 26519,
+   "str": "java.util.Scanner",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3255,
+   "n": 13,
+   "c": 46114,
+   "str": "java.util.Set",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3268,
+   "n": 29,
+   "c": 0,
+   "str": "java.util.concurrent.TimeUnit",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3297,
+   "n": 38,
+   "c": 36608,
+   "str": "轪轡轶轡轸輮轳轥轣轵轲轩轴轹輮轡轵轴轨輮轸輵輰輰輮轘輵輰輰轐轲轩轮轣轩轰轡转",
+   "printable_ratio": 0.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 3335,
+   "n": 28,
+   "c": 0,
+   "str": "java.lang.reflect.Executable",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 71,
+   "n": 5,
+   "c": 60065,
+   "str": "鍕鍔鍆錭錸",
+   "printable_ratio": 0.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 76,
+   "n": 1,
+   "c": 0,
+   "str": ";",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 71,
+   "n": 4,
+   "c": 31138,
+   "str": "VWE.",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 103,
+   "n": 18,
+   "c": 31690,
+   "str": "currentApplication",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl",
+   "i": 121,
+   "n": 13,
+   "c": 10519,
+   "str": "accessibility",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tea",
+   "n": 24,
+   "str": "java.lang.reflect.Method",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tea",
+   "n": 19,
+   "str": "java.nio.ByteBuffer",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tea",
+   "n": 4,
+   "str": "wrap",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tea",
+   "n": 30,
+   "str": "android.content.pm.PackageInfo",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tea",
+   "n": 7,
+   "str": "CREATOR",
+   "printable_ratio": 1.0
+  }
+ ]
+}

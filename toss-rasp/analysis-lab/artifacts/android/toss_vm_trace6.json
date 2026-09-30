@@ -1,0 +1,5 @@
+{
+  "provenance": "runtime",
+  "probe": "hidden-VM method trace",
+  "libea56_base": "0xebc594c4e000"
+}

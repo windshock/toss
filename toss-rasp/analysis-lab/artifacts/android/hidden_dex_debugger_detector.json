@@ -1,0 +1,44 @@
+{
+  "section": "S109",
+  "artifact": "hidden_dex_debugger_detector",
+  "dex_fixed": "artifacts/android/toss_hidden_fixed.dex",
+  "dex_fixed_sha256": "44992bad027d7a7c98a18dee543a4c1838b2575ac4fcdf8091d4e6676a58e777",
+  "jadx_status": "partial success; 391 Java sources produced; some methods fail decompilation",
+  "key_sources": {
+    "detector_enum": "o/s8ExternalSyntheticLambda1.java",
+    "debugger_helper": "o/DataSourceBitmapLoaderExternalSyntheticLambda2.java",
+    "detector_bitmask": "o/AppLovinAdBase.java + o/IconRoundCornerProgressBarOnIconClickListener.java",
+    "fds_exit_ui": "o/s3.java",
+    "debugger_literal_ref": "o/LiteProcessServiceManagerLiteProcessInfo.IAuthTabCallback, code_off=0x7da44, insn=252"
+  },
+  "debugger_inputs_confirmed_static": [
+    "Context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE (2)",
+    "android.os.Debug.isDebuggerConnected()",
+    "android.os.Debug.waitingForDebugger()",
+    "/proc/sys/kernel/ftrace_enabled == \"1\"",
+    "/sys/kernel/debug/tracing/tracing_on == \"1\"",
+    "/sys/kernel/debug/tracing/current_tracer != \"nop\"",
+    "API<=33: ResolvingDataSource.run(\"ro.debuggable\") == \"1\"",
+    "API>33: /etc/init/llkd-debuggable.rc / start uptime / pid timing path"
+  ],
+  "bitmask_observations": {
+    "observed_debugInfo_decimal": 34359738558,
+    "observed_debugInfo_hex": "0x8000000be",
+    "low_bits_set": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7
+    ],
+    "static_examples": {
+      "DEBUGGER": 2,
+      "EMULATOR": 4,
+      "TAMPER_CERT": 64,
+      "VIRTUAL_ENVIRONMENT": 128
+    }
+  },
+  "interpretation": "The quiet Java System.exit path is locally assembled by hidden DEX detector/FDS logic. The [DEBUGGER] result does not require a server-side device flag; on redroid/API33 ro.debuggable=1 is a strong candidate, with ftrace/debugfs and Debug.* as additional local inputs.",
+  "open_validation": "After S107b releases gdbstub, verify ro.debuggable, ftrace_enabled, tracing_on, current_tracer live without attaching a debugger."
+}

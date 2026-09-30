@@ -1,0 +1,20 @@
+{
+  "host": "macOS arm64 (14.8, 23J21)",
+  "cpu": "Apple M1 Pro",
+  "ncpu": 10,
+  "qemu_version": "11.0.1",
+  "qemu_commit": "brew stable (upstream)",
+  "build_source": "homebrew",
+  "accelerators": [
+    "hvf",
+    "tcg"
+  ],
+  "hvf_arm_guest_debug": "present (upstream >=8.1; this is 11.x)",
+  "tcg_plugins": "present (-plugin)",
+  "record_replay": "present (-icount/replay)",
+  "edk2_firmware": "/opt/homebrew/share/qemu/edk2-aarch64-code.fd",
+  "toolchain": {
+    "clang": "23.1.1",
+    "llvm-objcopy": "present"
+  }
+}

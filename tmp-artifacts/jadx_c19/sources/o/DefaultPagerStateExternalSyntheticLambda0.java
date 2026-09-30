@@ -1,0 +1,10 @@
+package o;
+
+import androidx.glance.appwidget.protobuf.InvalidProtocolBufferException;
+
+/* loaded from: /tmp/toss_alldex/classes19.dex */
+public interface DefaultPagerStateExternalSyntheticLambda0<MessageType> {
+    MessageType IAuthTabCallback(LazyLayoutPinnableItemKtExternalSyntheticLambda0 lazyLayoutPinnableItemKtExternalSyntheticLambda0, LazyLayoutSemanticsModifierNodeExternalSyntheticLambda2 lazyLayoutSemanticsModifierNodeExternalSyntheticLambda2) throws InvalidProtocolBufferException;
+
+    MessageType onNavigationEvent(LazyLayoutKtExternalSyntheticLambda3 lazyLayoutKtExternalSyntheticLambda3, LazyLayoutSemanticsModifierNodeExternalSyntheticLambda2 lazyLayoutSemanticsModifierNodeExternalSyntheticLambda2) throws InvalidProtocolBufferException;
+}

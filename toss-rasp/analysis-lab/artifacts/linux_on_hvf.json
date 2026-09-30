@@ -1,0 +1,15 @@
+{
+  "_note": "Q1 upgrade \u2014 upstream QEMU 11 + HVF boots a REAL ARM64 Linux (Alpine netboot) to userspace shell on M1.",
+  "qemu": "11.0.1",
+  "accel": "hvf",
+  "cpu": "host",
+  "machine": "virt",
+  "mem_mb": 1024,
+  "kernel": "Alpine v3.20 vmlinuz-virt (aarch64)",
+  "initrd": "initramfs-virt",
+  "linux_version": "Linux version 6.6.134-0-virt (buildozer@build-3-20-aarch64) (gcc (Alpine 13.2.1_git20240309) 13.2.1 20240309, GNU ld (GNU Binutils) 2.42) #1-Alpine SMP PREEMPT_DYNAMIC 2026-04-11 17:03:51",
+  "reached_userspace_shell": true,
+  "boot_media_note": "netboot without modloop/repo -> initramfs emergency shell (expected); kernel+userspace confirmed running",
+  "psci_ok": true,
+  "verdict": "FULL_OS_ON_HVF_CONFIRMED (kernel + virtio + busybox userspace under HVF)"
+}

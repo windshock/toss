@@ -1,0 +1,6 @@
+package org.bouncycastle.asn1;
+
+/* loaded from: /tmp/toss_alldex/classes13.dex */
+public interface ASN1Encodable {
+    ASN1Primitive toASN1Primitive();
+}

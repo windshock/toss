@@ -1,0 +1,112 @@
+{
+  "url": "https://api.github.com/repos/rednaga/APKiD/issues/495",
+  "repository_url": "https://api.github.com/repos/rednaga/APKiD",
+  "labels_url": "https://api.github.com/repos/rednaga/APKiD/issues/495/labels{/name}",
+  "comments_url": "https://api.github.com/repos/rednaga/APKiD/issues/495/comments",
+  "events_url": "https://api.github.com/repos/rednaga/APKiD/issues/495/events",
+  "html_url": "https://github.com/rednaga/APKiD/issues/495",
+  "id": 4267966667,
+  "node_id": "I_kwDOA69jZ87-ZADL",
+  "number": 495,
+  "title": "[DETECTION] Libpairip and Google play integrity limitations",
+  "user": {
+    "login": "Myshtea",
+    "id": 51324748,
+    "node_id": "MDQ6VXNlcjUxMzI0NzQ4",
+    "avatar_url": "https://avatars.githubusercontent.com/u/51324748?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/Myshtea",
+    "html_url": "https://github.com/Myshtea",
+    "followers_url": "https://api.github.com/users/Myshtea/followers",
+    "following_url": "https://api.github.com/users/Myshtea/following{/other_user}",
+    "gists_url": "https://api.github.com/users/Myshtea/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/Myshtea/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/Myshtea/subscriptions",
+    "organizations_url": "https://api.github.com/users/Myshtea/orgs",
+    "repos_url": "https://api.github.com/users/Myshtea/repos",
+    "events_url": "https://api.github.com/users/Myshtea/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/Myshtea/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 1753369641,
+      "node_id": "MDU6TGFiZWwxNzUzMzY5NjQx",
+      "url": "https://api.github.com/repos/rednaga/APKiD/labels/detection-issue",
+      "name": "detection-issue",
+      "color": "b28430",
+      "default": false,
+      "description": "Bad detection or no detection",
+      "archived_at": null,
+      "archived_by": null
+    }
+  ],
+  "state": "closed",
+  "locked": false,
+  "assignees": [
+
+  ],
+  "milestone": null,
+  "comments": 5,
+  "created_at": "2026-04-15T09:50:18Z",
+  "updated_at": "2026-05-21T09:41:19Z",
+  "closed_at": "2026-05-21T09:41:19Z",
+  "assignee": null,
+  "author_association": "CONTRIBUTOR",
+  "issue_field_values": [
+
+  ],
+  "type": null,
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "**Provide the file**\nRelated example APKs\n- https://apkcombo.com/chessbar/com.chessbar/download/apk\n- https://apkcombo.com/burger-king/air.com.unit9.bkFrApp/download/apk\n\n**Describe the detection issue**\nI found a few things that seem wrong with the following rule:\nhttps://github.com/dewee-dev/APKiD/commit/ecc9622da504292e5983c56851d11be32a1c0f48 related to issue https://github.com/rednaga/APKiD/issues/329\n\nFirst, this protection mechanism does not seem to be directly related to Play Integrity API as much as to AIP (Automatic Integrity Protection), an option given to automatically check the APK's signature and other stuff (https://support.google.com/googleplay/android-developer/answer/10183279?hl=en).\n- My understanding is that the Play Integrity is a tool given to devs (com.google.android.play.core.integrity).\n- Whereas AIP (com.pairip) is an automatic check added by Google as opt-in on the dev console.\n\nSecondly, assuming the previous is true some apps avoid detection as they do not have libpairipcore.so (or libpairip.so) integrated but still have the licensing check automated on app launch. So there seems to be different levels of com.pairip, some with integrity verification mechanisms, obfuscation and licensing other with only licensing\n\n\n**What I think should be done:**\n\n1- Modify the entry for \"play integrity\" to \"Pairip\" or \"Google AIP (Automatic Integrity Protection)\".\n\n2- Add a different entry for the limited \"pairip\" with only licensing\n\n3- Add an entry for Google play integrity API which is also a protection tool for apps.\nSome apps with it, my detection mecanism is simply looking for \"com.google.android.play.core.integrity\" after decompiling to java with **[[apklab](https://github.com/APKLab/APKLab)](https://github.com/APKLab/APKLab)**\n- https://apkpure.com/fr/burger-king-france/air.com.unit9.bkFrApp\n- https://apkcombo.com/fr/tape-measure-for-petanque/aasuited.net.petanquecamera/\n- https://apkcombo.com/fr/buddy-ai-kids-learning-games/ai.mybuddy.talkingflashcards_new/\n- https://apkcombo.com/fr/perplexity/ai.perplexity.app.android/\n- https://apkcombo.com/fr/polybuzz-chat-with-ai-friends/ai.socialapps.speakmaster/\n- https://apkcombo.com/fr/perfectme-ai-photo-enhancer/aiphotoeditor.aiphotoenhancer.aiphotofilter.photoediting/\n\n\n\n\n## Examples\n\n**Example 1: App without libpairipcore** https://apkcombo.com/chessbar/com.chessbar/download/apk\nThis app has a licensing check related to pairip, automatically tested on contentprovider.onCreate(). AndroidManifest.xml:\n```xml\n\t<activity android:exported=\"false\" android:name=\"com.pairip.licensecheck.LicenseActivity\"/>\n\t<provider android:authorities=\"com.chessbar.com.pairip.licensecheck.LicenseContentProvider\" android:exported=\"false\" android:name=\"com.pairip.licensecheck.LicenseContentProvider\"/>\n\n```\nBut I could not find any other part like the VM or the libpairipcore.so, even libunity did not seem to include it. Although my research was limited.\n\nThis is not detected by APKiD although it is still pairip, even if only part of it. (Could be a library with the same name too technically, but I've found 40 something apps with the same situation)\n\n**APKiD current results...**\n```\n$ ./docker/apkid.sh ../chess/ChessBar_1.5.23_apkcombo.com.xapk \n[+] APKiD 3.1.0 :: from RedNaga :: rednaga.io\n[*] /input/ChessBar_1.5.23_apkcombo.com.xapk!com.chessbar.apk!classes.dex\n |-> anti_debug : Debug.isDebuggerConnected() check\n |-> anti_vm : Build.BOARD check, Build.FINGERPRINT check, Build.HARDWARE check, Build.MANUFACTURER check, Build.MODEL check, Build.PRODUCT check, Build.TAGS check, SIM operator check, network operator name check, possible Build.SERIAL check, possible VM check, ro.hardware check, ro.kernel.qemu check\n |-> compiler : r8\n[*] /input/ChessBar_1.5.23_apkcombo.com.xapk!com.chessbar.apk!classes2.dex\n |-> compiler : r8\n[*] /input/ChessBar_1.5.23_apkcombo.com.xapk!com.chessbar.apk!classes3.dex\n |-> anti_vm : Build.BOARD check, Build.FINGERPRINT check, Build.HARDWARE check, Build.MANUFACTURER check, Build.MODEL check, Build.PRODUCT check, Build.TAGS check\n |-> compiler : r8\n[*] /input/ChessBar_1.5.23_apkcombo.com.xapk!com.chessbar.apk!classes4.dex\n |-> compiler : r8\n\n```\n\n\n **Example 2: app with pairipcore** https://apkcombo.com/burger-king/air.com.unit9.bkFrApp/download/apk\nThis one contains libpairpcore and is loaded via System.loadLibrary as expected.\n\n\n**APKiD current results...**\n```\n$ ./docker/apkid.sh ../Burger/BURGER+KING_14.0.0_apkcombo.com.xapk \n[+] APKiD 3.1.0 :: from RedNaga :: rednaga.io\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!air.com.unit9.bkFrApp.apk!classes.dex\n |-> anti_vm : Build.FINGERPRINT check, Build.HARDWARE check, Build.MANUFACTURER check, Build.MODEL check, Build.PRODUCT check, possible VM check\n |-> compiler : r8\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!air.com.unit9.bkFrApp.apk!classes2.dex\n |-> anti_vm : Build.BOARD check, Build.FINGERPRINT check, Build.MANUFACTURER check, Build.MODEL check, Build.PRODUCT check, SIM operator check, network operator name check, possible Build.SERIAL check\n |-> compiler : r8 without marker (suspicious)\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!air.com.unit9.bkFrApp.apk!classes3.dex\n |-> anti_vm : Build.BOARD check, Build.FINGERPRINT check, Build.MANUFACTURER check, Build.MODEL check, Build.PRODUCT check, SIM operator check, network operator name check, subscriber ID check\n |-> compiler : r8 without marker (suspicious)\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!air.com.unit9.bkFrApp.apk!classes4.dex\n |-> anti_vm : Build.FINGERPRINT check, Build.MANUFACTURER check, Build.MODEL check, Build.PRODUCT check, SIM operator check, network operator name check, possible Build.SERIAL check, possible VM check, ro.kernel.qemu check\n |-> compiler : r8 without marker (suspicious)\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!air.com.unit9.bkFrApp.apk!classes5.dex\n |-> anti_vm : Build.FINGERPRINT check, Build.HARDWARE check, Build.MANUFACTURER check, Build.TAGS check\n |-> compiler : r8 without marker (suspicious)\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!air.com.unit9.bkFrApp.apk!classes6.dex\n |-> anti_vm : Build.BOARD check, Build.FINGERPRINT check, Build.HARDWARE check, Build.MANUFACTURER check, Build.MODEL check, Build.PRODUCT check, network operator name check, possible Build.SERIAL check, possible VM check\n |-> compiler : r8 without marker (suspicious)\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!air.com.unit9.bkFrApp.apk!classes7.dex\n |-> anti_debug : Debug.isDebuggerConnected() check\n |-> anti_vm : Build.FINGERPRINT check, Build.HARDWARE check, Build.MANUFACTURER check, Build.MODEL check, Build.PRODUCT check, Build.TAGS check, possible VM check\n |-> compiler : r8 without marker (suspicious)\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!air.com.unit9.bkFrApp.apk!classes8.dex\n |-> compiler : r8 without marker (suspicious)\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!air.com.unit9.bkFrApp.apk!classes9.dex\n |-> compiler : r8 without marker (suspicious)\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!config.arm64_v8a.apk!lib/arm64-v8a/libd124.so\n |-> obfuscator : DexGuard 9.x\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!config.arm64_v8a.apk!lib/arm64-v8a/libpairipcore.so\n |-> protector : Google Play Integrity\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!config.arm64_v8a.apk!lib/arm64-v8a/libreactnative.so\n |-> protector : Google Play Integrity\n[*] /input/BURGER+KING_14.0.0_apkcombo.com.xapk!config.arm64_v8a.apk!lib/arm64-v8a/librnskia.so\n |-> protector : Google Play Integrity\n\n```",
+  "closed_by": {
+    "login": "enovella",
+    "id": 14809754,
+    "node_id": "MDQ6VXNlcjE0ODA5NzU0",
+    "avatar_url": "https://avatars.githubusercontent.com/u/14809754?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/enovella",
+    "html_url": "https://github.com/enovella",
+    "followers_url": "https://api.github.com/users/enovella/followers",
+    "following_url": "https://api.github.com/users/enovella/following{/other_user}",
+    "gists_url": "https://api.github.com/users/enovella/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/enovella/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/enovella/subscriptions",
+    "organizations_url": "https://api.github.com/users/enovella/orgs",
+    "repos_url": "https://api.github.com/users/enovella/repos",
+    "events_url": "https://api.github.com/users/enovella/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/enovella/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "reactions": {
+    "url": "https://api.github.com/repos/rednaga/APKiD/issues/495/reactions",
+    "total_count": 1,
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 1
+  },
+  "timeline_url": "https://api.github.com/repos/rednaga/APKiD/issues/495/timeline",
+  "performed_via_github_app": null,
+  "state_reason": "completed",
+  "pinned_comment": null
+}

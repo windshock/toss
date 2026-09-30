@@ -1,0 +1,148 @@
+package im.toss.deeplink.ksp;
+
+import im.toss.deeplink.CompositeDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.AppsintossKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.DevtoolRuntimeKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesAccountTerminatorKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesAllservicesKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesAlltabFeatureEvent_curationKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesAlltabFeatureNavigationMissionKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesAlltabFeatureTotal_serviceKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesApplockImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesBenefitKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCardIssueEventKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCardRecommendHomeKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCardRecommendTestKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCommonAddressImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCommonAddressOverseasKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCommonAddressSearchImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCommonCompanySearchImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCommonContactsViralImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCommonGlobalAddressImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCommonKcbInfoSyncImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCommonProfileLibraryImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCommonServiceTermsAgreementStandardtermsV2TestKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCommonServiceTermsAgreementYouthParentConsentKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCreditUiDetailKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCreditUiHistoryKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCreditUiKcbsurveyKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCreditUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCreditUiMainKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCreditUiPlusKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCreditUiQuizKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesCreditUiScoreraiseKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesEdocKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesFaceAuthImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesFaceVerifyImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesFeedFeatureKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesForeignerHomeKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesForeignerKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesFxKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeLegacyKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationAnalysisKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationAsset_registerKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationConsumption_expense_transactionsKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationConsumption_homeKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationConsumption_income_transactionsKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationDst_investment_portfolioKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationDst_regular_consumption_removeKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationLegacy_transaction_listKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationLong_pressKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationRegular_consumption_addKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomePresentationTransaction_excludeKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeUiDstKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureAsset_homeKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureAsset_searchKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureCashflowKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureConsumption_card_recommendationKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureConsumption_category_addKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureConsumption_category_custom_listKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureConsumption_category_editKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureConsumption_hiddenKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureExpense_method_editKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureHome_assetKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesHomeV2FeatureTo_doKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesKycKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesLeaveKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesLoanUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesMainUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesManualselfieImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesMobileidImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesMobilityKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesMydataKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesOauthloginImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesOcrImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesOfferwallTnkfactoryKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesOpensourceLicenseKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesPaymentAlipayRewardsKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesPaymentUiAutopayKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesPaymentUiCardKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesPaymentUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesPaymentUiMethodKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesPaymentUiOfflineKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesPaymentUiOnlineKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesPaymentUiSettingKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesPaymentUiTossmoneyKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesPaymentUiTosspayMoneyKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesSearchUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesSecurityKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesSettingKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesShoppingKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTeensKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTnsUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTosscertUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTossoneKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTosspointKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTransferDutchpayUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTransferHomeKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTransferIntroKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTransferMessageCardKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTransferPeriodicKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTransferPoliticalDonationsKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTransferPromotionKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTransferReceiptKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTransferSettingKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesTransferShareKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesUnifiedSessionImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesVerifyLoginImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesVerifyOneclickloginImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesVerifyTeensmanualselfieImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.FeaturesVisitorKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.GlobalFeaturesAssetAuKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.GlobalFeaturesAssetKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.GlobalFeaturesDebitAgreementKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.GlobalFeaturesHomeKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.GlobalFeaturesKycKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.GlobalFeaturesPaymentAuthorisationKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.GlobalFeaturesTransferKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.GlobalFeaturesUserOnboardingKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.GlobalLocalizationUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.LegacyKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.RnTossCoreKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.SecurityImplKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.TossBankBanktabKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.TossBankJointcertKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.TossSecuritiesDevtoolMainUiKspDeepLinkRegistry;
+import im.toss.deeplink.ksp.registry.TossSecuritiesWebKspDeepLinkRegistry;
+
+/* loaded from: /tmp/toss_alldex/classes4.dex */
+public final class TossHostKspDeepLinkRegistrar extends CompositeDeepLinkRegistry {
+    public static final int $stable = 8;
+    private static int onExtraCallback = 0;
+    private static int onExtraCallbackWithResult = 37 % 128;
+
+    static {
+        if (37 % 2 != 0) {
+            return;
+        }
+        Object obj = null;
+        obj.hashCode();
+        throw null;
+    }
+
+    public TossHostKspDeepLinkRegistrar() {
+        super(new FeaturesSettingKspDeepLinkRegistry(), new FeaturesCreditUiKcbsurveyKspDeepLinkRegistry(), new FeaturesTransferSettingKspDeepLinkRegistry(), new FeaturesManualselfieImplKspDeepLinkRegistry(), new FeaturesHomeUiKspDeepLinkRegistry(), new GlobalFeaturesAssetKspDeepLinkRegistry(), new FeaturesHomePresentationAsset_registerKspDeepLinkRegistry(), new FeaturesCardRecommendHomeKspDeepLinkRegistry(), new LegacyKspDeepLinkRegistry(), new FeaturesOauthloginImplKspDeepLinkRegistry(), new FeaturesVerifyLoginImplKspDeepLinkRegistry(), new FeaturesHomePresentationConsumption_homeKspDeepLinkRegistry(), new TossSecuritiesDevtoolMainUiKspDeepLinkRegistry(), new FeaturesCreditUiKspDeepLinkRegistry(), new FeaturesHomePresentationConsumption_expense_transactionsKspDeepLinkRegistry(), new FeaturesFxKspDeepLinkRegistry(), new FeaturesCommonProfileLibraryImplKspDeepLinkRegistry(), new FeaturesCreditUiHistoryKspDeepLinkRegistry(), new GlobalFeaturesTransferKspDeepLinkRegistry(), new FeaturesTosspointKspDeepLinkRegistry(), new FeaturesLeaveKspDeepLinkRegistry(), new FeaturesCreditUiQuizKspDeepLinkRegistry(), new FeaturesHomePresentationKspDeepLinkRegistry(), new FeaturesCommonAddressOverseasKspDeepLinkRegistry(), new FeaturesHomeV2FeatureHome_assetKspDeepLinkRegistry(), new FeaturesCommonAddressSearchImplKspDeepLinkRegistry(), new FeaturesHomeV2FeatureAsset_homeKspDeepLinkRegistry(), new FeaturesHomePresentationRegular_consumption_addKspDeepLinkRegistry(), new FeaturesMobilityKspDeepLinkRegistry(), new FeaturesApplockImplKspDeepLinkRegistry(), new FeaturesHomeV2FeatureConsumption_category_addKspDeepLinkRegistry(), new FeaturesPaymentUiTossmoneyKspDeepLinkRegistry(), new GlobalFeaturesKycKspDeepLinkRegistry(), new DevtoolRuntimeKspDeepLinkRegistry(), new FeaturesTransferPromotionKspDeepLinkRegistry(), new FeaturesCommonAddressImplKspDeepLinkRegistry(), new FeaturesCreditUiDetailKspDeepLinkRegistry(), new FeaturesAllservicesKspDeepLinkRegistry(), new RnTossCoreKspDeepLinkRegistry(), new FeaturesCardIssueEventKspDeepLinkRegistry(), new FeaturesHomePresentationAnalysisKspDeepLinkRegistry(), new FeaturesCreditUiMainKspDeepLinkRegistry(), new FeaturesHomeV2FeatureConsumption_category_editKspDeepLinkRegistry(), new FeaturesKycKspDeepLinkRegistry(), new FeaturesCreditUiPlusKspDeepLinkRegistry(), new FeaturesTeensKspDeepLinkRegistry(), new FeaturesVerifyOneclickloginImplKspDeepLinkRegistry(), new FeaturesForeignerKspDeepLinkRegistry(), new FeaturesPaymentUiTosspayMoneyKspDeepLinkRegistry(), new FeaturesSecurityKspDeepLinkRegistry(), new GlobalLocalizationUiKspDeepLinkRegistry(), new GlobalFeaturesAssetAuKspDeepLinkRegistry(), new FeaturesCardRecommendTestKspDeepLinkRegistry(), new TossBankBanktabKspDeepLinkRegistry(), new FeaturesCommonContactsViralImplKspDeepLinkRegistry(), new FeaturesPaymentAlipayRewardsKspDeepLinkRegistry(), new FeaturesAccountTerminatorKspDeepLinkRegistry(), new GlobalFeaturesPaymentAuthorisationKspDeepLinkRegistry(), new FeaturesHomePresentationDst_investment_portfolioKspDeepLinkRegistry(), new FeaturesFaceVerifyImplKspDeepLinkRegistry(), new FeaturesTransferShareKspDeepLinkRegistry(), new FeaturesAlltabFeatureTotal_serviceKspDeepLinkRegistry(), new FeaturesMainUiKspDeepLinkRegistry(), new FeaturesMobileidImplKspDeepLinkRegistry(), new FeaturesOfferwallTnkfactoryKspDeepLinkRegistry(), new FeaturesMydataKspDeepLinkRegistry(), new FeaturesTransferHomeKspDeepLinkRegistry(), new SecurityImplKspDeepLinkRegistry(), new FeaturesOcrImplKspDeepLinkRegistry(), new FeaturesPaymentUiMethodKspDeepLinkRegistry(), new TossBankJointcertKspDeepLinkRegistry(), new FeaturesPaymentUiOfflineKspDeepLinkRegistry(), new FeaturesAlltabFeatureEvent_curationKspDeepLinkRegistry(), new FeaturesVerifyTeensmanualselfieImplKspDeepLinkRegistry(), new FeaturesLoanUiKspDeepLinkRegistry(), new FeaturesEdocKspDeepLinkRegistry(), new FeaturesCommonCompanySearchImplKspDeepLinkRegistry(), new FeaturesPaymentUiOnlineKspDeepLinkRegistry(), new FeaturesCommonGlobalAddressImplKspDeepLinkRegistry(), new FeaturesTransferDutchpayUiKspDeepLinkRegistry(), new FeaturesTransferIntroKspDeepLinkRegistry(), new FeaturesPaymentUiSettingKspDeepLinkRegistry(), new FeaturesHomeV2FeatureConsumption_category_custom_listKspDeepLinkRegistry(), new FeaturesPaymentUiKspDeepLinkRegistry(), new FeaturesCreditUiScoreraiseKspDeepLinkRegistry(), new FeaturesTossoneKspDeepLinkRegistry(), new FeaturesHomePresentationLong_pressKspDeepLinkRegistry(), new GlobalFeaturesUserOnboardingKspDeepLinkRegistry(), new FeaturesTransferReceiptKspDeepLinkRegistry(), new GlobalFeaturesHomeKspDeepLinkRegistry(), new FeaturesPaymentUiCardKspDeepLinkRegistry(), new FeaturesFeedFeatureKspDeepLinkRegistry(), new FeaturesUnifiedSessionImplKspDeepLinkRegistry(), new FeaturesPaymentUiAutopayKspDeepLinkRegistry(), new FeaturesHomeV2FeatureCashflowKspDeepLinkRegistry(), new FeaturesTnsUiKspDeepLinkRegistry(), new FeaturesShoppingKspDeepLinkRegistry(), new FeaturesCommonServiceTermsAgreementYouthParentConsentKspDeepLinkRegistry(), new FeaturesHomePresentationLegacy_transaction_listKspDeepLinkRegistry(), new FeaturesTransferPeriodicKspDeepLinkRegistry(), new FeaturesForeignerHomeKspDeepLinkRegistry(), new FeaturesBenefitKspDeepLinkRegistry(), new FeaturesHomePresentationDst_regular_consumption_removeKspDeepLinkRegistry(), new FeaturesSearchUiKspDeepLinkRegistry(), new FeaturesHomeV2FeatureConsumption_hiddenKspDeepLinkRegistry(), new FeaturesHomeV2FeatureExpense_method_editKspDeepLinkRegistry(), new FeaturesHomeLegacyKspDeepLinkRegistry(), new FeaturesHomeV2FeatureTo_doKspDeepLinkRegistry(), new TossSecuritiesWebKspDeepLinkRegistry(), new FeaturesCommonServiceTermsAgreementStandardtermsV2TestKspDeepLinkRegistry(), new FeaturesTransferPoliticalDonationsKspDeepLinkRegistry(), new FeaturesCommonKcbInfoSyncImplKspDeepLinkRegistry(), new AppsintossKspDeepLinkRegistry(), new FeaturesTosscertUiKspDeepLinkRegistry(), new FeaturesTransferMessageCardKspDeepLinkRegistry(), new FeaturesHomeUiDstKspDeepLinkRegistry(), new FeaturesHomeV2FeatureAsset_searchKspDeepLinkRegistry(), new GlobalFeaturesDebitAgreementKspDeepLinkRegistry(), new FeaturesHomePresentationTransaction_excludeKspDeepLinkRegistry(), new FeaturesAlltabFeatureNavigationMissionKspDeepLinkRegistry(), new FeaturesVisitorKspDeepLinkRegistry(), new FeaturesOpensourceLicenseKspDeepLinkRegistry(), new FeaturesFaceAuthImplKspDeepLinkRegistry(), new FeaturesHomePresentationConsumption_income_transactionsKspDeepLinkRegistry(), new FeaturesHomeV2FeatureConsumption_card_recommendationKspDeepLinkRegistry());
+    }
+}

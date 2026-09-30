@@ -1,0 +1,659 @@
+{
+  "tool": "vmdec1",
+  "milestone": 1,
+  "regression": {
+    "field": "0x7500451c",
+    "lanes": [
+      "0x1",
+      "0x5",
+      "0x4",
+      "0x0"
+    ],
+    "pass": true
+  },
+  "sample_words": [
+    "0xc73007100000005",
+    "0xf000a0000",
+    "0x700070008",
+    "0x50005b638",
+    "0xa00010c7b0776",
+    "0x500100000000f",
+    "0x5b64700000007",
+    "0x6ca106e00000033"
+  ],
+  "nibble_histogram": {
+    "0x0": 86,
+    "0x1": 4,
+    "0x3": 4,
+    "0x4": 1,
+    "0x5": 5,
+    "0x6": 5,
+    "0x7": 9,
+    "0x8": 2,
+    "0xa": 3,
+    "0xb": 3,
+    "0xc": 3,
+    "0xe": 1,
+    "0xf": 2
+  },
+  "zero_runs": [
+    {
+      "i": 0,
+      "trailing_zeros": 0,
+      "leading_zeros": 4
+    },
+    {
+      "i": 1,
+      "trailing_zeros": 17,
+      "leading_zeros": 28
+    },
+    {
+      "i": 2,
+      "trailing_zeros": 3,
+      "leading_zeros": 29
+    },
+    {
+      "i": 3,
+      "trailing_zeros": 3,
+      "leading_zeros": 29
+    },
+    {
+      "i": 4,
+      "trailing_zeros": 1,
+      "leading_zeros": 12
+    },
+    {
+      "i": 5,
+      "trailing_zeros": 0,
+      "leading_zeros": 13
+    },
+    {
+      "i": 6,
+      "trailing_zeros": 0,
+      "leading_zeros": 13
+    },
+    {
+      "i": 7,
+      "trailing_zeros": 0,
+      "leading_zeros": 5
+    }
+  ],
+  "hyp_fields_head": [
+    {
+      "word": 0,
+      "nib": 0,
+      "bit": 0,
+      "val": 5
+    },
+    {
+      "word": 0,
+      "nib": 1,
+      "bit": 4,
+      "val": 0
+    },
+    {
+      "word": 0,
+      "nib": 2,
+      "bit": 8,
+      "val": 0
+    },
+    {
+      "word": 0,
+      "nib": 3,
+      "bit": 12,
+      "val": 0
+    },
+    {
+      "word": 0,
+      "nib": 4,
+      "bit": 16,
+      "val": 0
+    },
+    {
+      "word": 0,
+      "nib": 5,
+      "bit": 20,
+      "val": 0
+    },
+    {
+      "word": 0,
+      "nib": 6,
+      "bit": 24,
+      "val": 0
+    },
+    {
+      "word": 0,
+      "nib": 7,
+      "bit": 28,
+      "val": 0
+    },
+    {
+      "word": 0,
+      "nib": 8,
+      "bit": 32,
+      "val": 1
+    },
+    {
+      "word": 0,
+      "nib": 9,
+      "bit": 36,
+      "val": 7
+    },
+    {
+      "word": 0,
+      "nib": 10,
+      "bit": 40,
+      "val": 0
+    },
+    {
+      "word": 0,
+      "nib": 11,
+      "bit": 44,
+      "val": 0
+    },
+    {
+      "word": 0,
+      "nib": 12,
+      "bit": 48,
+      "val": 3
+    },
+    {
+      "word": 0,
+      "nib": 13,
+      "bit": 52,
+      "val": 7
+    },
+    {
+      "word": 0,
+      "nib": 14,
+      "bit": 56,
+      "val": 12
+    },
+    {
+      "word": 0,
+      "nib": 15,
+      "bit": 60,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 0,
+      "bit": 64,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 1,
+      "bit": 68,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 2,
+      "bit": 72,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 3,
+      "bit": 76,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 4,
+      "bit": 80,
+      "val": 10
+    },
+    {
+      "word": 1,
+      "nib": 5,
+      "bit": 84,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 6,
+      "bit": 88,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 7,
+      "bit": 92,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 8,
+      "bit": 96,
+      "val": 15
+    },
+    {
+      "word": 1,
+      "nib": 9,
+      "bit": 100,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 10,
+      "bit": 104,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 11,
+      "bit": 108,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 12,
+      "bit": 112,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 13,
+      "bit": 116,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 14,
+      "bit": 120,
+      "val": 0
+    },
+    {
+      "word": 1,
+      "nib": 15,
+      "bit": 124,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 0,
+      "bit": 128,
+      "val": 8
+    },
+    {
+      "word": 2,
+      "nib": 1,
+      "bit": 132,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 2,
+      "bit": 136,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 3,
+      "bit": 140,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 4,
+      "bit": 144,
+      "val": 7
+    },
+    {
+      "word": 2,
+      "nib": 5,
+      "bit": 148,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 6,
+      "bit": 152,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 7,
+      "bit": 156,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 8,
+      "bit": 160,
+      "val": 7
+    },
+    {
+      "word": 2,
+      "nib": 9,
+      "bit": 164,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 10,
+      "bit": 168,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 11,
+      "bit": 172,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 12,
+      "bit": 176,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 13,
+      "bit": 180,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 14,
+      "bit": 184,
+      "val": 0
+    },
+    {
+      "word": 2,
+      "nib": 15,
+      "bit": 188,
+      "val": 0
+    },
+    {
+      "word": 3,
+      "nib": 0,
+      "bit": 192,
+      "val": 8
+    },
+    {
+      "word": 3,
+      "nib": 1,
+      "bit": 196,
+      "val": 3
+    },
+    {
+      "word": 3,
+      "nib": 2,
+      "bit": 200,
+      "val": 6
+    },
+    {
+      "word": 3,
+      "nib": 3,
+      "bit": 204,
+      "val": 11
+    },
+    {
+      "word": 3,
+      "nib": 4,
+      "bit": 208,
+      "val": 5
+    },
+    {
+      "word": 3,
+      "nib": 5,
+      "bit": 212,
+      "val": 0
+    },
+    {
+      "word": 3,
+      "nib": 6,
+      "bit": 216,
+      "val": 0
+    },
+    {
+      "word": 3,
+      "nib": 7,
+      "bit": 220,
+      "val": 0
+    },
+    {
+      "word": 3,
+      "nib": 8,
+      "bit": 224,
+      "val": 5
+    },
+    {
+      "word": 3,
+      "nib": 9,
+      "bit": 228,
+      "val": 0
+    },
+    {
+      "word": 3,
+      "nib": 10,
+      "bit": 232,
+      "val": 0
+    },
+    {
+      "word": 3,
+      "nib": 11,
+      "bit": 236,
+      "val": 0
+    },
+    {
+      "word": 3,
+      "nib": 12,
+      "bit": 240,
+      "val": 0
+    },
+    {
+      "word": 3,
+      "nib": 13,
+      "bit": 244,
+      "val": 0
+    },
+    {
+      "word": 3,
+      "nib": 14,
+      "bit": 248,
+      "val": 0
+    },
+    {
+      "word": 3,
+      "nib": 15,
+      "bit": 252,
+      "val": 0
+    },
+    {
+      "word": 4,
+      "nib": 0,
+      "bit": 256,
+      "val": 6
+    },
+    {
+      "word": 4,
+      "nib": 1,
+      "bit": 260,
+      "val": 7
+    },
+    {
+      "word": 4,
+      "nib": 2,
+      "bit": 264,
+      "val": 7
+    },
+    {
+      "word": 4,
+      "nib": 3,
+      "bit": 268,
+      "val": 0
+    },
+    {
+      "word": 4,
+      "nib": 4,
+      "bit": 272,
+      "val": 11
+    },
+    {
+      "word": 4,
+      "nib": 5,
+      "bit": 276,
+      "val": 7
+    },
+    {
+      "word": 4,
+      "nib": 6,
+      "bit": 280,
+      "val": 12
+    },
+    {
+      "word": 4,
+      "nib": 7,
+      "bit": 284,
+      "val": 0
+    },
+    {
+      "word": 4,
+      "nib": 8,
+      "bit": 288,
+      "val": 1
+    },
+    {
+      "word": 4,
+      "nib": 9,
+      "bit": 292,
+      "val": 0
+    },
+    {
+      "word": 4,
+      "nib": 10,
+      "bit": 296,
+      "val": 0
+    },
+    {
+      "word": 4,
+      "nib": 11,
+      "bit": 300,
+      "val": 0
+    },
+    {
+      "word": 4,
+      "nib": 12,
+      "bit": 304,
+      "val": 10
+    },
+    {
+      "word": 4,
+      "nib": 13,
+      "bit": 308,
+      "val": 0
+    },
+    {
+      "word": 4,
+      "nib": 14,
+      "bit": 312,
+      "val": 0
+    },
+    {
+      "word": 4,
+      "nib": 15,
+      "bit": 316,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 0,
+      "bit": 320,
+      "val": 15
+    },
+    {
+      "word": 5,
+      "nib": 1,
+      "bit": 324,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 2,
+      "bit": 328,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 3,
+      "bit": 332,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 4,
+      "bit": 336,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 5,
+      "bit": 340,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 6,
+      "bit": 344,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 7,
+      "bit": 348,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 8,
+      "bit": 352,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 9,
+      "bit": 356,
+      "val": 1
+    },
+    {
+      "word": 5,
+      "nib": 10,
+      "bit": 360,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 11,
+      "bit": 364,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 12,
+      "bit": 368,
+      "val": 5
+    },
+    {
+      "word": 5,
+      "nib": 13,
+      "bit": 372,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 14,
+      "bit": 376,
+      "val": 0
+    },
+    {
+      "word": 5,
+      "nib": 15,
+      "bit": 380,
+      "val": 0
+    }
+  ]
+}

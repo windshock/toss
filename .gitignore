@@ -1,0 +1,63 @@
+# toss 저장소 정책: 소스/문서(텍스트)만 추적. 대용량 바이너리·덤프는 로컬 보존만.
+# 화이트리스트 방식: 아래 확장자/이름 외 전부 무시.
+
+# 기본 전면 무시
+*
+
+# 디렉터리 구조는 허용(그 안의 매칭 파일만 추가됨)
+!*/
+
+# 추적 대상 텍스트
+!.gitignore
+!*.md
+!*.sh
+!*.py
+!*.js
+!*.java
+!*.c
+!*.h
+!*.json
+!*.yml
+!*.yaml
+!*.rc
+!*.cfg
+!*.conf
+!*.mod
+!*.symvers
+!Makefile
+!Dockerfile
+
+# 명시적 추가 산출물 (스몰 로그/증거)
+!toss-rasp/analysis-lab/artifacts/android/hidden_strings.txt
+!toss-rasp/analysis-lab/artifacts/android/proptrace_run1.log
+
+# 40MB+ 대용량 (텍스트라도) — 로컬 보존, git 제외
+toss-rasp/analysis-lab/artifacts/android/e1_syscalls.txt
+toss-rasp/analysis-lab/artifacts/android/e2b_gate2_camo33.txt
+toss-rasp/analysis-lab/artifacts/android/fm_toss_full.bin
+toss-rasp/session17/run*.txt
+tmp-artifacts/c13_dump.txt
+tmp-artifacts/toss_dex27/cls27_dump.txt
+
+# 이미지/바이너리 (확장자 기반 자동 제외 대상이나 명시)
+*.img
+*.qcow2
+*.fd
+*.apk
+*.xapk
+*.dex
+*.jar
+*.so
+*.ko
+*.bin
+*.zip
+*.hwpx
+
+# OS
+.DS_Store
+
+# 10MB+ JSON 덤프 (로컬 보존)
+toss-rasp/analysis-lab/artifacts/android/toss_s105_bank.json
+toss-rasp/analysis-lab/artifacts/android/toss_s105b_bankwatch.json
+toss-rasp/analysis-lab/artifacts/android/toss_s106_x27.json
+toss-rasp/analysis-lab/REVIEW_S97_S108_2026-09-29/artifacts/android/*.json

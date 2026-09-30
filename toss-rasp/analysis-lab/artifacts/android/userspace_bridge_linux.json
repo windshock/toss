@@ -1,0 +1,36 @@
+{
+  "_note": "Phase 1 \u2014 outer QEMU HVF HW breakpoint on a EL0 USERSPACE process VA inside a full-MMU Linux guest (kernel 6.6). Proxy for Toss libea56 (also EL0 .so). Non-PIE static toy as /init.",
+  "guest": "Alpine Linux 6.6.134 aarch64 (kernel) + custom initramfs (toy_user as /init)",
+  "target_vaddr": "0x10101f8 (add x8,x1,x0 in target_function; runtime VA == objdump, non-PIE)",
+  "runs": [
+    {
+      "run": "1",
+      "pc_all_target": true,
+      "bytes_before": "2800008b",
+      "bytes_at_stop": "2800008b",
+      "unchanged": true,
+      "x1_increments_by_1": true
+    },
+    {
+      "run": "2",
+      "pc_all_target": true,
+      "bytes_before": "2800008b",
+      "bytes_at_stop": "2800008b",
+      "unchanged": true,
+      "x1_increments_by_1": true
+    },
+    {
+      "run": "3",
+      "pc_all_target": true,
+      "bytes_before": "2800008b",
+      "bytes_at_stop": "2800008b",
+      "unchanged": true,
+      "x1_increments_by_1": true
+    }
+  ],
+  "all_runs_pc_at_target": true,
+  "all_runs_bytes_unchanged": true,
+  "all_runs_regs_progress": true,
+  "VERDICT": "CONFIRMED \u2014 HVF HW breakpoint works on EL0 userspace code in a full OS (exact stop, bytes unchanged, real regs, repeatable). De-risks Toss libea56.",
+  "android_delta": "Android app .so is PIE => compute runtime VA = load_base(/proc/PID/maps) + ELF PT_LOAD offset; multi-process => ASID/CONTEXTIDR filter (per \u00a790). Mechanism itself is identical and now proven."
+}

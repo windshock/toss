@@ -1,0 +1,120 @@
+{
+  "_note": "\u00a791 capability matrix \u2014 upstream QEMU 11.0.1 ARM64 RE-lab on Apple M1 Pro. CONFIRMED=directly observed+reproduced; OPEN=not attempted-to-completion in-session.",
+  "matrix": [
+    [
+      "upstream QEMU on M1 Pro",
+      "CONFIRMED",
+      "brew qemu 11.0.1, hvf+tcg (host.json)"
+    ],
+    [
+      "HVF acceleration",
+      "CONFIRMED",
+      "kern.hv_support=1; -accel hvf boots toy; -cpu host"
+    ],
+    [
+      "full ARM64 Linux OS boot on HVF",
+      "CONFIRMED",
+      "Alpine Linux 6.6.134 aarch64 SMP -> userspace shell; PSCI v1.1, -cpu host MIDR 0x610f0000 (linux_on_hvf.json)"
+    ],
+    [
+      "modern ARM64 Android boot",
+      "OPEN",
+      "not booted in-session; but full-OS-on-HVF is CONFIRMED (Linux 6.6) so this is image assembly, not an HVF limit; recipe in docs"
+    ],
+    [
+      "ADB",
+      "OPEN",
+      "depends on Android boot"
+    ],
+    [
+      "ARM64 native execution (guest CPU)",
+      "CONFIRMED",
+      "bare-metal toy.elf runs under both hvf & tcg"
+    ],
+    [
+      "genuine HW breakpoint",
+      "CONFIRMED",
+      "Z1 @0x4008000c, 3 runs, GENUINE_HW_BP (hvf_hwbreak_matrix.json)"
+    ],
+    [
+      "exact PC stop",
+      "CONFIRMED",
+      "all hits pc==target across 3 runs"
+    ],
+    [
+      "guest bytes unchanged",
+      "CONFIRMED",
+      "before/after/at-stop/after-remove all 0000018b"
+    ],
+    [
+      "register capture",
+      "CONFIRMED",
+      "x0/x1/x2=4000/sp/pc read; step-over progression x0=1,3,6,10"
+    ],
+    [
+      "memory capture",
+      "CONFIRMED",
+      "m<addr>,len returns guest memory while stopped"
+    ],
+    [
+      "TCG Android boot",
+      "OPEN",
+      "TCG boots bare-metal toy; Android not attempted"
+    ],
+    [
+      "deterministic recording",
+      "CONFIRMED",
+      "-icount rr=record, rrfile 110B, 999 BBs (replay_reproducibility.json)"
+    ],
+    [
+      "deterministic replay",
+      "CONFIRMED",
+      "rr=replay x3 all 999 BBs, exit 0"
+    ],
+    [
+      "3x replay reproducibility",
+      "CONFIRMED",
+      "record=999 replay=999,999,999"
+    ],
+    [
+      "basic-block tracing",
+      "CONFIRMED",
+      "target_trace plugin, range-filtered BB trace, deterministic 2 runs"
+    ],
+    [
+      "indirect-target tracing",
+      "SUPPORTED",
+      "plugin API supports it (register_vcpu_insn_exec/mem cb); not yet wired"
+    ],
+    [
+      "Android PID/ASID attribution",
+      "OPEN",
+      "\u00a790 method known (TTBR0_EL1/CONTEXTIDR_EL1 read per stop); needs Android guest"
+    ],
+    [
+      "Toss launch",
+      "OPEN",
+      "gated on Android boot"
+    ],
+    [
+      "libea56 load",
+      "OPEN",
+      "gated on Android boot"
+    ],
+    [
+      "Java->JNI protection provenance",
+      "OPEN",
+      "gated on Android boot"
+    ],
+    [
+      "raspEmulatorCallback",
+      "OPEN",
+      "gated on Android boot"
+    ],
+    [
+      "Toss exact native stop @libea56+0x13a4bc",
+      "OPEN",
+      "mechanism CONFIRMED on toy; needs same Toss binary loaded + ELF PT_LOAD bias + ASID filter"
+    ]
+  ]
+}

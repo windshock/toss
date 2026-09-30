@@ -1,0 +1,25 @@
+{
+  "emulator_version": "36.5.1.0",
+  "build_id": "14763179",
+  "host": "macOS / Apple Silicon M1 Pro",
+  "host_arch": "arm64",
+  "accelerator": "HVF (default on Apple Silicon; no -accel override in running cmdline)",
+  "qemu_base": "2.12.0 (v2.12.0-19097-g85fa07f04ef) \u2014 Android qemu2 fork",
+  "source_branch": "emu-36-5-release (android.googlesource.com/platform/external/qemu)",
+  "build_path": "/Volumes/Android/buildbot/src/googleplex-android/emu-36-5-release/external/qemu",
+  "launcher_path": "/Users/1004276/Library/Android/sdk/emulator/emulator",
+  "launcher_sha256": "64d9291d330eeef1e03a23642d253f3bc7f95e4295deb4f13861370bd8f1f3f5",
+  "qemu_backend_path": "/Users/1004276/Library/Android/sdk/emulator/qemu/darwin-aarch64/qemu-system-aarch64",
+  "qemu_backend_sha256": "9ee1b53b9d5872a8380d4a920d055ef94d939c02d8796a690b62b62c688e1ed5",
+  "hvf_imports": [
+    "hv_vcpu_set_trap_debug_exceptions",
+    "hv_vcpu_get_trap_debug_exceptions",
+    "hv_vcpu_set_trap_debug_reg_accesses",
+    "hv_vcpu_get_trap_debug_reg_accesses",
+    "hv_vcpu_get_sys_reg",
+    "hv_vcpu_set_sys_reg (incl MDSCR_EL1)"
+  ],
+  "debug_trap_enable_path": "ABSENT \u2014 set_trap_debug_* called ONLY with literal false (true:0 / false:2 string occurrences)",
+  "hvf_guest_debug_plumbing": "ABSENT \u2014 hvf_arch_insert_hw_breakpoint / hvf_arch_update_guest_debug not present",
+  "gdbstub": "PRESENT \u2014 gdbstub.c, target/arm/gdbstub64.c, -gdb/-s options, monitor gdbserver command"
+}

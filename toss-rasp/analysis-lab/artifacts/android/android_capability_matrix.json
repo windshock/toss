@@ -1,0 +1,105 @@
+{
+  "_note": "Android+Toss capability matrix (\u00a735). CONFIRMED=observed+reproduced; SUPPORTED=mechanism proven on a proxy; OPEN=not attempted-to-completion.",
+  "matrix": [
+    [
+      "Android kernel boot",
+      "CONFIRMED",
+      "Redroid Android 15 booted on Ubuntu-arm64 guest under HVF"
+    ],
+    [
+      "Android init",
+      "CONFIRMED",
+      "redroid init reached; boot_completed=1"
+    ],
+    [
+      "servicemanager",
+      "CONFIRMED",
+      "Android 15 services up (adb/pm/am work)"
+    ],
+    [
+      "zygote",
+      "CONFIRMED",
+      "app processes forked (Toss pids)"
+    ],
+    [
+      "adb",
+      "CONFIRMED",
+      "adb connect localhost:5555 device"
+    ],
+    [
+      "boot_completed",
+      "CONFIRMED",
+      "sys.boot_completed=1"
+    ],
+    [
+      "arm64-v8a APK",
+      "CONFIRMED",
+      "Toss arm64 + toy_android arm64 installed/run"
+    ],
+    [
+      "JNI native execution",
+      "CONFIRMED",
+      "nativeloader loaded libea56/libbugsnag; toy_android ran"
+    ],
+    [
+      "Android native HVF Z1",
+      "CONFIRMED",
+      "toy_android @0x101145c 3/3 exact stop, in-context bytes 2800008b unmodified"
+    ],
+    [
+      "exact native PC",
+      "CONFIRMED",
+      "userspace bridge: pc==target 3/3 (\u00a792)"
+    ],
+    [
+      "guest bytes unchanged",
+      "CONFIRMED",
+      "2800008b unchanged 3/3 (\u00a792)"
+    ],
+    [
+      "register/memory capture",
+      "CONFIRMED",
+      "x1 +1/hit 3/3 (\u00a792)"
+    ],
+    [
+      "Android TCG boot",
+      "OPEN",
+      "not attempted; HVF path succeeded"
+    ],
+    [
+      "native record/replay",
+      "SUPPORTED",
+      "record/replay CONFIRMED on bare-metal (\u00a791); Android is heavier (devices/interrupts) but rr is designed for that"
+    ],
+    [
+      "Toss install",
+      "CONFIRMED",
+      "Success; build hash matches analyzed"
+    ],
+    [
+      "Toss process",
+      "CONFIRMED",
+      "launches; self-destruct loop (redroid detected)"
+    ],
+    [
+      "libea56.so load",
+      "CONFIRMED",
+      "nativeloader ok (isolated ns)"
+    ],
+    [
+      "Java->JNI protection path",
+      "CONFIRMED",
+      "libea56 + root-detection + integrity path execute"
+    ],
+    [
+      "raspEmulatorCallback",
+      "OPEN",
+      "not captured (process self-destructs; needs in-guard capture)"
+    ],
+    [
+      "libea56 exact HW breakpoint",
+      "OPEN",
+      "base name-hidden + self-destruct; needs break-on-load (primitive proven)"
+    ]
+  ]
+}

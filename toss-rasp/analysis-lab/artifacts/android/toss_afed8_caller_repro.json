@@ -1,0 +1,45 @@
+{
+  "provenance": "runtime",
+  "probe": "afed8 entry caller trace \u2014 repro 2026-09-29",
+  "libea56_base": "0xfffcf9c4b000",
+  "afed8_va": "0xfffcf9cfaed8",
+  "b02ac_va": "0xfffcf9cfb2ac",
+  "n_entries": 47,
+  "poison_entry": {
+    "t": 20.69,
+    "site": "afed8_entry",
+    "id": 4,
+    "x1": "0xfffc400b3a90",
+    "x2": "0xb400fffdb2e3c650",
+    "x19": "0xb400ffff32fb0e20",
+    "sp": "0xfffb90a1e0f0",
+    "caller": "0xfffd2f386d00",
+    "caller_off": null,
+    "call_kind": "blr x16",
+    "caller_map": {
+      "start": "0xfffd2f200000",
+      "end": "0xfffd2f994000",
+      "perms": "r-xp",
+      "path": "/apex/com.android.art/lib64/libart.so",
+      "off_in_map": "0x186d00"
+    }
+  },
+  "id_histogram": {
+    "0": 46,
+    "4": 1
+  },
+  "caller_off_histogram": {
+    "0xf8a98": 45,
+    "0x1438b0": 1,
+    "null": 1
+  },
+  "verdict": "POISON_ENTRY_CAPTURED",
+  "maps_anon_exec": [
+    {
+      "start": "0xfffff6047000",
+      "end": "0xfffff6048000",
+      "perms": "r-xp",
+      "path": "[anon]"
+    }
+  ]
+}

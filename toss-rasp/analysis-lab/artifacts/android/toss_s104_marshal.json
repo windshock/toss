@@ -1,0 +1,33 @@
+{
+  "probe": "S104 marshal chain",
+  "campaigns": [
+    {
+      "from_store_pc": "0xffffcd53b0b4",
+      "steps": 544,
+      "reach_afed8": false,
+      "x0_at_reach": null
+    },
+    {
+      "from_store_pc": "0xfffd22718f70",
+      "steps": 1500,
+      "reach_afed8": false,
+      "x0_at_reach": null
+    }
+  ],
+  "dup_hits": 0,
+  "errors": [],
+  "x0_transitions": [],
+  "slotA_reads": [],
+  "n_ids": 47,
+  "afed8_4": {
+    "t": 227.45,
+    "call_no": 47,
+    "sp": "0xfffbd6fe60f0",
+    "lr": "0xfffd22186d04",
+    "x1": "0xfffc400b3a90",
+    "slotA_val": "0x4"
+  },
+  "success": null,
+  "dup_producers": [],
+  "verdict": "AF4_NO_CAMPAIGN"
+}

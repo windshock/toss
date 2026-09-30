@@ -1,0 +1,29 @@
+package im.toss.features.home.feature.consumption_hidden.screen.list;
+
+import kotlin.Unit;
+import o.BizPermissionManager;
+import o.CameraCaptureResultEmptyCameraCaptureResult;
+import o.RVGroup;
+import o.getBacktraceNote;
+import o.w3b;
+
+/* loaded from: /tmp/toss_alldex/classes16.dex */
+public final /* synthetic */ class ConsumptionHiddenTransactionItemKt$$ExternalSyntheticLambda1 implements getBacktraceNote {
+    private static int onExtraCallback = 1;
+    private static int onNavigationEvent;
+    public final /* synthetic */ BizPermissionManager f$0;
+
+    public final Object invoke(Object obj, Object obj2, Object obj3) {
+        int i = 2 % 2;
+        int i2 = onNavigationEvent + 101;
+        onExtraCallback = i2 % 128;
+        int i3 = i2 % 2;
+        Unit unitIAuthTabCallback = RVGroup.IAuthTabCallback(this.f$0, (w3b) obj, (CameraCaptureResultEmptyCameraCaptureResult) obj2, ((Integer) obj3).intValue());
+        int i4 = onExtraCallback + 3;
+        onNavigationEvent = i4 % 128;
+        if (i4 % 2 != 0) {
+            int i5 = 84 / 0;
+        }
+        return unitIAuthTabCallback;
+    }
+}

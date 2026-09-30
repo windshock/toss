@@ -1,0 +1,65 @@
+package o;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import kotlin.jvm.internal.Intrinsics;
+import org.jetbrains.annotations.NotNull;
+
+/* loaded from: /tmp/toss_alldex/classes4.dex */
+public final class FaceOcclusions implements ActivityEmbeddingControllerembeddedActivityWindowInfo1ExternalSyntheticLambda1 {
+    private static int onExtraCallback = 1;
+    private static int onWarmupCompleted;
+    private final Map<Class<? extends drawTextBox>, List<String>> IAuthTabCallback;
+    private final int onExtraCallbackWithResult;
+    private final Map<String, Class<? extends drawTextBox>> onNavigationEvent;
+
+    public FaceOcclusions() {
+        LinkedHashMap linkedHashMap = new LinkedHashMap();
+        this.onNavigationEvent = linkedHashMap;
+        this.IAuthTabCallback = access8100.onNavigationEvent();
+        this.onExtraCallbackWithResult = linkedHashMap.size();
+        linkedHashMap.put("getTossSessionSecureStorageValue", onInitializedSuccess.class);
+        linkedHashMap.put("setTossSessionSecureStorageValue", onInitializedSuccess.class);
+    }
+
+    @Override // o.ActivityEmbeddingControllerembeddedActivityWindowInfo1ExternalSyntheticLambda1
+    public Map<Class<? extends drawTextBox>, List<String>> onNavigationEvent() {
+        int i = 2 % 2;
+        int i2 = onExtraCallback;
+        int i3 = i2 + 21;
+        onWarmupCompleted = i3 % 128;
+        int i4 = i3 % 2;
+        Map<Class<? extends drawTextBox>, List<String>> map = this.IAuthTabCallback;
+        int i5 = i2 + 39;
+        onWarmupCompleted = i5 % 128;
+        if (i5 % 2 == 0) {
+            return map;
+        }
+        Object obj = null;
+        obj.hashCode();
+        throw null;
+    }
+
+    @Override // o.ActivityEmbeddingControllerembeddedActivityWindowInfo1ExternalSyntheticLambda1
+    public drawTextBox IAuthTabCallback(@NotNull String str) {
+        synchronized (this) {
+            Intrinsics.checkNotNullParameter(str, "");
+            Class<? extends drawTextBox> cls = this.onNavigationEvent.get(str);
+            if (cls == null) {
+                return null;
+            }
+            return cls.newInstance();
+        }
+    }
+
+    @Override // o.ActivityEmbeddingControllerembeddedActivityWindowInfo1ExternalSyntheticLambda1
+    public Set<String> onExtraCallbackWithResult() {
+        Set<String> setKeySet;
+        synchronized (this) {
+            setKeySet = this.onNavigationEvent.keySet();
+        }
+        return setKeySet;
+    }
+}

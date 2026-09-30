@@ -1,0 +1,10 @@
+package com.google.android.gms.internal.p000firebaseauthapi;
+
+/* loaded from: /tmp/toss_alldex/classes19.dex */
+interface zzaki {
+    zzakk zza();
+
+    zzakz zzb();
+
+    boolean zzc();
+}

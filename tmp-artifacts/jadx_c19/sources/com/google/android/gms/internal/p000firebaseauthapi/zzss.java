@@ -1,0 +1,87 @@
+package com.google.android.gms.internal.p000firebaseauthapi;
+
+import com.google.android.gms.internal.p000firebaseauthapi.zzaja;
+
+/* loaded from: /tmp/toss_alldex/classes19.dex */
+public final class zzss extends zzaja<zzss, zza> implements zzakm {
+    private static final zzss zzc;
+    private static volatile zzakx<zzss> zzd;
+    private int zze;
+
+    public final int zza() {
+        return this.zze;
+    }
+
+    public static zza zzb() {
+        return zzc.zzl();
+    }
+
+    public static final class zza extends zzaja.zzb<zzss, zza> implements zzakm {
+        public final zza zza(int i2) {
+            zzh();
+            ((zzss) this.zza).zza(i2);
+            return this;
+        }
+
+        private zza() {
+            super(zzss.zzc);
+        }
+
+        /* synthetic */ zza(zzsr zzsrVar) {
+            this();
+        }
+    }
+
+    public static zzss zzd() {
+        return zzc;
+    }
+
+    @Override // com.google.android.gms.internal.p000firebaseauthapi.zzaja
+    protected final Object zza(int i2, Object obj, Object obj2) {
+        zzakx zzaVar;
+        zzsr zzsrVar = null;
+        switch (zzsr.zza[i2 - 1]) {
+            case 1:
+                return new zzss();
+            case 2:
+                return new zza(zzsrVar);
+            case 3:
+                return zzaja.zza(zzc, "\u0000\u0001\u0000\u0000\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u000b", new Object[]{"zze"});
+            case 4:
+                return zzc;
+            case 5:
+                zzakx<zzss> zzakxVar = zzd;
+                if (zzakxVar != null) {
+                    return zzakxVar;
+                }
+                synchronized (zzss.class) {
+                    zzaVar = zzd;
+                    if (zzaVar == null) {
+                        zzaVar = new zzaja.zza(zzc);
+                        zzd = zzaVar;
+                    }
+                }
+                return zzaVar;
+            case 6:
+                return (byte) 1;
+            case 7:
+                return null;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    static {
+        zzss zzssVar = new zzss();
+        zzc = zzssVar;
+        zzaja.zza((Class<zzss>) zzss.class, zzssVar);
+    }
+
+    private zzss() {
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public final void zza(int i2) {
+        this.zze = i2;
+    }
+}

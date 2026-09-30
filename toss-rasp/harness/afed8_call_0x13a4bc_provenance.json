@@ -1,0 +1,41 @@
+{
+  "_note": "Static backwards-slice of the libea56+0x13a4bc call-site (a frequently-observed guard poll-thread caller). RAW EVIDENCE (disasm) separated from INTERPRETATION. Values not proven are UNKNOWN, not guessed.",
+  "caller": "libea56+0x13a4bc",
+  "call_instruction": "13a4bc: blr x9",
+  "callee": "runtime-resolved function pointer (NOT statically fixed as afed8)",
+  "raw_disasm_window": "0x13a41c-0x13a4c0",
+
+  "static_provenance": {
+    "x9_target": "*(0x17c1e0 + idx1*2400 + idx2*8); idx1,idx2 = OLLVM opaque-predicate funcs of *(global 0x179eb0). Indirect function-pointer-table call; target is runtime-selected.",
+    "x0": "sp + 0x1a8  (stack-local transient buffer; fields written pre-call: *(sp+0x1ac)=1(u16), *(sp+0x1ae)=0(u16))",
+    "w1": "0x08692047 - *(global 0x179eb0)   [(a|b)+(a&b)=a+b opaque-predicate identity]",
+    "w2": "0xfa0 = 4000  (immediate)",
+    "dispatcher_param": "NOT a caller-passed param. afed8 prologue: mov x19,x2(=4000); b 0xb02b4 -> internal flow -> dispatch 'mov w8,w0' at 0xb0294 with w0 computed inside afed8. The u16-table/case-pad dispatch is reached via internal control flow, not from a clean caller argument."
+  },
+
+  "provenance_classification": {
+    "x0_context": "C (stack-derived): sp+0x1a8 local buffer -> requires the 0x13a4bc frame's sp; a tombstone caught elsewhere (in libc) has a different sp. NOT frame-independent.",
+    "w1": "B/E (global-derived + OLLVM-entangled): frame-independent (fixed global) but value is opaque-predicate arithmetic over *0x179eb0; semantic meaning UNKNOWN. Data-segment VA!=file-offset made the /proc/mem read fail this attempt.",
+    "w2": "immediate (CONFIRMED = 4000)",
+    "x9_target": "E (OLLVM indirect): table-resolved via obfuscated global index; not statically fixed.",
+    "dispatcher_param": "UNKNOWN / mis-framed: no caller-controlled param selects a handler at this site."
+  },
+
+  "runtime_reconstruction": {
+    "x0_context": "NOT reconstructed (stack-frame-local; cannot obtain the frame sp from tombstones caught in libc; hw-bp dead in HVF §83b).",
+    "w1": "NOT reconstructed (data-segment VA computation from maps failed; also not the context pointer).",
+    "w2": "4000 (static immediate; trivially known, no runtime read needed).",
+    "dispatcher_param": "NOT reconstructed (concept not applicable at this site)."
+  },
+
+  "confidence": {
+    "x0": "static source CONFIRMED (stack-local); runtime value UNKNOWN",
+    "w1": "static source SUPPORTED (obfuscated formula); runtime value UNKNOWN",
+    "w2": "CONFIRMED (4000)",
+    "dispatcher_param": "UNKNOWN"
+  },
+
+  "determination": "Case C (context pointer is stack-local) + Case D (OLLVM: indirect table-resolved call target + opaque-predicate arg construction). Caller-state reconstruction of the afed8/handler context pointer is NOT practical at libea56+0x13a4bc in this AVD: the only semantic input (x0/context) is a per-frame stack local, and the call target itself is runtime-resolved. §83's 'caller param -> handler' framing is NOT supported by this call-site's static evidence.",
+
+  "recommendation": "Per §88 Case C/D guidance: do not keep speculatively slicing OLLVM here. Cheaper next step = real device (hw breakpoints functional) + existing capture_state.py to grab true handler-entry registers (x0/x1/x2/x19) synchronously, which sidesteps both the stack-frame and the HVF-trap limitations."
+}

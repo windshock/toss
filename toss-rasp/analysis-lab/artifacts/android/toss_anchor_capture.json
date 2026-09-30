@@ -1,0 +1,71 @@
+{
+  "mode": "soinfo_notify",
+  "events_scanned": 7,
+  "toss_visible_events": 6,
+  "interesting_soinfos": [
+    {
+      "event": 1,
+      "soinfo": "0xebc8fedbd988",
+      "flags": "0x40000440",
+      "bias": "0xebc482e45000",
+      "name": "/data/app/~~AP0zqkvGxB4R1OMpQD_w8Q==/viva.republica.toss-AAEeY06KkKvBi0DDpbVYAA==/lib/arm64/libtt_ugen_layout.so"
+    },
+    {
+      "event": 2,
+      "soinfo": "0xebc8fedbdc30",
+      "flags": "0x40000440",
+      "bias": "0xebc481a5a000",
+      "name": "/data/app/~~AP0zqkvGxB4R1OMpQD_w8Q==/viva.republica.toss-AAEeY06KkKvBi0DDpbVYAA==/lib/arm64/libnms.so"
+    },
+    {
+      "event": 3,
+      "soinfo": "0xebc8fedbded8",
+      "flags": "0x40000440",
+      "bias": "0xebc4ec4d3000",
+      "name": "/data/app/~~AP0zqkvGxB4R1OMpQD_w8Q==/viva.republica.toss-AAEeY06KkKvBi0DDpbVYAA==/lib/arm64/libpglarmor.so"
+    },
+    {
+      "event": 4,
+      "soinfo": "0xebc8fedbe180",
+      "flags": "0x40000440",
+      "bias": "0xebc49f950000",
+      "name": "/data/app/~~AP0zqkvGxB4R1OMpQD_w8Q==/viva.republica.toss-AAEeY06KkKvBi0DDpbVYAA==/lib/arm64/libapminsighta.so"
+    },
+    {
+      "event": 6,
+      "soinfo": "0xebc8fedb9720",
+      "flags": "0x40000400",
+      "bias": "0xebc59800a000",
+      "name": "/data/app/~~AP0zqkvGxB4R1OMpQD_w8Q==/viva.republica.toss-AAEeY06KkKvBi0DDpbVYAA==/oat/arm64/base.odex"
+    },
+    {
+      "event": 7,
+      "soinfo": "0xebc8fedb99c8",
+      "flags": "0x40000400",
+      "bias": "0xebc592836000",
+      "name": "/data/app/~~AP0zqkvGxB4R1OMpQD_w8Q==/viva.republica.toss-AAEeY06KkKvBi0DDpbVYAA==/lib/arm64/libea56.so"
+    }
+  ],
+  "libea56_soinfo": "0xebc8fedb99c8",
+  "libea56_flags": "0x40000400",
+  "libea56_base": "0xebc592836000",
+  "libea56_name": "/data/app/~~AP0zqkvGxB4R1OMpQD_w8Q==/viva.republica.toss-AAEeY06KkKvBi0DDpbVYAA==/lib/arm64/libea56.so",
+  "anchor_va": "0xebc5929704bc",
+  "anchor_stop": "T05thread:02;",
+  "HIT": true,
+  "pc": "0xebc5929704bc",
+  "sp": "0xebc47f7fa270",
+  "x0": "0xebc47f7fa418",
+  "x1": "0x1",
+  "x2": 4000,
+  "x19": "0xebc47f7fa554",
+  "bytes_at_anchor": "20013fd6",
+  "validate": {
+    "pc_is_anchor": true,
+    "bytes_blr_x9": true,
+    "x0_eq_sp_plus_0x1a8": true,
+    "x2_eq_4000": true,
+    "ctx_plus4": 1,
+    "ctx_plus6": 0
+  }
+}

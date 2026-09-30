@@ -1,0 +1,89 @@
+{
+  "_evidence": "original-session logstore + PID-scoped logcat + same-thread debuggerd frames",
+  "verdict_state": "DETECTED",
+  "capture_quality": {
+    "state": "VALID",
+    "evidence_valid": true,
+    "logstore_captured": true,
+    "logstore_snapshot_count": 14,
+    "logstore_merged_snapshot_count": 2,
+    "logstore_selected_snapshot": "t0003_pid12146_start641403.txt",
+    "logstore_malformed_lines": 0,
+    "original_session_seen": true,
+    "incarnation_verified": true,
+    "restart_count": 0,
+    "other_logstore_session_seen": false,
+    "maps_pid_matches_session": true,
+    "stack_samples_requested": 5,
+    "stack_samples_launched": 2,
+    "stack_samples_completed": 1,
+    "stack_sampling_complete": false,
+    "stack_session_mismatches": [],
+    "params_readback_ok": true,
+    "target_uid_covered": true,
+    "launch_command_ok": true,
+    "complete_sampled_window": false,
+    "explicit_non_emulator_result": false,
+    "legacy_capture": false
+  },
+  "raspEmulatorCallback": "34359738558",
+  "raspEmulatorCallbacks": [
+    "34359738558"
+  ],
+  "raspHookCallback": null,
+  "detected": "emulator",
+  "guardLevel": "LOW",
+  "attendingDetectorSet": "debugger, emulator, root, hook, cert, virtual_environment",
+  "fds_result": "[EMULATOR]",
+  "fds_results": [
+    "[EMULATOR]",
+    "[EMULATOR]"
+  ],
+  "fds_from": "SplashActivity",
+  "exit_caller": null,
+  "exitPlan": null,
+  "exit_plans": [],
+  "emulator_observed": true,
+  "emulator_detected": true,
+  "displayed_at": "17:18:57.292",
+  "system_exit": [
+    "17:19:08.127",
+    "0"
+  ],
+  "system_exit_count": 1,
+  "stack_not_found": false,
+  "top_activities": [
+    "viva.republica.toss/.splash.SplashActivity"
+  ],
+  "last_alive_s": 12.047,
+  "handler_presence": {
+    "afed8": 1,
+    "0xa8f70": 0,
+    "0x95224": 0,
+    "AbsAppGuard": 1,
+    "libtg": 1,
+    "libea56": 1
+  },
+  "libea56_stack_frames": {
+    "aa6a4": 1,
+    "b02c4": 1,
+    "13a4bc": 1
+  },
+  "libea56_thread_frame_groups": [
+    {
+      "sample": "t2s_pid12146_start641403.txt",
+      "tid": "12398",
+      "frames": [
+        "0xaa6a4",
+        "0xb02c4"
+      ]
+    },
+    {
+      "sample": "t2s_pid12146_start641403.txt",
+      "tid": "12423",
+      "frames": [
+        "0x13a4bc"
+      ]
+    }
+  ]
+}

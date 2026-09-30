@@ -1,0 +1,26 @@
+package im.toss.features.mobileid.impl;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
+/* loaded from: /tmp/toss_alldex/classes16.dex */
+public final /* synthetic */ class MyWalletActivity$$ExternalSyntheticLambda9 implements Function1 {
+    private static int IAuthTabCallback = 1;
+    private static int onNavigationEvent;
+    public final /* synthetic */ MyWalletActivity f$0;
+
+    public final Object invoke(Object obj) {
+        int i = 2 % 2;
+        int i2 = onNavigationEvent + 99;
+        IAuthTabCallback = i2 % 128;
+        if (i2 % 2 == 0) {
+            MyWalletActivity.onExtraCallback(this.f$0, ((Boolean) obj).booleanValue());
+            throw null;
+        }
+        Unit unitOnExtraCallback = MyWalletActivity.onExtraCallback(this.f$0, ((Boolean) obj).booleanValue());
+        int i3 = IAuthTabCallback + 79;
+        onNavigationEvent = i3 % 128;
+        int i4 = i3 % 2;
+        return unitOnExtraCallback;
+    }
+}

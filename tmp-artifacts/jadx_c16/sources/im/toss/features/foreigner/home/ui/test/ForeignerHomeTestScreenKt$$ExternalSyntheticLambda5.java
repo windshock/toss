@@ -1,0 +1,28 @@
+package im.toss.features.foreigner.home.ui.test;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+import o.setCallUrl;
+
+/* loaded from: /tmp/toss_alldex/classes16.dex */
+public final /* synthetic */ class ForeignerHomeTestScreenKt$$ExternalSyntheticLambda5 implements Function0 {
+    private static int onExtraCallbackWithResult = 1;
+    private static int onWarmupCompleted;
+
+    public final Object invoke() {
+        int i = 2 % 2;
+        int i2 = onWarmupCompleted + 59;
+        onExtraCallbackWithResult = i2 % 128;
+        if (i2 % 2 == 0) {
+            setCallUrl.IAuthTabCallbackStub();
+            throw null;
+        }
+        Unit unitIAuthTabCallbackStub = setCallUrl.IAuthTabCallbackStub();
+        int i3 = onExtraCallbackWithResult + 115;
+        onWarmupCompleted = i3 % 128;
+        if (i3 % 2 != 0) {
+            int i4 = 2 / 0;
+        }
+        return unitIAuthTabCallbackStub;
+    }
+}

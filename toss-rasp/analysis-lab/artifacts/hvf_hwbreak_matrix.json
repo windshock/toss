@@ -1,0 +1,52 @@
+{
+  "_note": "LIVE MODE PoC \u2014 upstream QEMU 11.0.1 + HVF genuine ARM64 hardware breakpoint on bare-metal toy. 3 independent qemu launches.",
+  "qemu": "11.0.1 (brew upstream)",
+  "accel": "hvf",
+  "cpu": "host",
+  "machine": "virt",
+  "target": "toy.elf libtoy add x0,x0,x1 @ 0x4008000c (bytes 0000018b)",
+  "runs": 3,
+  "verdict_all_runs": [
+    "GENUINE_HW_BP",
+    "GENUINE_HW_BP",
+    "GENUINE_HW_BP"
+  ],
+  "all_runs_genuine": true,
+  "exact_pc_stop": true,
+  "guest_bytes_unchanged": true,
+  "register_capture": true,
+  "x0_strictly_increasing_within_run": true,
+  "x0_seq_deterministic_across_runs": true,
+  "x0_seq_example": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "code_mutation_run1": {
+    "before": "0000018b",
+    "after_install": "0000018b",
+    "unchanged": true,
+    "at_stop": "0000018b",
+    "after_remove": "0000018b",
+    "unchanged_full": true
+  },
+  "continue_over_bp": "QEMU/HVF does NOT auto step-over a HW bp at current PC: plain `c` re-fires without progress. Explicit step-over (z1 remove / s / Z1 reinsert / c) works.",
+  "stepover_progression_CONFIRMED": {
+    "x0_seq": [
+      1,
+      3,
+      6,
+      10
+    ],
+    "x1_seq": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "note": "deterministic triangular accumulation = genuine mid-exec register capture"
+  },
+  "LIVE_MODE_VERDICT": "CONFIRMED \u2014 upstream QEMU 11 + HVF genuine ARM64 HW breakpoint on M1 (exact PC stop, bytes unchanged, real regs, repeatable via step-over). Supersedes the \u00a790 Google-fork crash."
+}

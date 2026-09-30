@@ -1,0 +1,206 @@
+{
+ "0x186218": {
+  "entries": [
+   "0x134bf4"
+  ],
+  "strings": [
+   [
+    "0x175c80",
+    "sh-c/system/bin/sh"
+   ]
+  ]
+ },
+ "0x186238": {
+  "entries": [
+   "0x76a60"
+  ],
+  "strings": [
+   [
+    "0x182fd8",
+    "security.selinux"
+   ]
+  ]
+ },
+ "0x186250": {
+  "entries": [
+   "0x76894"
+  ],
+  "strings": [
+   [
+    "0x180f58",
+    "/proc/self"
+   ],
+   [
+    "0x182fd8",
+    "security.selinux"
+   ]
+  ]
+ },
+ "0x186268": {
+  "entries": [
+   "0x138518",
+   "0x716a0"
+  ],
+  "strings": [
+   [
+    "0x17ad10",
+    "0123456789abcdef"
+   ]
+  ]
+ },
+ "0x1862c0": {
+  "entries": [
+   "0x1044ac",
+   "0x16e97c",
+   "0x41e5c",
+   "0xb3898",
+   "0xc59ac",
+   "0xfb528"
+  ],
+  "strings": [
+   [
+    "0x182790",
+    "onWarmupCompletedIAuthTabCallbackStubIAu"
+   ],
+   [
+    "0x182832",
+    "_phdr/proc/self/smapspersist.sys.vold_ap"
+   ],
+   [
+    "0x18287a",
+    "lang/ArithmeticException%lld;%x;ConNavig"
+   ]
+  ]
+ },
+ "0x1862dc": {
+  "entries": [
+   "0x3b8a8"
+  ],
+  "strings": [
+   [
+    "0x179b05",
+    "/system/bin/truncate"
+   ]
+  ]
+ },
+ "0x1862e4": {
+  "entries": [
+   "0x140568"
+  ],
+  "strings": [
+   [
+    "0x181003",
+    "/proc/self/ns/mnt"
+   ]
+  ]
+ },
+ "0x186308": {
+  "entries": [
+   "0x13ec98"
+  ],
+  "strings": [
+   [
+    "0x17be9c",
+    "/proc/self/status"
+   ]
+  ]
+ },
+ "0x186318": {
+  "entries": [
+   "0x16cf40",
+   "0x38718",
+   "0x4198c",
+   "0x6bc0c"
+  ],
+  "strings": [
+   [
+    "0x17a318",
+    "/proc/self/maps"
+   ],
+   [
+    "0x182790",
+    "onWarmupCompletedIAuthTabCallbackStubIAu"
+   ],
+   [
+    "0x182832",
+    "_phdr/proc/self/smapspersist.sys.vold_ap"
+   ],
+   [
+    "0x18287a",
+    "lang/ArithmeticException%lld;%x;ConNavig"
+   ]
+  ]
+ },
+ "0x19e388": {
+  "entries": [
+   "0xca7e8"
+  ],
+  "strings": [
+   [
+    "0x180f80",
+    "invoke(Ljava/lang/Object;[Ljava/lang/Obj"
+   ]
+  ]
+ },
+ "0x19e3c0": {
+  "entries": [
+   "0x441c4"
+  ],
+  "strings": [
+   [
+    "0x1747ba",
+    "/proc/self/cmdline"
+   ]
+  ]
+ },
+ "0x19e5ec": {
+  "entries": [
+   "0x13a124",
+   "0x78218"
+  ],
+  "strings": [
+   [
+    "0x183608",
+    "/proc/%d"
+   ]
+  ]
+ },
+ "0x19e810": {
+  "entries": [
+   "0x13e4ac"
+  ],
+  "strings": [
+   [
+    "0x1782e8",
+    "/system/bin/app_process"
+   ],
+   [
+    "0x17be9c",
+    "/proc/self/status"
+   ]
+  ]
+ },
+ "0x19e818": {
+  "entries": [
+   "0x13fda4",
+   "0x70f94"
+  ],
+  "strings": [
+   [
+    "0x17e7b4",
+    "(null)"
+   ]
+  ]
+ },
+ "0x19e854": {
+  "entries": [
+   "0x39d60"
+  ],
+  "strings": [
+   [
+    "0x182ee8",
+    "ro.build.version.sdk"
+   ]
+  ]
+ }
+}

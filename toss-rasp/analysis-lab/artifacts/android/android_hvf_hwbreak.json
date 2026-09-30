@@ -1,0 +1,98 @@
+{
+  "_note": "Android native EL0 HW breakpoint via outer QEMU HVF (Redroid Android 15 arm64 inside Ubuntu guest).",
+  "guest": "Ubuntu 24.04 arm64 (HVF) hosting Redroid Android 15 (SDK35) container",
+  "target_process": "/data/local/tmp/toy_android (Android native, pid 1970 in container)",
+  "target_vaddr": "0x101145c",
+  "expected_bytes": "2800008b",
+  "runs": [
+    {
+      "run": 1,
+      "Z1": "OK",
+      "bytes_before": "E14",
+      "bytes_at_stop": "2800008b",
+      "unchanged": false,
+      "all_pc_at_target": true,
+      "x1_increments_by_1": true,
+      "hits": [
+        {
+          "pc": "0x101145c",
+          "x1": 16073141601
+        },
+        {
+          "pc": "0x101145c",
+          "x1": 16073141602
+        },
+        {
+          "pc": "0x101145c",
+          "x1": 16073141603
+        },
+        {
+          "pc": "0x101145c",
+          "x1": 16073141604
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "Z1": "OK",
+      "bytes_before": "E14",
+      "bytes_at_stop": "2800008b",
+      "unchanged": false,
+      "all_pc_at_target": true,
+      "x1_increments_by_1": true,
+      "hits": [
+        {
+          "pc": "0x101145c",
+          "x1": 16073222703
+        },
+        {
+          "pc": "0x101145c",
+          "x1": 16073222704
+        },
+        {
+          "pc": "0x101145c",
+          "x1": 16073222705
+        },
+        {
+          "pc": "0x101145c",
+          "x1": 16073222706
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "Z1": "OK",
+      "bytes_before": "E14",
+      "bytes_at_stop": "2800008b",
+      "unchanged": false,
+      "all_pc_at_target": true,
+      "x1_increments_by_1": true,
+      "hits": [
+        {
+          "pc": "0x101145c",
+          "x1": 16073299530
+        },
+        {
+          "pc": "0x101145c",
+          "x1": 16073299531
+        },
+        {
+          "pc": "0x101145c",
+          "x1": 16073299532
+        },
+        {
+          "pc": "0x101145c",
+          "x1": 16073299533
+        }
+      ]
+    }
+  ],
+  "VERDICT": "CONFIRMED \u2014 Android native EL0 exact HW breakpoint 3/3 (exact PC + real regs; genuine unmodified code verified in-context)",
+  "in_context_read": {
+    "bytes_before_out_of_context": "E14",
+    "bytes_at_stop_in_context": "2800008b",
+    "code_window_in_context": "ff4300d12800008b09cf8a52e80700f98946a272e807",
+    "genuine_unchanged_in_context": true,
+    "note": "Whole-system gdbstub memory reads resolve in the CURRENT CPU context. A userspace VA is only valid when the CPU is in that process (at the breakpoint stop). bytes-unchanged must be judged from the IN-CONTEXT read."
+  }
+}

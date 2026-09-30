@@ -1,0 +1,85 @@
+#!/system/bin/sh
+# camow3.sh v4.0
+# v4.0 (2026-09-20): ① smaps 별도 파일(형식 일치 — 토스가 smaps 직접 판독 실측)
+#   ② 타 프로세스 cmdline은 실제값 노출(빈파일 위장이 tamper 신호화 — 실측)
+#   ③ 실행 경로를 /data/local/tmp/.system_profile로 (cmdline 스윕 노출 완화) — 위장 파일 유지 루프
+# v3.9 (2026-09-20): 위장 파일명을 단문(.m/.s/...)에서 난수명으로 전면 교체.
+#   토스 가드(libea56)가 fork 자식으로 /dev/.m .s .k .u .t .c .v .n .e .mi 를
+#   이름 그대로 브루트포스 open해 존재만으로 판정하는 채널 실측 (ftrace
+#   297.811 — 크래시 20ms 직전). 열거는 LKM filldir가 은닉 + 이름은 비추측성.
+# v3.8: goldfish GL 디바이스 클론 노드(fd readlink 세탁) + cpuinfo 8코어화.
+FEAT='fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm ssbs sb paca pacg dcpodp flagm2 frint'
+# v3.9 이름표 (LKM hide_kmod.c의 redirect/dirent_hidden과 동기 유지 필수)
+F_MAPS=.q7zm4h; F_STAT=.w2nvk9; F_MNT=.jt38xs; F_UNIX=.ra965d; F_TCP=.vy42mq
+F_CPUC=.zc7h4u; F_VER=.kb913x;  F_COMM=.ns582t; F_MISC=.ew471v; F_E=.oq306f
+F_ONLN=.pl728v; F_GFP=.wq517h;  F_GAS=.tr482w;  F_GSY=.un394z
+F_SMAPS=.pk832d
+
+# 구 단문명 정리 — 가드 브루트포스 리스트에 걸리는 이름은 절대 남기지 않는다
+rm -f /dev/.m /dev/.s /dev/.k /dev/.u /dev/.t /dev/.c /dev/.v /dev/.n /dev/.e /dev/.mi /dev/.c2 /dev/.gfp /dev/.gas /dev/.gsy
+
+gen_cpuinfo() {
+  : > /dev/$F_CPUC
+  for i in 0 1 2 3 4 5 6 7; do
+    case $i in
+      0) PART=0xd4e; VAR=0x1 ;;   # Cortex-X3
+      [1-4]) PART=0xd4d; VAR=0x1 ;; # Cortex-A715
+      *) PART=0xd46; VAR=0x1 ;;   # Cortex-A510
+    esac
+    printf 'processor\t: %d\nBogoMIPS\t: 38.40\nFeatures\t: %s\nCPU implementer\t: 0x41\nCPU architecture: 8\nCPU variant\t: 0x%x\nCPU part\t: 0x%03x\nCPU revision\t: 0\n\n' "$i" "$FEAT" "$VAR" "$PART" >> /dev/$F_CPUC
+  done
+  printf 'Hardware\t: Qualcomm Technologies, Inc SM8550\n' >> /dev/$F_CPUC
+}
+gen_cpuinfo
+
+mkdir -p /data/local/tmp/.camo
+[ -s /dev/$F_MAPS ] || cp /data/local/tmp/.camo/maps  /dev/$F_MAPS 2>/dev/null
+[ -s /dev/$F_STAT ] || cp /data/local/tmp/.camo/status /dev/$F_STAT 2>/dev/null
+[ -s /dev/$F_MNT ]  || cp /data/local/tmp/.camo/mounts /dev/$F_MNT 2>/dev/null
+[ -s /dev/$F_UNIX ] || cp /data/local/tmp/.camo/net_unix /dev/$F_UNIX 2>/dev/null
+[ -s /dev/$F_TCP ]  || cp /data/local/tmp/.camo/net_tcp /dev/$F_TCP 2>/dev/null
+grep -vE 'goldfish|vbox' /proc/misc > /dev/$F_MISC 2>/dev/null
+echo 'Linux version 5.15.104-android13-4-00001-gXXXXXX-ab12345678 (build@buildhost) (clang version 17.0.0) #1 SMP PREEMPT Thu Jun 15 09:12:34 UTC 2023' > /dev/$F_VER
+echo '.android.smcard' > /dev/$F_COMM; echo 0-7 > /dev/$F_ONLN
+: > /dev/$F_E
+
+# goldfish GL 디바이스 클론 노드 (fd readlink 세탁) — minor는 /proc/misc에서 동적 판독
+make_clone() { # NEWNAME MISCDEVNAME
+  MN=$(grep -E " $2\$" /proc/misc | awk '{print $1}')
+  [ -n "$MN" ] || return 0
+  if [ ! -c "/dev/$1" ]; then
+    mknod "/dev/$1" c 10 "$MN"; chmod 666 "/dev/$1"
+    chcon u:object_r:qemu_device:s0 "/dev/$1" 2>/dev/null
+  fi
+}
+make_clone $F_GFP goldfish_pipe
+make_clone $F_GAS goldfish_address_space
+make_clone $F_GSY goldfish_sync
+
+ALL="$F_MAPS $F_STAT $F_MNT $F_UNIX $F_TCP $F_MISC $F_CPUC $F_VER $F_COMM $F_E $F_SMAPS"
+chmod 644 $ALL 2>/dev/null
+while true; do
+  PID=
+  for P in net.ib.android.smcard viva.republica.toss com.hanabank.oqf; do
+    PID=$(pidof $P | cut -d' ' -f1)
+    [ -n "$PID" ] && break
+  done
+  if [ -n "$PID" ]; then
+    grep -vE 'frida|gum|\.rs9|linjector|goldfish|emulation|ranchu|qemu' /proc/$PID/maps > /dev/$F_MAPS.tmp 2>/dev/null
+    [ -s /dev/$F_MAPS.tmp ] && mv /dev/$F_MAPS.tmp /dev/$F_MAPS
+    grep -vE 'frida|gum|\.rs9|linjector|goldfish|emulation|ranchu|qemu' /proc/$PID/smaps > /dev/$F_SMAPS.tmp 2>/dev/null
+    [ -s /dev/$F_SMAPS.tmp ] && mv /dev/$F_SMAPS.tmp /dev/$F_SMAPS
+    sed 's/TracerPid:.*/TracerPid:\t0/' /proc/$PID/status > /dev/$F_STAT.tmp 2>/dev/null
+    [ -s /dev/$F_STAT.tmp ] && mv /dev/$F_STAT.tmp /dev/$F_STAT
+    grep -vE 'frida|\.rs9|gum' /proc/net/unix > /dev/$F_UNIX.tmp 2>/dev/null
+    [ -s /dev/$F_UNIX.tmp ] && mv /dev/$F_UNIX.tmp /dev/$F_UNIX
+    grep -vE 'frida|\.rs9|gum|:69A2|:BAA1' /proc/net/tcp > /dev/$F_TCP.tmp 2>/dev/null
+    [ -s /dev/$F_TCP.tmp ] && mv /dev/$F_TCP.tmp /dev/$F_TCP
+    grep -vE 'magisk|/data/adb' /proc/$PID/mounts > /dev/$F_MNT.tmp 2>/dev/null
+    [ -s /dev/$F_MNT.tmp ] && mv /dev/$F_MNT.tmp /dev/$F_MNT
+  fi
+  grep -vE 'goldfish|vbox' /proc/misc > /dev/$F_MISC.tmp 2>/dev/null
+  [ -s /dev/$F_MISC.tmp ] && mv /dev/$F_MISC.tmp /dev/$F_MISC
+  chmod 644 $ALL 2>/dev/null
+  sleep 1
+done

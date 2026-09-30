@@ -1,0 +1,29 @@
+{
+  "source": "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_hidden_dex.bin",
+  "output": "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_hidden_fixed.dex",
+  "file_size": 1569848,
+  "file_size_hex": "0x17f438",
+  "map_off": 1569640,
+  "map_off_hex": "0x17f368",
+  "map_count": 17,
+  "sha1_signature": "d3570b8d1f9af0affc74b4319fc0e7beee11fde3",
+  "adler32": "0xd0b7a746",
+  "sha256": "44992bad027d7a7c98a18dee543a4c1838b2575ac4fcdf8091d4e6676a58e777",
+  "fields": {
+    "string_ids_size": 4467,
+    "string_ids_off": 112,
+    "type_ids_size": 2319,
+    "type_ids_off": 17980,
+    "proto_ids_size": 1872,
+    "proto_ids_off": 27256,
+    "field_ids_size": 4496,
+    "field_ids_off": 49720,
+    "method_ids_size": 6693,
+    "method_ids_off": 85688,
+    "class_defs_size": 601,
+    "class_defs_off": 139232,
+    "data_size": 1411384,
+    "data_off": 158464
+  },
+  "note": "Recovered DEX header for local decompilation; original dump unchanged."
+}

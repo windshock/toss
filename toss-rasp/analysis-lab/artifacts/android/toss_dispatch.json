@@ -1,0 +1,26 @@
+{
+  "provenance": "runtime",
+  "dispatch_site": "0xb02c4",
+  "candidate": "0xa8f70",
+  "libea56_base": "0xebc595c1f000",
+  "dispatch_va": "0xebc595ccf2c4",
+  "dispatch_stop": null,
+  "handlers": [
+    {
+      "i": 0,
+      "thread": "T05thread:02;",
+      "handler": "0xebc595cb4224",
+      "handler_off": "0x95224",
+      "x0_x19_context": "0xb400ebc7bb23a330",
+      "x19": "0xb400ebc7bb23a330",
+      "w1": "0x0",
+      "w2": "0x0",
+      "is_a8f70": false
+    }
+  ],
+  "handler_histogram": {
+    "0x95224": 1
+  },
+  "a8f70_seen": false,
+  "verdict": "DISPATCH_CAPTURED"
+}

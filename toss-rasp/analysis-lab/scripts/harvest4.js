@@ -1,0 +1,41 @@
+// harvest4.js — round 4: remaining API constants
+Java.perform(function () {
+    var out = {};
+    function T(name, fn) { try { out[name] = "" + fn(); } catch (e) { out[name] = "?"; } }
+    var VC = Java.use("android.view.ViewConfiguration");
+    var KE = Java.use("android.view.KeyEvent");
+    var TU = Java.use("android.text.TextUtils");
+    var CO = Java.use("android.graphics.Color");
+    var EL = Java.use("android.widget.ExpandableListView");
+    var PR = Java.use("android.os.Process");
+    var AC = Java.use("android.text.AndroidCharacter");
+    T("ViewConfiguration.getScrollBarFadeDuration()", function(){ return VC.getScrollBarFadeDuration(); });
+    T("ViewConfiguration.getMaximumDrawingCacheSize()", function(){ return VC.getMaximumDrawingCacheSize(); });
+    T("ViewConfiguration.getTouchSlop()", function(){ return VC.getTouchSlop(); });
+    T("ViewConfiguration.getWindowTouchSlop()", function(){ return VC.getWindowTouchSlop(); });
+    T("ViewConfiguration.getZoomControlsTimeout()", function(){ return VC.getZoomControlsTimeout(); });
+    T("ViewConfiguration.getScaledTouchSlop()", function(){ return VC.getScaledTouchSlop(); });
+    T("ViewConfiguration.getScaledPagingTouchSlop()", function(){ return VC.getScaledPagingTouchSlop(); });
+    T("ViewConfiguration.getScaledDoubleTapSlop()", function(){ return VC.getScaledDoubleTapSlop(); });
+    T("ViewConfiguration.getScaledMinimumFlingVelocity()", function(){ return VC.getScaledMinimumFlingVelocity(); });
+    T("ViewConfiguration.getScaledMaximumFlingVelocity()", function(){ return VC.getScaledMaximumFlingVelocity(); });
+    T("KeyEvent.getDeadChar(0,0)", function(){ return KE.getDeadChar(0,0); });
+    T("KeyEvent.normalizeMetaState(0)", function(){ return KE.normalizeMetaState(0); });
+    T("Process.getElapsedCpuTime()", function(){ return PR.getElapsedCpuTime(); });
+    T("TextUtils.lastIndexOf(\"\",'0',0,0)", function(){ return TU.lastIndexOf("", '0', 0, 0); });
+    T("TextUtils.lastIndexOf(\"\",'0',0)", function(){ return TU.lastIndexOf("", '0', 0); });
+    T("TextUtils.lastIndexOf(\"\",'0')", function(){ return TU.lastIndexOf("", '0'); });
+    T("TextUtils.indexOf(\"\",'0')", function(){ return TU.indexOf("", '0'); });
+    T("TextUtils.indexOf(\"\",'0',0)", function(){ return TU.indexOf("", '0', 0); });
+    T("TextUtils.indexOf(\"\",'0',0,0)", function(){ return TU.indexOf("", '0', 0, 0); });
+    T("TextUtils.getOffsetBefore(\"\",0)", function(){ return TU.getOffsetBefore("", 0); });
+    T("TextUtils.getOffsetAfter(\"\",0)", function(){ return TU.getOffsetAfter("", 0); });
+    T("AndroidCharacter.getMirror('0')", function(){ return AC.getMirror('0'); });
+    T("ExpandableListView.getPackedPositionForChild(0,0)", function(){ return EL.getPackedPositionForChild(0,0); });
+    T("Color.green(0)", function(){ return CO.green(0); });
+    T("Color.red(0)", function(){ return CO.red(0); });
+    T("Color.blue(0)", function(){ return CO.blue(0); });
+    T("Color.alpha(0)", function(){ return CO.alpha(0); });
+    T("Color.argb(0,0,0,0)", function(){ return CO.argb(0,0,0,0); });
+    send({ev: "consts4", values: out});
+});

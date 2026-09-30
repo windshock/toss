@@ -1,0 +1,156 @@
+[
+  {
+    "id": "20260927-163914-baseline",
+    "label": "baseline",
+    "params": "",
+    "state": "INCONCLUSIVE(legacy)",
+    "quality": "LEGACY",
+    "observed": true,
+    "detected": "emulator",
+    "guard": "LOW",
+    "exit": null,
+    "alive_s": 11,
+    "frames": []
+  },
+  {
+    "id": "20260927-164114-baseline",
+    "label": "baseline",
+    "params": "",
+    "state": "INCONCLUSIVE(legacy)",
+    "quality": "LEGACY",
+    "observed": true,
+    "detected": null,
+    "guard": null,
+    "exit": null,
+    "alive_s": 12,
+    "frames": [
+      "aa6a4",
+      "b02c4",
+      "13a4bc"
+    ]
+  },
+  {
+    "id": "20260927-164132-baseline",
+    "label": "baseline",
+    "params": "",
+    "state": "INCONCLUSIVE(legacy)",
+    "quality": "LEGACY",
+    "observed": true,
+    "detected": null,
+    "guard": null,
+    "exit": null,
+    "alive_s": 11,
+    "frames": [
+      "aa6a4",
+      "b02c4",
+      "13a4bc"
+    ]
+  },
+  {
+    "id": "20260927-171659-nostack_live",
+    "label": "nostack_live",
+    "params": "",
+    "state": "DETECTED",
+    "quality": "VALID",
+    "observed": true,
+    "detected": "emulator",
+    "guard": "LOW",
+    "exit": null,
+    "alive_s": 12.679,
+    "frames": []
+  },
+  {
+    "id": "20260927-171725-stack5_live",
+    "label": "stack5_live",
+    "params": "",
+    "state": "DETECTED",
+    "quality": "VALID",
+    "observed": true,
+    "detected": null,
+    "guard": null,
+    "exit": null,
+    "alive_s": 10.928,
+    "frames": [
+      "13a4bc"
+    ]
+  },
+  {
+    "id": "20260927-171853-stack5_serial",
+    "label": "stack5_serial",
+    "params": "",
+    "state": "DETECTED",
+    "quality": "VALID",
+    "observed": true,
+    "detected": "emulator",
+    "guard": "LOW",
+    "exit": null,
+    "alive_s": 12.047,
+    "frames": [
+      "aa6a4",
+      "b02c4",
+      "13a4bc"
+    ]
+  },
+  {
+    "id": "20260927-171919-nostack_post",
+    "label": "nostack_post",
+    "params": "",
+    "state": "DETECTED",
+    "quality": "VALID",
+    "observed": true,
+    "detected": "emulator",
+    "guard": "LOW",
+    "exit": null,
+    "alive_s": 12.576,
+    "frames": []
+  },
+  {
+    "id": "20260927-193934-regr",
+    "label": "regr",
+    "params": "",
+    "state": "DETECTED",
+    "quality": "VALID",
+    "observed": true,
+    "detected": null,
+    "guard": null,
+    "exit": null,
+    "alive_s": 16.675,
+    "frames": [
+      "1299a4",
+      "13a4bc"
+    ]
+  },
+  {
+    "id": "20260927-193957-regr",
+    "label": "regr",
+    "params": "",
+    "state": "DETECTED",
+    "quality": "VALID",
+    "observed": true,
+    "detected": "emulator",
+    "guard": "LOW",
+    "exit": null,
+    "alive_s": 12.784,
+    "frames": [
+      "a801c",
+      "b02c4",
+      "13a4bc"
+    ]
+  },
+  {
+    "id": "20260927-194019-regr",
+    "label": "regr",
+    "params": "",
+    "state": "DETECTED",
+    "quality": "VALID",
+    "observed": true,
+    "detected": "emulator",
+    "guard": "LOW",
+    "exit": null,
+    "alive_s": 12.936,
+    "frames": [
+      "15b5a8",
+      "13a4bc"
+    ]
+  }
+]

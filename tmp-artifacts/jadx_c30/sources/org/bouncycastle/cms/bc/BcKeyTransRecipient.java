@@ -1,0 +1,27 @@
+package org.bouncycastle.cms.bc;
+
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.KeyTransRecipient;
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
+import org.bouncycastle.operator.OperatorException;
+import org.bouncycastle.operator.bc.BcRSAAsymmetricKeyUnwrapper;
+
+/* loaded from: /tmp/toss_alldex/classes30.dex */
+public abstract class BcKeyTransRecipient implements KeyTransRecipient {
+    private AsymmetricKeyParameter recipientKey;
+
+    public BcKeyTransRecipient(AsymmetricKeyParameter asymmetricKeyParameter) {
+        this.recipientKey = asymmetricKeyParameter;
+    }
+
+    /* JADX INFO: Thrown type has an unknown type hierarchy: org.bouncycastle.cms.CMSException */
+    protected CipherParameters extractSecretKey(AlgorithmIdentifier algorithmIdentifier, AlgorithmIdentifier algorithmIdentifier2, byte[] bArr) throws CMSException {
+        try {
+            return CMSUtils.getBcKey(new BcRSAAsymmetricKeyUnwrapper(algorithmIdentifier, this.recipientKey).generateUnwrappedKey(algorithmIdentifier2, bArr));
+        } catch (OperatorException e) {
+            throw new CMSException("exception unwrapping key: " + e.getMessage(), e);
+        }
+    }
+}

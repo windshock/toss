@@ -1,0 +1,8 @@
+package kotlin.jvm.internal.markers;
+
+/* loaded from: /tmp/toss_alldex/classes13.dex */
+public interface KMutableMap extends KMappedMarker {
+
+    public interface Entry extends KMappedMarker {
+    }
+}

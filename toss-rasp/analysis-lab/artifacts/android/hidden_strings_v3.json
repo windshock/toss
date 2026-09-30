@@ -1,0 +1,448 @@
+{
+ "variant6": {
+  "formula": "out[k]=(T[i+k]^0xEDD4)^((k*rotl64(R,6)&0xFFFF))^c",
+  "classes": 7,
+  "sites": 105,
+  "high_conf": 44
+ },
+ "sweep6_ok": [
+  {
+   "cls": "o.LiteProcessServiceManagerLiteProcessInfo",
+   "line": 2756,
+   "i": 448,
+   "n": 1,
+   "c": 0,
+   "ratio": 1.0,
+   "str": ","
+  },
+  {
+   "cls": "o.bindContext",
+   "line": 3278,
+   "i": 985,
+   "n": 1,
+   "c": 6258,
+   "ratio": 1.0,
+   "str": "_"
+  },
+  {
+   "cls": "o.bindContext",
+   "line": 3821,
+   "i": 985,
+   "n": 1,
+   "c": 6258,
+   "ratio": 1.0,
+   "str": "_"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 399,
+   "i": 0,
+   "n": 9,
+   "c": 10009,
+   "ratio": 1.0,
+   "str": "fds_debug"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 447,
+   "i": 31,
+   "n": 15,
+   "c": 12332,
+   "ratio": 1.0,
+   "str": "elapsedRealtime"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 452,
+   "i": 46,
+   "n": 26,
+   "c": 11928,
+   "ratio": 1.0,
+   "str": "android.app.ActivityThread"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 455,
+   "i": 72,
+   "n": 18,
+   "c": 20191,
+   "ratio": 1.0,
+   "str": "currentApplication"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 461,
+   "i": 90,
+   "n": 16,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "java.lang.System"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 464,
+   "i": 106,
+   "n": 16,
+   "c": 57845,
+   "ratio": 1.0,
+   "str": "identityHashCode"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 478,
+   "i": 250,
+   "n": 113,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "im.toss.features.payment.ui.tappay.approve.OfflinePayDomesticTapPayExpressNavigationKt$$ExternalSyntheticLambda42"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 493,
+   "i": 9,
+   "n": 22,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "android.os.SystemClock"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 496,
+   "i": 31,
+   "n": 15,
+   "c": 12332,
+   "ratio": 1.0,
+   "str": "elapsedRealtime"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 575,
+   "i": 31,
+   "n": 15,
+   "c": 12332,
+   "ratio": 1.0,
+   "str": "elapsedRealtime"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 583,
+   "i": 106,
+   "n": 15,
+   "c": 57845,
+   "ratio": 1.0,
+   "str": "identityHashCod"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 591,
+   "i": 31,
+   "n": 15,
+   "c": 12332,
+   "ratio": 1.0,
+   "str": "elapsedRealtime"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 688,
+   "i": 106,
+   "n": 16,
+   "c": 57845,
+   "ratio": 1.0,
+   "str": "identityHashCode"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 692,
+   "i": 1169,
+   "n": 108,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "im.toss.features.home.feature.cashflow.screen.component.CashflowTransactionListKt$$ExternalSyntheticLambda11"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 701,
+   "i": 9,
+   "n": 22,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "android.os.SystemClock"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 704,
+   "i": 31,
+   "n": 15,
+   "c": 12332,
+   "ratio": 1.0,
+   "str": "elapsedRealtime"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 814,
+   "i": 1555,
+   "n": 46,
+   "c": 39638,
+   "ratio": 1.0,
+   "str": "raspHookCallback threat detected. DebugInfo : "
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 817,
+   "i": 1395,
+   "n": 6,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "append"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 828,
+   "i": 1601,
+   "n": 23,
+   "c": 0,
+   "ratio": 1.0,
+   "str": " / RootDetectionFlag : "
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 831,
+   "i": 1395,
+   "n": 6,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "append"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 842,
+   "i": 0,
+   "n": 9,
+   "c": 10009,
+   "ratio": 1.0,
+   "str": "fds_debug"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 845,
+   "i": 1401,
+   "n": 8,
+   "c": 18844,
+   "ratio": 1.0,
+   "str": "toString"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 850,
+   "i": 1409,
+   "n": 1,
+   "c": 19916,
+   "ratio": 1.0,
+   "str": "i"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 863,
+   "i": 1410,
+   "n": 9,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "debugInfo"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 867,
+   "i": 1419,
+   "n": 7,
+   "c": 11639,
+   "ratio": 1.0,
+   "str": "valueOf"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 875,
+   "i": 1624,
+   "n": 17,
+   "c": 2485,
+   "ratio": 1.0,
+   "str": "rootDetectionFlag"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 879,
+   "i": 1419,
+   "n": 7,
+   "c": 11639,
+   "ratio": 1.0,
+   "str": "valueOf"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 904,
+   "i": 1455,
+   "n": 3,
+   "c": 53913,
+   "ratio": 1.0,
+   "str": "add"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 941,
+   "i": 1666,
+   "n": 60,
+   "c": 41388,
+   "ratio": 1.0,
+   "str": "raspVirtualenvironmentCallback threat detected. DebugInfo : "
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 950,
+   "i": 1395,
+   "n": 6,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "append"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 955,
+   "i": 1601,
+   "n": 23,
+   "c": 0,
+   "ratio": 1.0,
+   "str": " / RootDetectionFlag : "
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 958,
+   "i": 1395,
+   "n": 6,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "append"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 964,
+   "i": 1395,
+   "n": 6,
+   "c": 0,
+   "ratio": 1.0,
+   "str": "append"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 969,
+   "i": 0,
+   "n": 9,
+   "c": 10009,
+   "ratio": 1.0,
+   "str": "fds_debug"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 972,
+   "i": 1401,
+   "n": 8,
+   "c": 18844,
+   "ratio": 1.0,
+   "str": "toString"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 977,
+   "i": 1409,
+   "n": 1,
+   "c": 19916,
+   "ratio": 1.0,
+   "str": "i"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 997,
+   "i": 1419,
+   "n": 8,
+   "c": 11639,
+   "ratio": 0.88,
+   "str": "valueOf"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 1009,
+   "i": 1419,
+   "n": 7,
+   "c": 11639,
+   "ratio": 1.0,
+   "str": "valueOf"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 1020,
+   "i": 0,
+   "n": 9,
+   "c": 10009,
+   "ratio": 1.0,
+   "str": "fds_debug"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 1023,
+   "i": 1726,
+   "n": 39,
+   "c": 31768,
+   "ratio": 1.0,
+   "str": "raspVirtualenvironmentCallback detected"
+  },
+  {
+   "cls": "o.getBooleanFromAdObject",
+   "line": 1035,
+   "i": 1455,
+   "n": 3,
+   "c": 53913,
+   "ratio": 1.0,
+   "str": "add"
+  }
+ ],
+ "recovered_garbage": [
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl-delta",
+   "i": 2423,
+   "n": 24,
+   "c": 41022,
+   "delta": 45312,
+   "str": "java.lang.reflect.Member",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl-delta",
+   "i": 2653,
+   "n": 31,
+   "c": 28928,
+   "delta": 28928,
+   "str": "java.nio.charset.CharsetDecoder",
+   "printable_ratio": 1.0
+  },
+  {
+   "file": "o/ContentDataSourceContentDataSourceException.java",
+   "kind": "tbl-delta",
+   "i": 3297,
+   "n": 38,
+   "c": 36608,
+   "delta": 36608,
+   "str": "javax.security.auth.x500.X500Principal",
+   "printable_ratio": 1.0
+  }
+ ],
+ "combined_high_conf": 199,
+ "remaining_garbage": [
+  "(655,21,65535)",
+  "(2536,15,65535)"
+ ],
+ "open": [
+  "bindContext/LiteProcess/isNativeConfig low-yield (wrapper-shape variants)",
+  "4 structural-mismatch classes (urlEncode a(char[],int,Object[]) etc)",
+  "34 eval-fail sites (runtime-dependent constants)"
+ ]
+}

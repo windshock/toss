@@ -1,0 +1,16 @@
+{
+  "provenance": "runtime",
+  "probe": "hidden DEX image dump",
+  "libea56_base": "0xebc591831000",
+  "invobj": "0xebc5400b3a90",
+  "method_idx": 3707,
+  "dex_base": "0xebc6042e2000",
+  "dex_dump": {
+    "bin": "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_hidden_dex.bin",
+    "size": 2097152,
+    "bad_chunks": 0,
+    "dump_seconds": 9.2
+  },
+  "dex_header_hex": "b876042321d6b6320eef752dd24adfbe83c395cf6eff3987ef9e8eddcd89559b3936864d3f0b7c0166622bd5d8e69fdac78fae0b2e60496973110000700000000f0900003c46000050070000786a00009011000038c20000251a0000b84e010059020000e01f020038891500006b0200",
+  "verdict": "HIDDEN_DEX_DUMPED"
+}

@@ -1,0 +1,4 @@
+{
+  "provenance": "gdbstub",
+  "probe": "battery w0 single-step"
+}

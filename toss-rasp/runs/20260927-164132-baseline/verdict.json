@@ -1,0 +1,30 @@
+{
+  "_evidence": "logstore+logcat+timeline+debuggerd (raw)",
+  "raspEmulatorCallback": "34359738558",
+  "raspHookCallback": null,
+  "fds_result": null,
+  "fds_from": null,
+  "emulator_detected": true,
+  "displayed_at": "16:41:37.120",
+  "system_exit": [
+    "16:41:48.040",
+    "0"
+  ],
+  "system_exit_count": 1,
+  "stack_not_found": false,
+  "top_activities": [],
+  "last_alive_s": 11,
+  "handler_presence": {
+    "afed8": 1,
+    "0xa8f70": 0,
+    "0x95224": 0,
+    "AbsAppGuard": 1,
+    "libtg": 1,
+    "libea56": 2
+  },
+  "libea56_stack_frames": {
+    "aa6a4": 1,
+    "b02c4": 1,
+    "13a4bc": 1
+  }
+}

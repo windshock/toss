@@ -1,0 +1,107 @@
+package com.google.android.exoplayer2.extractor.ogg;
+
+import com.google.android.exoplayer2.extractor.ExtractorInput;
+import com.google.android.exoplayer2.extractor.ExtractorUtil;
+import com.google.android.exoplayer2.util.Assertions;
+import com.google.android.exoplayer2.util.ParsableByteArray;
+import java.io.IOException;
+import java.util.Arrays;
+
+/* loaded from: /tmp/toss_alldex/classes19.dex */
+final class OggPacket {
+    private boolean populated;
+    private int segmentCount;
+    private final OggPageHeader pageHeader = new OggPageHeader();
+    private final ParsableByteArray packetArray = new ParsableByteArray(new byte[OggPageHeader.MAX_PAGE_PAYLOAD], 0);
+    private int currentSegmentIndex = -1;
+
+    OggPacket() {
+    }
+
+    public void reset() {
+        this.pageHeader.reset();
+        this.packetArray.reset(0);
+        this.currentSegmentIndex = -1;
+        this.populated = false;
+    }
+
+    public boolean populate(ExtractorInput extractorInput) throws IOException {
+        int i2;
+        Assertions.checkState(extractorInput != null);
+        if (this.populated) {
+            this.populated = false;
+            this.packetArray.reset(0);
+        }
+        while (!this.populated) {
+            if (this.currentSegmentIndex < 0) {
+                if (!this.pageHeader.skipToNextPage(extractorInput) || !this.pageHeader.populate(extractorInput, true)) {
+                    return false;
+                }
+                OggPageHeader oggPageHeader = this.pageHeader;
+                int iCalculatePacketSize = oggPageHeader.headerSize;
+                if ((oggPageHeader.type & 1) == 1 && this.packetArray.limit() == 0) {
+                    iCalculatePacketSize += calculatePacketSize(0);
+                    i2 = this.segmentCount;
+                } else {
+                    i2 = 0;
+                }
+                if (!ExtractorUtil.skipFullyQuietly(extractorInput, iCalculatePacketSize)) {
+                    return false;
+                }
+                this.currentSegmentIndex = i2;
+            }
+            int iCalculatePacketSize2 = calculatePacketSize(this.currentSegmentIndex);
+            int i3 = this.currentSegmentIndex + this.segmentCount;
+            if (iCalculatePacketSize2 > 0) {
+                ParsableByteArray parsableByteArray = this.packetArray;
+                parsableByteArray.ensureCapacity(parsableByteArray.limit() + iCalculatePacketSize2);
+                if (!ExtractorUtil.readFullyQuietly(extractorInput, this.packetArray.getData(), this.packetArray.limit(), iCalculatePacketSize2)) {
+                    return false;
+                }
+                ParsableByteArray parsableByteArray2 = this.packetArray;
+                parsableByteArray2.setLimit(parsableByteArray2.limit() + iCalculatePacketSize2);
+                this.populated = this.pageHeader.laces[i3 + (-1)] != 255;
+            }
+            if (i3 == this.pageHeader.pageSegmentCount) {
+                i3 = -1;
+            }
+            this.currentSegmentIndex = i3;
+        }
+        return true;
+    }
+
+    public OggPageHeader getPageHeader() {
+        return this.pageHeader;
+    }
+
+    public ParsableByteArray getPayload() {
+        return this.packetArray;
+    }
+
+    public void trimPayload() {
+        if (this.packetArray.getData().length == 65025) {
+            return;
+        }
+        ParsableByteArray parsableByteArray = this.packetArray;
+        parsableByteArray.reset(Arrays.copyOf(parsableByteArray.getData(), Math.max(OggPageHeader.MAX_PAGE_PAYLOAD, this.packetArray.limit())), this.packetArray.limit());
+    }
+
+    private int calculatePacketSize(int i2) {
+        int i3;
+        int i4 = 0;
+        this.segmentCount = 0;
+        do {
+            int i5 = this.segmentCount;
+            OggPageHeader oggPageHeader = this.pageHeader;
+            int i6 = i2 + i5;
+            if (i6 >= oggPageHeader.pageSegmentCount) {
+                break;
+            }
+            int[] iArr = oggPageHeader.laces;
+            this.segmentCount = i5 + 1;
+            i3 = iArr[i6];
+            i4 += i3;
+        } while (i3 == 255);
+        return i4;
+    }
+}

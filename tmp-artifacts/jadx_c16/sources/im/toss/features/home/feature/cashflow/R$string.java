@@ -1,0 +1,82 @@
+package im.toss.features.home.feature.cashflow;
+
+/* loaded from: /tmp/toss_alldex/classes16.dex */
+public final class R$string {
+    public static final int home_v2_feature_cashflow_accessibility_analysis_screen_name = 2132024034;
+    public static final int home_v2_feature_cashflow_accessibility_calendar_disabled = 2132024035;
+    public static final int home_v2_feature_cashflow_accessibility_calendar_income = 2132024036;
+    public static final int home_v2_feature_cashflow_accessibility_calendar_no_transaction = 2132024037;
+    public static final int home_v2_feature_cashflow_accessibility_calendar_overspending = 2132024038;
+    public static final int home_v2_feature_cashflow_accessibility_calendar_selected = 2132024039;
+    public static final int home_v2_feature_cashflow_accessibility_calendar_spending = 2132024040;
+    public static final int home_v2_feature_cashflow_accessibility_calendar_today = 2132024041;
+    public static final int home_v2_feature_cashflow_accessibility_category_icon = 2132024042;
+    public static final int home_v2_feature_cashflow_accessibility_collapsed = 2132024043;
+    public static final int home_v2_feature_cashflow_accessibility_expanded = 2132024044;
+    public static final int home_v2_feature_cashflow_accessibility_graph = 2132024045;
+    public static final int home_v2_feature_cashflow_accessibility_graph_less_description_v2 = 2132024046;
+    public static final int home_v2_feature_cashflow_accessibility_graph_more_description_v2 = 2132024047;
+    public static final int home_v2_feature_cashflow_accessibility_graph_same_description_v2 = 2132024048;
+    public static final int home_v2_feature_cashflow_accessibility_labeled_amount = 2132024049;
+    public static final int home_v2_feature_cashflow_accessibility_not_selected = 2132024050;
+    public static final int home_v2_feature_cashflow_accessibility_screen_name = 2132024051;
+    public static final int home_v2_feature_cashflow_accessibility_selected = 2132024052;
+    public static final int home_v2_feature_cashflow_accessibility_tab_description = 2132024053;
+    public static final int home_v2_feature_cashflow_add_category_accessibility_screen_name = 2132024054;
+    public static final int home_v2_feature_cashflow_add_category_confirm = 2132024055;
+    public static final int home_v2_feature_cashflow_add_category_input_label = 2132024056;
+    public static final int home_v2_feature_cashflow_add_category_invalid_characters = 2132024057;
+    public static final int home_v2_feature_cashflow_add_category_max_length_info = 2132024058;
+    public static final int home_v2_feature_cashflow_add_category_save_error_toast = 2132024059;
+    public static final int home_v2_feature_cashflow_add_category_select_icon_bottom_sheet_title = 2132024060;
+    public static final int home_v2_feature_cashflow_all_tab_empty_subtitle_v2 = 2132024061;
+    public static final int home_v2_feature_cashflow_analysis_calendar_collapse = 2132024062;
+    public static final int home_v2_feature_cashflow_analysis_calendar_show_more = 2132024063;
+    public static final int home_v2_feature_cashflow_analysis_category_description = 2132024064;
+    public static final int home_v2_feature_cashflow_analysis_estimated_remaining_description = 2132024065;
+    public static final int home_v2_feature_cashflow_analysis_estimated_remaining_expected = 2132024066;
+    public static final int home_v2_feature_cashflow_analysis_estimated_remaining_income = 2132024067;
+    public static final int home_v2_feature_cashflow_analysis_estimated_remaining_spending = 2132024068;
+    public static final int home_v2_feature_cashflow_analysis_regular_expense_title = 2132024069;
+    public static final int home_v2_feature_cashflow_analysis_today = 2132024070;
+    public static final int home_v2_feature_cashflow_button_close = 2132024071;
+    public static final int home_v2_feature_cashflow_button_edit = 2132024072;
+    public static final int home_v2_feature_cashflow_button_retry = 2132024073;
+    public static final int home_v2_feature_cashflow_error_title = 2132024074;
+    public static final int home_v2_feature_cashflow_long_press_action_error_toast = 2132024075;
+    public static final int home_v2_feature_cashflow_search_empty_description = 2132024076;
+    public static final int home_v2_feature_cashflow_search_guide_description = 2132024077;
+    public static final int home_v2_feature_cashflow_search_placeholder = 2132024078;
+    public static final int home_v2_feature_cashflow_search_title = 2132024079;
+    public static final int home_v2_feature_cashflow_search_top_button = 2132024080;
+    public static final int home_v2_feature_cashflow_select_category_add_custom = 2132024081;
+    public static final int home_v2_feature_cashflow_select_category_all_check_box_content_description_v2 = 2132024082;
+    public static final int home_v2_feature_cashflow_select_category_header_current_v2 = 2132024083;
+    public static final int home_v2_feature_cashflow_select_category_header_custom = 2132024084;
+    public static final int home_v2_feature_cashflow_select_category_header_custom_right = 2132024085;
+    public static final int home_v2_feature_cashflow_select_category_header_select = 2132024086;
+    public static final int home_v2_feature_cashflow_select_category_save_button_title = 2132024087;
+    public static final int home_v2_feature_cashflow_select_category_save_error_toast = 2132024088;
+    public static final int home_v2_feature_cashflow_select_category_save_title_v2 = 2132024089;
+    public static final int home_v2_feature_cashflow_select_month = 2132024090;
+    public static final int home_v2_feature_cashflow_select_transactions_cta_dutch_count = 2132024091;
+    public static final int home_v2_feature_cashflow_select_transactions_cta_dutch_count_one = 2132024092;
+    public static final int home_v2_feature_cashflow_select_transactions_cta_dutch_empty = 2132024093;
+    public static final int home_v2_feature_cashflow_select_transactions_cta_hide_count = 2132024094;
+    public static final int home_v2_feature_cashflow_select_transactions_cta_hide_count_one = 2132024095;
+    public static final int home_v2_feature_cashflow_select_transactions_cta_hide_empty = 2132024096;
+    public static final int home_v2_feature_cashflow_select_transactions_hide_success_toast = 2132024097;
+    public static final int home_v2_feature_cashflow_select_transactions_save_error_toast = 2132024098;
+    public static final int home_v2_feature_cashflow_select_transactions_title_dutch = 2132024099;
+    public static final int home_v2_feature_cashflow_select_transactions_title_hide = 2132024100;
+    public static final int home_v2_feature_cashflow_tab_empty_subtitle_v2 = 2132024101;
+    public static final int home_v2_feature_cashflow_tab_empty_title = 2132024102;
+    public static final int home_v2_feature_cashflow_text_loading = 2132024103;
+    public static final int home_v2_feature_cashflow_transaction_more_actions = 2132024104;
+    public static final int home_v2_feature_cashflow_zero_analysis_cta = 2132024105;
+    public static final int home_v2_feature_cashflow_zero_analysis_title_v2 = 2132024106;
+    public static final int regions = 2132028134;
+
+    private R$string() {
+    }
+}

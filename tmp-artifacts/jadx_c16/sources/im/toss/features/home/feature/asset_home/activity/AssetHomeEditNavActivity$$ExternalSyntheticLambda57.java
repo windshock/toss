@@ -1,0 +1,36 @@
+package im.toss.features.home.feature.asset_home.activity;
+
+import im.toss.features.home.feature.asset_home.viewmodel.edit.AssetInvestmentHomeEditViewModel;
+import kotlin.Unit;
+import o.CameraCaptureResultEmptyCameraCaptureResult;
+import o.DeviceQuirksExternalSyntheticLambda0;
+import o.getBacktraceNote;
+
+/* loaded from: /tmp/toss_alldex/classes16.dex */
+public final /* synthetic */ class AssetHomeEditNavActivity$$ExternalSyntheticLambda57 implements getBacktraceNote {
+    private static int IAuthTabCallback = 0;
+    private static int onNavigationEvent = 1;
+    public final /* synthetic */ AssetInvestmentHomeEditViewModel f$0;
+    public final /* synthetic */ AssetHomeEditNavActivity f$1;
+
+    public /* synthetic */ AssetHomeEditNavActivity$$ExternalSyntheticLambda57(AssetInvestmentHomeEditViewModel assetInvestmentHomeEditViewModel, AssetHomeEditNavActivity assetHomeEditNavActivity) {
+        this.f$0 = assetInvestmentHomeEditViewModel;
+        this.f$1 = assetHomeEditNavActivity;
+    }
+
+    public final Object invoke(Object obj, Object obj2, Object obj3) {
+        int i = 2 % 2;
+        int i2 = IAuthTabCallback + 103;
+        onNavigationEvent = i2 % 128;
+        int i3 = i2 % 2;
+        Unit unitOnWarmupCompleted = AssetHomeEditNavActivity.onWarmupCompleted(this.f$0, this.f$1, (DeviceQuirksExternalSyntheticLambda0) obj, (CameraCaptureResultEmptyCameraCaptureResult) obj2, ((Integer) obj3).intValue());
+        int i4 = IAuthTabCallback + 51;
+        onNavigationEvent = i4 % 128;
+        if (i4 % 2 != 0) {
+            return unitOnWarmupCompleted;
+        }
+        Object obj4 = null;
+        obj4.hashCode();
+        throw null;
+    }
+}

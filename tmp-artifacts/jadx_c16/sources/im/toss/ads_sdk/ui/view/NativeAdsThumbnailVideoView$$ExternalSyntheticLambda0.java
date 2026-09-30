@@ -1,0 +1,26 @@
+package im.toss.ads_sdk.ui.view;
+
+import android.content.Context;
+import kotlin.jvm.functions.Function0;
+
+/* loaded from: /tmp/toss_alldex/classes16.dex */
+public final /* synthetic */ class NativeAdsThumbnailVideoView$$ExternalSyntheticLambda0 implements Function0 {
+    private static int onExtraCallbackWithResult = 0;
+    private static int onWarmupCompleted = 1;
+    public final /* synthetic */ Context f$0;
+
+    public final Object invoke() {
+        int i = 2 % 2;
+        int i2 = onExtraCallbackWithResult + 63;
+        onWarmupCompleted = i2 % 128;
+        int i3 = i2 % 2;
+        Context context = this.f$0;
+        if (i3 != 0) {
+            return NativeAdsThumbnailVideoView.onExtraCallbackWithResult(context);
+        }
+        NativeAdsThumbnailVideoView.onExtraCallbackWithResult(context);
+        Object obj = null;
+        obj.hashCode();
+        throw null;
+    }
+}

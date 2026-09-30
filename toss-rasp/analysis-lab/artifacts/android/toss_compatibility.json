@@ -1,0 +1,14 @@
+{
+  "_note": "Toss on Redroid (Android 15 arm64) via upstream QEMU+HVF. 2026-09-28.",
+  "apk": "apk_backup/base.apk + split_config.arm64_v8a.apk (libea56 sha256 c454eb40...6203b89 == analyzed build => 0x13a4bc offset valid)",
+  "install": "CONFIRMED (Success)",
+  "launch": "CONFIRMED (SplashActivity -> OverseasOnboardingActivity; env-dependent flow)",
+  "process_created": "CONFIRMED (multiple pids: 2087/2479/10751/11172...)",
+  "libea56_load": "CONFIRMED (nativeloader: Load .../lib/arm64/libea56.so using isolated ns clns-8 (Anonymous-DexFile): ok)",
+  "rasp_native_path": "CONFIRMED (libbugsnag-root-detection.so + libbugsnag-plugin-android-anr.so loaded; PlayCore IntegrityService: Phonesky not installed)",
+  "self_destruct": "CONFIRMED \u2014 'Process viva.republica.toss has died: fg TOP' ~4.5s after libea56 load; AMS restart loop (3 deaths logged). Guard detects redroid env (root/container/no-GMS).",
+  "libea56_in_procmaps_by_name": "NOT FOUND across 1s polls AND time-spread tight server-side loops (~9s, 30ms spacing) \u2014 libea56 not resolvable by name in /proc/PID/maps (isolated-ns/anonymous load + brief window + AMS restart churn).",
+  "anchor_0x13a4bc_hwbp": "OPEN \u2014 could not arm because libea56 runtime base not resolvable by name-based /proc/maps sampling, and guard self-destructs quickly.",
+  "compat_grade": "B-minus / C-plus \u2014 libea56 + RASP native path EXECUTE (RE-relevant code runs), but process self-destructs (redroid detected) and libea56 base is name-hidden, so anchor capture needs break-on-load.",
+  "next_step_for_anchor": "break-on-load: HW bp on the guest linker's dlopen/constructor path (deterministic addr with ASLR off) to STOP at libea56 map-time, snapshot base from the now-stopped maps, arm 0x13a4bc, continue -> catch guard execution BEFORE dlclose/self-destruct. HW-bp primitive itself is CONFIRMED (Q2). NOTE: stopping the self-destruct = root/emulator-detection bypass = OUT OF SCOPE."
+}

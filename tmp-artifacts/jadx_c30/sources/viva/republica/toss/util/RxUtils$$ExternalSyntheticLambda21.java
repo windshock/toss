@@ -1,0 +1,13 @@
+package viva.republica.toss.util;
+
+import o.deserializeDecimalCollection;
+import o.disableEarlyViewCommandExecution;
+
+/* loaded from: /tmp/toss_alldex/classes30.dex */
+public final /* synthetic */ class RxUtils$$ExternalSyntheticLambda21 implements deserializeDecimalCollection {
+    public final /* synthetic */ disableEarlyViewCommandExecution f$0;
+
+    public final void run() {
+        RxUtils.onExtraCallbackWithResult(this.f$0);
+    }
+}

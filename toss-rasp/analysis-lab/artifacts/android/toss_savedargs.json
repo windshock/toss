@@ -1,0 +1,8 @@
+{
+  "provenance": "runtime",
+  "probe": "hidden DEX image dump",
+  "libea56_base": "0xebc590a05000",
+  "invobj": "0xebc5400b3a90",
+  "method_idx": 3707,
+  "dex_base": "0xebc604311000"
+}

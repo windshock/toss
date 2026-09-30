@@ -1,0 +1,2919 @@
+{
+ "OWC_midx": 2441,
+ "IATC_midx": 2423,
+ "n_owc_sites": 63,
+ "n_iatc_sites": 1,
+ "owc_sites": [
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 175,
+   "op": "0x71",
+   "args": [
+    10,
+    11,
+    12,
+    13
+   ],
+   "arg1": 11,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 11,
+    "lit": 16,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 143,
+      "cls": "Landroid/text/TextUtils;",
+      "name": "indexOf",
+      "shorty": "ILLII"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const-string",
+       "s": ""
+      },
+      {
+       "kind": "const-string",
+       "s": ""
+      },
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/text/TextUtils;->indexOf(str(''),str(''),const(0),const(0)) shorty=ILLII, #16)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 203,
+   "op": "0x71",
+   "args": [
+    10,
+    12,
+    13,
+    14
+   ],
+   "arg1": 12,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 12,
+    "lit": 26,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 163,
+      "cls": "Landroid/view/View$MeasureSpec;",
+      "name": "makeMeasureSpec",
+      "shorty": "III"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/view/View$MeasureSpec;->makeMeasureSpec(const(0),const(0)) shorty=III, #26)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 235,
+   "op": "0x71",
+   "args": [
+    10,
+    13,
+    14,
+    15
+   ],
+   "arg1": 13,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 13,
+    "lit": 19,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 226,
+      "cls": "Landroid/widget/ExpandableListView;",
+      "name": "getPackedPositionForGroup",
+      "shorty": "JI"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/widget/ExpandableListView;->getPackedPositionForGroup(const(0)) shorty=JI, #19)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 266,
+   "op": "0x71",
+   "args": [
+    10,
+    14,
+    15,
+    5
+   ],
+   "arg1": 14,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 14,
+    "lit": 35,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 226,
+      "cls": "Landroid/widget/ExpandableListView;",
+      "name": "getPackedPositionForGroup",
+      "shorty": "JI"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/widget/ExpandableListView;->getPackedPositionForGroup(const(0)) shorty=JI, #35)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 302,
+   "op": "0x71",
+   "args": [
+    5,
+    10,
+    15,
+    6
+   ],
+   "arg1": 10,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 10,
+    "lit": 23,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 177,
+      "cls": "Landroid/view/View;",
+      "name": "resolveSizeAndState",
+      "shorty": "IIII"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/view/View;->resolveSizeAndState(const(0),const(0),const(0)) shorty=IIII, #23)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 337,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 30,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 199,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getPressedStateDuration",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "add(shr(GETTER Landroid/view/ViewConfiguration;->getPressedStateDuration() shorty=I, #16), #30)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 372,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "invoke-result",
+    "getter": {
+     "midx": 112,
+     "cls": "Landroid/os/SystemClock;",
+     "name": "currentThreadTimeMillis",
+     "shorty": "J"
+    },
+    "getter_op": "0x71",
+    "dist": 1,
+    "getter_args": []
+   },
+   "arg1_sig": "GETTER Landroid/os/SystemClock;->currentThreadTimeMillis() shorty=J"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 401,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 34,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 158,
+      "cls": "Landroid/view/KeyEvent;",
+      "name": "normalizeMetaState",
+      "shorty": "II"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/view/KeyEvent;->normalizeMetaState(const(0)) shorty=II, #34)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 435,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 33,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 77,
+      "cls": "Landroid/graphics/ImageFormat;",
+      "name": "getBitsPerPixel",
+      "shorty": "II"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/graphics/ImageFormat;->getBitsPerPixel(const(0)) shorty=II, #33)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 469,
+   "op": "0x71",
+   "args": [
+    6,
+    7,
+    5,
+    10
+   ],
+   "arg1": 7,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 7,
+    "lit": 30,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 7,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 200,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getScrollBarFadeDuration",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "add(shr(GETTER Landroid/view/ViewConfiguration;->getScrollBarFadeDuration() shorty=I, #16), #30)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 501,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 34,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 141,
+      "cls": "Landroid/text/TextUtils;",
+      "name": "indexOf",
+      "shorty": "ILL"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const-string",
+       "s": ""
+      },
+      {
+       "kind": "const-string",
+       "s": ""
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/text/TextUtils;->indexOf(str(''),str('')) shorty=ILL, #34)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 535,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 33,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 189,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getEdgeSlop",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "rsub(shr(GETTER Landroid/view/ViewConfiguration;->getEdgeSlop() shorty=I, #16), #33)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 565,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 30,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 72,
+      "cls": "Landroid/graphics/Color;",
+      "name": "argb",
+      "shorty": "IIIII"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/graphics/Color;->argb(const(0),const(0),const(0),const(0)) shorty=IIIII, #30)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 598,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 28,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 155,
+       "cls": "Landroid/view/KeyEvent;",
+       "name": "getMaxKeyCode",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "rsub(shr(GETTER Landroid/view/KeyEvent;->getMaxKeyCode() shorty=I, #16), #28)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 630,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 16,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 194,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getKeyRepeatTimeout",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "add(shr(GETTER Landroid/view/ViewConfiguration;->getKeyRepeatTimeout() shorty=I, #16), #16)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 666,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 16,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 155,
+       "cls": "Landroid/view/KeyEvent;",
+       "name": "getMaxKeyCode",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "add(shr(GETTER Landroid/view/KeyEvent;->getMaxKeyCode() shorty=I, #16), #16)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 700,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 18,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 151,
+      "cls": "Landroid/util/TypedValue;",
+      "name": "complexToFloat",
+      "shorty": "FI"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/util/TypedValue;->complexToFloat(const(0)) shorty=FI, #18)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 732,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 18,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 73,
+      "cls": "Landroid/graphics/Color;",
+      "name": "blue",
+      "shorty": "II"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/graphics/Color;->blue(const(0)) shorty=II, #18)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 766,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 17,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 190,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getFadingEdgeLength",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "rsub(shr(GETTER Landroid/view/ViewConfiguration;->getFadingEdgeLength() shorty=I, #16), #17)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 794,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 18,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 168,
+      "cls": "Landroid/view/View;",
+      "name": "getDefaultSize",
+      "shorty": "III"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/view/View;->getDefaultSize(const(0),const(0)) shorty=III, #18)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 824,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 20,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 155,
+       "cls": "Landroid/view/KeyEvent;",
+       "name": "getMaxKeyCode",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "rsub(shr(GETTER Landroid/view/KeyEvent;->getMaxKeyCode() shorty=I, #16), #20)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 856,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 21,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 204,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getTapTimeout",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "rsub(shr(GETTER Landroid/view/ViewConfiguration;->getTapTimeout() shorty=I, #16), #21)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 892,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 18,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 200,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getScrollBarFadeDuration",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "rsub(shr(GETTER Landroid/view/ViewConfiguration;->getScrollBarFadeDuration() shorty=I, #16), #18)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 920,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 22,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 168,
+      "cls": "Landroid/view/View;",
+      "name": "getDefaultSize",
+      "shorty": "III"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/view/View;->getDefaultSize(const(0),const(0)) shorty=III, #22)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 957,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 27,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 85,
+      "cls": "Landroid/media/AudioTrack;",
+      "name": "getMinVolume",
+      "shorty": "F"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": []
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/media/AudioTrack;->getMinVolume() shorty=F, #27)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 993,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop2a",
+    "op": "sub",
+    "src": 7,
+    "lhs_prior": true,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 207,
+      "cls": "Landroid/view/ViewConfiguration;",
+      "name": "getZoomControlsTimeout",
+      "shorty": "J"
+     },
+     "getter_op": "0x71",
+     "dist": 7,
+     "getter_args": []
+    },
+    "lhs_prov": {
+     "kind": "const",
+     "val": -16777194
+    }
+   },
+   "arg1_sig": "sub(const(-16777194), GETTER Landroid/view/ViewConfiguration;->getZoomControlsTimeout() shorty=J)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1032,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 24,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 84,
+      "cls": "Landroid/media/AudioTrack;",
+      "name": "getMaxVolume",
+      "shorty": "F"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": []
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/media/AudioTrack;->getMaxVolume() shorty=F, #24)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1068,
+   "op": "0x71",
+   "args": [
+    5,
+    7,
+    6,
+    10
+   ],
+   "arg1": 7,
+   "arg1_prov": {
+    "kind": "binop2a",
+    "op": "add",
+    "src": 6,
+    "lhs_prior": true,
+    "src_prov": {
+     "kind": "const",
+     "val": 16777264
+    },
+    "lhs_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 76,
+      "cls": "Landroid/graphics/Color;",
+      "name": "rgb",
+      "shorty": "IIII"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/graphics/Color;->rgb(const(0),const(0),const(0)) shorty=IIII, const(16777264))"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1098,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 27,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 24,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 196,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getMaximumDrawingCacheSize",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "rsub(shr(GETTER Landroid/view/ViewConfiguration;->getMaximumDrawingCacheSize() shorty=I, #24), #27)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1133,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 22,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 158,
+      "cls": "Landroid/view/KeyEvent;",
+      "name": "normalizeMetaState",
+      "shorty": "II"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/view/KeyEvent;->normalizeMetaState(const(0)) shorty=II, #22)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1170,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 28,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 24,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 196,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getMaximumDrawingCacheSize",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "rsub(shr(GETTER Landroid/view/ViewConfiguration;->getMaximumDrawingCacheSize() shorty=I, #24), #28)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1202,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 18,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 115,
+      "cls": "Landroid/os/SystemClock;",
+      "name": "uptimeMillis",
+      "shorty": "J"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": []
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/os/SystemClock;->uptimeMillis() shorty=J, #18)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1238,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 18,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 197,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getMaximumFlingVelocity",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "rsub(shr(GETTER Landroid/view/ViewConfiguration;->getMaximumFlingVelocity() shorty=I, #16), #18)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1272,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 24,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 161,
+      "cls": "Landroid/view/View$MeasureSpec;",
+      "name": "getMode",
+      "shorty": "II"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/view/View$MeasureSpec;->getMode(const(0)) shorty=II, #24)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1306,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 12,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 80,
+      "cls": "Landroid/graphics/drawable/Drawable;",
+      "name": "resolveOpacity",
+      "shorty": "III"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/graphics/drawable/Drawable;->resolveOpacity(const(0),const(0)) shorty=III, #12)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1342,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 19,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 84,
+      "cls": "Landroid/media/AudioTrack;",
+      "name": "getMaxVolume",
+      "shorty": "F"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": []
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/media/AudioTrack;->getMaxVolume() shorty=F, #19)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1381,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 24,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 191,
+      "cls": "Landroid/view/ViewConfiguration;",
+      "name": "getGlobalActionKeyTimeout",
+      "shorty": "J"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": []
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/view/ViewConfiguration;->getGlobalActionKeyTimeout() shorty=J, #24)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1413,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 18,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 168,
+      "cls": "Landroid/view/View;",
+      "name": "getDefaultSize",
+      "shorty": "III"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/view/View;->getDefaultSize(const(0),const(0)) shorty=III, #18)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1445,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 25,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 72,
+      "cls": "Landroid/graphics/Color;",
+      "name": "argb",
+      "shorty": "IIIII"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/graphics/Color;->argb(const(0),const(0),const(0),const(0)) shorty=IIIII, #25)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1475,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 26,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 165,
+      "cls": "Landroid/view/View;",
+      "name": "combineMeasuredStates",
+      "shorty": "III"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/view/View;->combineMeasuredStates(const(0),const(0)) shorty=III, #26)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1511,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 7,
+    "lit": 16,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 145,
+      "cls": "Landroid/text/TextUtils;",
+      "name": "lastIndexOf",
+      "shorty": "ILC"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const-string",
+       "s": ""
+      },
+      {
+       "kind": "const",
+       "val": 48
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/text/TextUtils;->lastIndexOf(str(''),const(48)) shorty=ILC, #16)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1545,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 19,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 151,
+      "cls": "Landroid/util/TypedValue;",
+      "name": "complexToFloat",
+      "shorty": "FI"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/util/TypedValue;->complexToFloat(const(0)) shorty=FI, #19)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1579,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 20,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 113,
+      "cls": "Landroid/os/SystemClock;",
+      "name": "elapsedRealtime",
+      "shorty": "J"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": []
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/os/SystemClock;->elapsedRealtime() shorty=J, #20)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1611,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 26,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 207,
+      "cls": "Landroid/view/ViewConfiguration;",
+      "name": "getZoomControlsTimeout",
+      "shorty": "J"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": []
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/view/ViewConfiguration;->getZoomControlsTimeout() shorty=J, #26)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1645,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 20,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 190,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getFadingEdgeLength",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "add(shr(GETTER Landroid/view/ViewConfiguration;->getFadingEdgeLength() shorty=I, #16), #20)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1679,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 15,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 114,
+      "cls": "Landroid/os/SystemClock;",
+      "name": "elapsedRealtimeNanos",
+      "shorty": "J"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": []
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/os/SystemClock;->elapsedRealtimeNanos() shorty=J, #15)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1711,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 21,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 104,
+      "cls": "Landroid/os/Process;",
+      "name": "getGidForName",
+      "shorty": "IL"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const-string",
+       "s": ""
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/os/Process;->getGidForName(str('')) shorty=IL, #21)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1743,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 31,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 227,
+      "cls": "Landroid/widget/ExpandableListView;",
+      "name": "getPackedPositionGroup",
+      "shorty": "IJ"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "param",
+       "reg": 8
+      },
+      {
+       "kind": "param",
+       "reg": 9
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/widget/ExpandableListView;->getPackedPositionGroup(param_v8,param_v9) shorty=IJ, #31)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1775,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 29,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 154,
+      "cls": "Landroid/view/KeyEvent;",
+      "name": "getDeadChar",
+      "shorty": "III"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/view/KeyEvent;->getDeadChar(const(0),const(0)) shorty=III, #29)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2422,
+   "caller": {
+    "midx": 2422,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "<clinit>",
+    "shorty": "V"
+   },
+   "insn": 1809,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 18,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 224,
+      "cls": "Landroid/widget/ExpandableListView;",
+      "name": "getPackedPositionChild",
+      "shorty": "IJ"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "param",
+       "reg": 8
+      },
+      {
+       "kind": "param",
+       "reg": 9
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/widget/ExpandableListView;->getPackedPositionChild(param_v8,param_v9) shorty=IJ, #18)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2426,
+   "caller": {
+    "midx": 2426,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "IAuthTabCallback",
+    "shorty": "LII"
+   },
+   "insn": 60,
+   "op": "0x71",
+   "args": [
+    1,
+    3,
+    4,
+    6
+   ],
+   "arg1": 3,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 3,
+    "lit": 5,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 161,
+      "cls": "Landroid/view/View$MeasureSpec;",
+      "name": "getMode",
+      "shorty": "II"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/view/View$MeasureSpec;->getMode(const(0)) shorty=II, #5)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2427,
+   "caller": {
+    "midx": 2427,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "IAuthTabCallback",
+    "shorty": "LLI"
+   },
+   "insn": 41,
+   "op": "0x71",
+   "args": [
+    2,
+    6,
+    8,
+    10
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop2a",
+    "op": "add",
+    "src": 7,
+    "lhs_prior": true,
+    "src_prov": {
+     "kind": "const",
+     "val": 1
+    },
+    "lhs_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 71,
+      "cls": "Landroid/graphics/Color;",
+      "name": "alpha",
+      "shorty": "II"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/graphics/Color;->alpha(const(0)) shorty=II, const(1))"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2427,
+   "caller": {
+    "midx": 2427,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "IAuthTabCallback",
+    "shorty": "LLI"
+   },
+   "insn": 270,
+   "op": "0x71",
+   "args": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "arg1": 4,
+   "arg1_prov": {
+    "kind": "binop2a",
+    "op": "add",
+    "src": 7,
+    "lhs_prior": true,
+    "src_prov": {
+     "kind": "const",
+     "val": 1
+    },
+    "lhs_prov": {
+     "kind": "binop2a",
+     "op": "or",
+     "src": 8,
+     "lhs_prior": true,
+     "src_prov": {
+      "kind": "const",
+      "val": -553470220
+     },
+     "lhs_prov": {
+      "kind": "binop2a",
+      "op": "add",
+      "src": 2,
+      "lhs_prior": true,
+      "src_prov": {
+       "kind": "binop16",
+       "op": "mul",
+       "src": 2,
+       "lit": 627,
+       "src_prov": {
+        "kind": "binop2a",
+        "op": "or",
+        "src": 3,
+        "lhs_prior": true,
+        "src_prov": {
+         "kind": "none"
+        },
+        "lhs_prov": {
+         "kind": "none"
+        }
+       }
+      },
+      "lhs_prov": {
+       "kind": "binop2a",
+       "op": "add",
+       "src": 3,
+       "lhs_prior": true,
+       "src_prov": {
+        "kind": "binop16",
+        "op": "mul",
+        "src": 3,
+        "lit": -627,
+        "src_prov": {
+         "kind": "none"
+        }
+       },
+       "lhs_prov": {
+        "kind": "const",
+        "val": 635053320
+       }
+      }
+     }
+    }
+   },
+   "arg1_sig": "add(or(add(add(const(635053320), mul(none, #-627)), mul(or(none, none), #627)), const(-553470220)), const(1))"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2428,
+   "caller": {
+    "midx": 2428,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "IAuthTabCallbackStub",
+    "shorty": "LI"
+   },
+   "insn": 104,
+   "op": "0x71",
+   "args": [
+    4,
+    6,
+    5,
+    7
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop2a",
+    "op": "add",
+    "src": 5,
+    "lhs_prior": true,
+    "src_prov": {
+     "kind": "const",
+     "val": 16777248
+    },
+    "lhs_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 76,
+      "cls": "Landroid/graphics/Color;",
+      "name": "rgb",
+      "shorty": "IIII"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/graphics/Color;->rgb(const(0),const(0),const(0)) shorty=IIII, const(16777248))"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2431,
+   "caller": {
+    "midx": 2431,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "onExtraCallback",
+    "shorty": "III"
+   },
+   "insn": 45,
+   "op": "0x71",
+   "args": [
+    3,
+    4,
+    7,
+    8
+   ],
+   "arg1": 4,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 4,
+    "lit": 35,
+    "src_prov": {
+     "kind": "param",
+     "reg": 4
+    }
+   },
+   "arg1_sig": "add(param_v4, #35)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2431,
+   "caller": {
+    "midx": 2431,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "onExtraCallback",
+    "shorty": "III"
+   },
+   "insn": 98,
+   "op": "0x71",
+   "args": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "arg1": 4,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 4,
+    "lit": 37,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "add",
+     "src": 4,
+     "lit": 35,
+     "src_prov": {
+      "kind": "param",
+      "reg": 4
+     }
+    }
+   },
+   "arg1_sig": "rsub(add(param_v4, #35), #37)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2433,
+   "caller": {
+    "midx": 2433,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "onExtraCallbackWithResult",
+    "shorty": "II"
+   },
+   "insn": 52,
+   "op": "0x71",
+   "args": [
+    4,
+    5,
+    6,
+    2
+   ],
+   "arg1": 5,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 5,
+    "lit": 35,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 5,
+     "lit": 22,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 110,
+       "cls": "Landroid/os/Process;",
+       "name": "myTid",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "add(shr(GETTER Landroid/os/Process;->myTid() shorty=I, #22), #35)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2440,
+   "caller": {
+    "midx": 2440,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "onNavigationEvent",
+    "shorty": "LI"
+   },
+   "insn": 121,
+   "op": "0x71",
+   "args": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "arg1": 4,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 4,
+    "lit": 25,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 145,
+      "cls": "Landroid/text/TextUtils;",
+      "name": "lastIndexOf",
+      "shorty": "ILC"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const-string",
+       "s": ""
+      },
+      {
+       "kind": "const",
+       "val": 48
+      }
+     ]
+    }
+   },
+   "arg1_sig": "rsub(GETTER Landroid/text/TextUtils;->lastIndexOf(str(''),const(48)) shorty=ILC, #25)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2440,
+   "caller": {
+    "midx": 2440,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "onNavigationEvent",
+    "shorty": "LI"
+   },
+   "insn": 158,
+   "op": "0x71",
+   "args": [
+    4,
+    6,
+    5,
+    7
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 6,
+    "lit": 18,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 79,
+      "cls": "Landroid/graphics/PointF;",
+      "name": "length",
+      "shorty": "FFF"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      },
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/graphics/PointF;->length(const(0),const(0)) shorty=FFF, #18)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2440,
+   "caller": {
+    "midx": 2440,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "onNavigationEvent",
+    "shorty": "LI"
+   },
+   "insn": 207,
+   "op": "0x71",
+   "args": [
+    5,
+    6,
+    7,
+    8
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "rsub",
+    "src": 6,
+    "lit": 13,
+    "src_prov": {
+     "kind": "binop8",
+     "op": "shr",
+     "src": 6,
+     "lit": 16,
+     "src_prov": {
+      "kind": "invoke-result",
+      "getter": {
+       "midx": 189,
+       "cls": "Landroid/view/ViewConfiguration;",
+       "name": "getEdgeSlop",
+       "shorty": "I"
+      },
+      "getter_op": "0x71",
+      "dist": 1,
+      "getter_args": []
+     }
+    }
+   },
+   "arg1_sig": "rsub(shr(GETTER Landroid/view/ViewConfiguration;->getEdgeSlop() shorty=I, #16), #13)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2444,
+   "caller": {
+    "midx": 2444,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "onWarmupCompleted",
+    "shorty": "LII"
+   },
+   "insn": 62,
+   "op": "0x71",
+   "args": [
+    0,
+    8,
+    9,
+    10
+   ],
+   "arg1": 8,
+   "arg1_prov": {
+    "kind": "binop8",
+    "op": "add",
+    "src": 8,
+    "lit": 5,
+    "src_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 131,
+      "cls": "Landroid/telephony/cdma/CdmaCellLocation;",
+      "name": "convertQuartSecToDecDegrees",
+      "shorty": "DI"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/telephony/cdma/CdmaCellLocation;->convertQuartSecToDecDegrees(const(0)) shorty=DI, #5)"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2444,
+   "caller": {
+    "midx": 2444,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "onWarmupCompleted",
+    "shorty": "LII"
+   },
+   "insn": 189,
+   "op": "0x71",
+   "args": [
+    5,
+    8,
+    9,
+    10
+   ],
+   "arg1": 8,
+   "arg1_prov": {
+    "kind": "binop2a",
+    "op": "add",
+    "src": 6,
+    "lhs_prior": true,
+    "src_prov": {
+     "kind": "const",
+     "val": 1
+    },
+    "lhs_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 71,
+      "cls": "Landroid/graphics/Color;",
+      "name": "alpha",
+      "shorty": "II"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "const",
+       "val": 0
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/graphics/Color;->alpha(const(0)) shorty=II, const(1))"
+  },
+  {
+   "target": "OWC",
+   "class_def": 150,
+   "caller_midx": 2444,
+   "caller": {
+    "midx": 2444,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "onWarmupCompleted",
+    "shorty": "LII"
+   },
+   "insn": 423,
+   "op": "0x71",
+   "args": [
+    1,
+    6,
+    2,
+    7
+   ],
+   "arg1": 6,
+   "arg1_prov": {
+    "kind": "binop2a",
+    "op": "add",
+    "src": 3,
+    "lhs_prior": true,
+    "src_prov": {
+     "kind": "const",
+     "val": 1
+    },
+    "lhs_prov": {
+     "kind": "invoke-result",
+     "getter": {
+      "midx": 141,
+      "cls": "Landroid/text/TextUtils;",
+      "name": "indexOf",
+      "shorty": "ILL"
+     },
+     "getter_op": "0x71",
+     "dist": 1,
+     "getter_args": [
+      {
+       "kind": "param",
+       "reg": 2
+      },
+      {
+       "kind": "param",
+       "reg": 2
+      }
+     ]
+    }
+   },
+   "arg1_sig": "add(GETTER Landroid/text/TextUtils;->indexOf(param_v2,param_v2) shorty=ILL, const(1))"
+  }
+ ],
+ "iatc_sites": [
+  {
+   "target": "IATC",
+   "class_def": 150,
+   "caller_midx": 2445,
+   "caller": {
+    "midx": 2445,
+    "cls": "Lo/ContentDataSourceContentDataSourceException;",
+    "name": "onWarmupCompleted",
+    "shorty": "LIIILZ"
+   },
+   "insn": 793,
+   "op": "0x77",
+   "args": [
+    29
+   ],
+   "arg1": null
+  }
+ ]
+}

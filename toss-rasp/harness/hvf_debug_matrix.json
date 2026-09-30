@@ -1,0 +1,49 @@
+{
+  "_note": "\u00a790 empirical GDB-RSP breakpoint matrix vs Android Emulator qemu-system-aarch64 (QEMU 2.12 fork, emu 36.5.1.0) under HVF. RAW runtime evidence.",
+  "accelerator": "HVF (kern.hv_support=1; no -accel override)",
+  "gdbstub_transport": "opened via `-qemu -s`; binds *:1234 (IPv6); HMP `qemu monitor` runtime route is DISABLED ('QEMU support no longer available')",
+  "matrix_current_HVF": {
+    "gdb_connection": {
+      "result": "WORKS",
+      "evidence": "RSP connect + interrupt(0x03) -> T02; qSupported -> PacketSize=1000;qXfer:features:read+ (NO hwbreak+/swbreak+ advertised)"
+    },
+    "register_read_g": {
+      "result": "WORKS",
+      "evidence": "g -> 268B; pc parsed = 0xffffffc0096cde48"
+    },
+    "memory_read_m": {
+      "result": "WORKS",
+      "evidence": "m pc,4 -> 7f2003d5 (=insn d503207f WFI, kernel idle)"
+    },
+    "software_breakpoint_Z0": {
+      "result": "FAIL+CRASH",
+      "evidence": "Z0 -> empty reply (unsupported); QEMU dies: crashhandler_die fatal qemu_mutex_lock_impl: Invalid argument"
+    },
+    "hardware_breakpoint_Z1": {
+      "result": "FAIL+CRASH",
+      "evidence": "Z1 -> empty reply (unsupported); QEMU dies: same qemu_mutex_lock_impl: Invalid argument"
+    },
+    "watchpoints_Z2_Z3_Z4": {
+      "result": "NOT_REACHED",
+      "evidence": "blocked by Z0/Z1 crash (same code path expected)"
+    },
+    "single_step_s": {
+      "result": "NO_CRASH / inconclusive-semantics",
+      "evidence": "'s' did not crash QEMU (liveness ? -> T05 after); PC-advance unverified (stepped from WFI desynced harness)"
+    },
+    "guest_bytes_unchanged": {
+      "result": "N/A",
+      "evidence": "BP insert crashes before any hit; SW-BP would have mutated code but never completed"
+    },
+    "exact_pc_stop": {
+      "result": "NOT_ACHIEVED"
+    },
+    "reg_capture_at_bp": {
+      "result": "NOT_ACHIEVED"
+    }
+  },
+  "root_cause": "QEMU 2.12 fork: (1) hvf_arch_set_traps(...,true) enable path ABSENT (set_trap_debug_* only ever false); (2) HVF guest-debug plumbing (hvf_arch_insert_hw_breakpoint/update_guest_debug) ABSENT; (3) QEMU 2.12 predates AccelOpsClass, so gdb_breakpoint_insert -> cpu_breakpoint_insert -> TCG tb_invalidate_phys_addr -> uninitialized mutex under HVF -> fatal. NOT an Apple HVF limitation (debug APIs imported & documented).",
+  "tcg_via_launcher": "NOT_VIABLE: `-qemu -accel tcg` (and with -cpu max) makes qemu die at startup (accel conflict vs emulator-injected HVF machine config); abort goes to crashpad.",
+  "upstream_fix": "QEMU 8.1.0 commit eb2edc42 (+0ca52a5), Francesco Cagnin/Quarkslab; ~520 new HVF lines. Backport feasibility MEDIUM; hard part = 2.12 gdbstub-dispatch intercept (pre-AccelOpsClass).",
+  "asid_caveat": "Upstream HW breakpoints are unlinked address-match (BT=0, no ASID/VMID). A userspace VA (libea56+0x13a4bc) BP fires for ANY process at that VA -> disambiguate host-side via TTBR0_EL1/CONTEXTIDR_EL1 read on each stop (sysreg reads already work under HVF)."
+}

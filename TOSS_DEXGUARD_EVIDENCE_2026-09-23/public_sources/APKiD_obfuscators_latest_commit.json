@@ -1,0 +1,84 @@
+[
+  {
+    "sha": "158f2810f0ced74afd363b1891c9e9f5945cc21e",
+    "node_id": "C_kwDOA69jZ9oAKDE1OGYyODEwZjBjZWQ3NGFmZDM2M2IxODkxYzllOWY1OTQ1Y2MyMWU",
+    "commit": {
+      "author": {
+        "name": "Eduardo Novella",
+        "email": "foro.dudu@gmail.com",
+        "date": "2026-09-02T18:55:13Z"
+      },
+      "committer": {
+        "name": "Eduardo Novella",
+        "email": "foro.dudu@gmail.com",
+        "date": "2026-09-02T18:55:13Z"
+      },
+      "message": "fix: Dexprotector ELF rule hash update",
+      "tree": {
+        "sha": "b627860c6f905de0ed1d6773bd60e576e9e7bacd",
+        "url": "https://api.github.com/repos/rednaga/APKiD/git/trees/b627860c6f905de0ed1d6773bd60e576e9e7bacd"
+      },
+      "url": "https://api.github.com/repos/rednaga/APKiD/git/commits/158f2810f0ced74afd363b1891c9e9f5945cc21e",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/rednaga/APKiD/commits/158f2810f0ced74afd363b1891c9e9f5945cc21e",
+    "html_url": "https://github.com/rednaga/APKiD/commit/158f2810f0ced74afd363b1891c9e9f5945cc21e",
+    "comments_url": "https://api.github.com/repos/rednaga/APKiD/commits/158f2810f0ced74afd363b1891c9e9f5945cc21e/comments",
+    "author": {
+      "login": "enovella",
+      "id": 14809754,
+      "node_id": "MDQ6VXNlcjE0ODA5NzU0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14809754?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/enovella",
+      "html_url": "https://github.com/enovella",
+      "followers_url": "https://api.github.com/users/enovella/followers",
+      "following_url": "https://api.github.com/users/enovella/following{/other_user}",
+      "gists_url": "https://api.github.com/users/enovella/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/enovella/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/enovella/subscriptions",
+      "organizations_url": "https://api.github.com/users/enovella/orgs",
+      "repos_url": "https://api.github.com/users/enovella/repos",
+      "events_url": "https://api.github.com/users/enovella/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/enovella/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "enovella",
+      "id": 14809754,
+      "node_id": "MDQ6VXNlcjE0ODA5NzU0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14809754?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/enovella",
+      "html_url": "https://github.com/enovella",
+      "followers_url": "https://api.github.com/users/enovella/followers",
+      "following_url": "https://api.github.com/users/enovella/following{/other_user}",
+      "gists_url": "https://api.github.com/users/enovella/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/enovella/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/enovella/subscriptions",
+      "organizations_url": "https://api.github.com/users/enovella/orgs",
+      "repos_url": "https://api.github.com/users/enovella/repos",
+      "events_url": "https://api.github.com/users/enovella/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/enovella/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "c8d575871f43bcc0b8470efe2e6401e210893c1e",
+        "url": "https://api.github.com/repos/rednaga/APKiD/commits/c8d575871f43bcc0b8470efe2e6401e210893c1e",
+        "html_url": "https://github.com/rednaga/APKiD/commit/c8d575871f43bcc0b8470efe2e6401e210893c1e"
+      }
+    ]
+  }
+]

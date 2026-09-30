@@ -1,0 +1,14 @@
+{
+  "_note": "Android image options assessed for upstream QEMU virt + HVF on M1 (2026-09-28).",
+  "direct_gsi": {
+    "available": true,
+    "example": "aosp_arm64-exp-CP41.260831.007-...zip (dl.google.com)",
+    "bootable_standalone_on_virt": false,
+    "reason": "GSI = system.img only; standalone boot on plain virt needs a self-built Android board (kernel+ramdisk+vendor+DTB+fstab+AVB). = \u00a727 STOP condition."
+  },
+  "reference_toolkit": {
+    "repo": "github.com/Ccccccccvvm/qemu-android-arm64",
+    "confirms": "On Apple Silicon + upstream QEMU, the practical Android path is Waydroid/Redroid INSIDE an ARM64 Linux guest (virt board). Cuttlefish-on-macOS-QEMU hangs (no host services); Google emu images need ranchu; standalone GSI = self-build only."
+  },
+  "recommended_path": "Redroid (or Waydroid) inside an ARM64 Linux guest booted on upstream qemu-system-aarch64 -M virt -accel hvf. Guest kernel needs CONFIG_ANDROID_BINDER_IPC + binderfs (Ubuntu/Debian arm64 ship it in linux-modules-extra) + docker."
+}
