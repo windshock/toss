@@ -271,3 +271,11 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   직접 검사. 다음 관측기 = hwbp watchpoint(hide_kmod hwbp_pid/hwbp_addr) 또는 ART 구조 오프셋 의미 분석.
 - 도구: 워크스페이스 `tmp-artifacts/tools/guard_capture.sh`(pvm 원격주소 kprobe 캡처),
   `guard_probe_dump.sh`(프로빙 주소 페이지 덤프), `launch_stats_bash3.sh`.
+
+## §154 추기3 (2026-10-01) — ART 정상 동작 vs 가드 신호 구별법
+- **fault/SignalHandler/SafeCopy 관측은 ART 정상 동작일 수 있다**: 인터프리터 암묵적 널체크 트랩
+  (boot-framework.oat pc) → libsigchain → art::SafeCopy(boot.art/힙 안전 읽기) → ExecuteSwitchImplCpp 복귀 —
+  전부 시스템 소속. **핸들러/pc/lr의 모듈 resolve를 해석 이전 단계로 의무화** (boot 이미지 매핑대 0x70-0x72xxxxxx는
+  고정 주소 — "런 간 동일"이 곧 가드 흔적이 아님).
+- 부트 이미지 매핑대: boot.oat/boot.art/boot-framework.art·oat는 매 부트 고정 주소(ASLR 없음).
+- pvm 차단(pvm_block=1) 재해석: ART NPE 처리 파손 — 어차피 금지.
