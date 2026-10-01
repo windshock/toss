@@ -39,15 +39,16 @@ for PID in $PIDS; do
   echo "== pid=$PID comm=$COMM state=$ST"
   [ -z "$ST" ] && { echo "   (소멸)"; continue; }
   dsh "cat /proc/$PID/maps" > $OUT/maps_$PID.txt 2>/dev/null
-  # rw-p 리전 전수(캡 12MB/리전) — dalvik-large는 스킵
+  # 사유 힙 우선: 무명/새 힘(scudo·partition_alloc·memfd)만 — 공유 COW(boot.art/dalvik·파일백) 제외
   dsh "grep ' rw-p ' /proc/$PID/maps" | tr -d '\r' | while read -r line; do
+    case "$line" in
+      *boot.art*|*boot-*oat*|*dalvik-*|*/system/*|*/apex/*|*/vendor/*|*/data/app/*|*.oat|*memfd:jit*|*ashmem*|*.so*|*linker64*) continue;;
+    esac
     RANGE=$(echo "$line" | awk '{print $1}')
     S=$((16#$(echo $RANGE | cut -d- -f1))); E=$((16#$(echo $RANGE | cut -d- -f2)))
-    SZ=$(( (E-S)/1048576 )); [ $SZ -gt 12 ] && SZ=12; [ $SZ -eq 0 ] && SZ=1
-    # 이름 있고 dalvik-main이면 스킵(메인은 별도 확보됨)
-    echo "$line" | grep -q "dalvik-main" && continue
+    SZ=$(( (E-S)/1048576 )); [ $SZ -gt 16 ] && SZ=16; [ $SZ -eq 0 ] && SZ=1
     dsh "dd if=/proc/$PID/mem bs=4096 skip=$((S/4096)) count=$((SZ*256)) 2>/dev/null" > "$OUT/p${PID}_$(printf %x $S).bin" 2>/dev/null
-    echo "   dumped $(printf %x $S) ${SZ}MB ($(echo $line | awk '{print $6}'))"
+    echo "   dumped $(printf %x $S) ${SZ}MB ($(echo $line" " | awk '{print $6}'))"
   done
 done
 dsh "echo 0 > /sys/module/hide_kmod/parameters/exit_block"

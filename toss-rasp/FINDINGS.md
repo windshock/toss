@@ -7078,3 +7078,20 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **도구 함정 2종(재사용 필독)**: ① while-read 루프 내 adb shell이 파이프 stdin을 먹음 → `dsh(){ adb shell "$1" </dev/null; }`
   ② 사망 경로 부트 분산 — 동결(EXITSTOP) 미발생 부트 존재(이번 부트: exit_block=1인데 게이트 전 사망) →
   도구는 진단 출력(동결플래그/alive) 포함, 재시도로 운용.
+
+[§155 추기10 — ★살아있는 런(레이스 생존) 골든 윈도우 포획: dword 판정 캐시 라이브 관측 + TUBA 원격설정 확보]
+- **방법**: 게스트 로컬 원샷 덤퍼(gdc.sh — adb 왕복 제거) + 런→T+14 발사 사이클(11s 관문 생존 런에서만 발사,
+  최대 6회 재시도). 이번 부트 try1 생존 — **T+14s 시점 toss-uid 6프로세스 전수 덤핑 성공**(300MB).
+- **★신규 관측(logstore 버퍼, 살아있는 런이라 이전보다 풍부)**:
+  1. **`dword_debug`**: `resultType:"message_present" processType:"main"` + `value:"acquireNewSecretSuccess"`
+     — §48-49의 **dword(원격 판정 캐시)가 라이브로 관측**됨. "message_present"=dword 결과에 메시지 존재
+     (=제한 다이얼로그 표시 경로와 정합 — 이 런은 죽지 않고 다이얼로그 상태로 생존했을 가능성).
+  2. **네트워크 텔레메트리 상세**: `app.toss.im/api/v3/apps/sec/dinitialize`(§152의 9회 재시도 엔드포인트 —
+     이번엔 1회 1307B) + **`tuba-static.toss.im/variables/v2/default`**(TUBA 원격설정 다운로드 실측).
+  3. 판정 타임라인 정밀화: fds_debug/fds_detected가 log_time 15:37:11.80에 몰림 — **판정→보고가 ~3ms 내 완료**
+     (T+~10s), 이후 dword getDwordResult 연쇄.
+- **페이로드(%lld)/191은 여전히 전 스냅샷 미검출** — 유력 해석: 네이티브 판정 결과가 Java(FDS logstore)로
+  가는 경로만 존재하고 완성 페이로드 문자열은 조립 후 즉시 소비/해제되거나, child 전용 경로에서 더 일찍 지움.
+- **운영 지식**: 11s 관문 생존 런(레이스)은 골든 윈도우 — "죽지 않은 채 판정 완료 상태"의 전 메모리를 준다.
+  gdc.sh+사이클 재시도가 재현 가능한 레시피(이번 부트 1회차 성공).
+- 보존: `toss-rasp/session155/live_capture/`(300MB, 6프로세스 431리전 + maps).
