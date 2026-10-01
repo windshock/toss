@@ -6995,3 +6995,20 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **누적 결론**: 관측 가능한 모든 채널(파일/프롭/fd/xattr/라벨/네이티브 문자열)이 클린 또는 비인과.
   판정 입력은 **프로세스 내부의 비-syscall 계산**(§150)로 수렴 완료 — 21+채널 소거에 이어 체크리스트 182항목 대조까지.
   다음: hwbp/frida로 T+3~10s 계산 궤적을 직접 보는 수밖에 없음(OPEN-1/2).
+
+[§155 추기5 — mrs_spoof 비인과 + frida 관측자 효과 + dl_iterate_phdr 위조 실험 (미완, 재현 방법 기록)]
+- **mrs_spoof=1 A/B(Cortex MIDR 에뮬)**: 12/11/11/11s 불변 → MRS 경유 MIDR/ID_AA64 노출도 판정 비인과.
+  (v4.7 파일경로 MIDR은 bisectB로 이미 off — 양방향 모두 비인과 확정. 원복 mrs_spoof=0)
+- **dl_iterate_phdr dlsym 호출부 3곳 확정**(frida): libea56+0x454d8(성공), +0x9ea54/+0x11c1bc(0 반환 —
+  RTLD_NOLOAD 맥락 추정). 이름 위조 replace 시도는 NativeCallback ABI 문제로 1s 사멸 — 미완.
+  재현 방법: hook_dlip_name.js(수정 필요: 콜백 시그니처 size_t→uint64, allocUtf8String 사용 — allocAnsi는 Windows 전용).
+- **★frida 관측자 효과 실측**: 주입 성공한 무훅 런 1건이 **25s+ 생존** — frida attach 자체가 가드 타이밍을
+  교란해 생존을 늘리는 경우 존재(§25차 exit-차단 7분과 동일 계열). **따라서 frida 부착 상태의 A/B는
+  부착 자체가 교란 변수** — 인과 판정엔 부팅 파리티 있는 쌍 필요. frida 주입 성공률은 부트 단위로 소진됨
+  (이 부트 1/5, 성공 1건 후 연속 실패 — 재부팅으로만 회복).
+- **dynstr 스크럽 A/B 준비**: hook_dynstr_scrub.js 작성(DT_STRTAB 직독→goldfish→kgsl_dma 동일길이 치환) —
+  PT_DYNAMIC p_vaddr 오프셋 버그(+8→+16)로 중단. 버그 수정 후 차기 실행.
+  단 S153 데이터와 비교하면: 순정 세계(dynstr goldfish 그대로) 2s vs 램덤명 세계(dynstr 동일) 11s —
+  **파일명이 주된 판별자였고 dynstr 내용은 양쪽 동일** → dynstr 스크럽은 우선권 하향.
+- 차기 우선권 확정: ① dl_iterate_phdr 이름 위조(ABI 수정 후) ② 램덤명→plausible 파일 수술(DT_NEEDED 동기화)
+  ③ LKM-side 결정적 스크럽(가드 첫 syscall 트리거) — frida 없이 재현 가능하게.
