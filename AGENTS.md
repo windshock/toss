@@ -11,9 +11,39 @@
 3. 작업 결정: ARCHITECTURE **[O] 항목 순서** = 다음 할 일 목록
 4. 근거 필요 시 `toss-rasp/FINDINGS.md`(§1~§153) — `grep -n "^## §N"`으로 절 찾기
 5. 실물 자산: `tmp-artifacts/INDEX.md`(박스별 배치), `toss-rasp/INDEX.md`(세션 아카이브)
-6. 세션 시작 시 **avd-rasp-camouflage 스킬 로드** (금지 목록 선독 — 1시간 낭비 전례 다수)
+6. 세션 시작 시 **스킬 로드 — 아래 §2 규칙 필수**
 
-## 2. 현재 상태 스냅샷 (2026-10-01 §153 종료 시점)
+## 2. 스킬 사용 규칙 (세션 자동화의 핵심 도구)
+
+### 로드할 스킬 2종 (ZCode Skill 도구로 호출)
+1. **avd-rasp-camouflage** — 에뮬/카모/LKM/frida 운영 전반. 디렉터리 `~/.agents/skills/avd-rasp-camouflage/`
+2. **dexguard-reVERSE** — DexGuard 문자열 복호·숨은 DEX 분석. 디렉터리 `~/.agents/skills/dexguard-reVERSE/`
+   (가드 어휘 재검증·앱 버전 갱신 재분석. §149 방법론 = 이 스킬 §7d-7f)
+
+### 진실 소스 이원 주의 (중요)
+- **LKM 소스·빌드 = 워크스페이스** `avd-camouflage/lkm/` (스킬에는 없음)
+- **운영 스크립트 = 스킬 디렉터리** `~/.agents/skills/avd-rasp-camouflage/scripts/` — 워크스페이스 밖이므로
+  **호출은 항상 절대경로**: `boot_recover.sh`(부팅 후 원스텝 복구) `deploy.sh` `camow3.sh` `vendor_bind_setup.sh`
+  `props-apply.sh` `channel_trace.sh`(탐지채널 ftrace) `toss_heap_snapshots.sh`(가드 복호화 어휘 스냅샷)
+  `toss_child_scan.sh` `exit_trap.js` `frida_spawn.py` `ghidra_decompile_at.java` 등
+- 2026-10-01 boot_recover [6c] 인용버그 수정은 **스킬 디렉터리 쪽에 반영 완료** — 다른 사본(있으면)은 구버전일 수 있음
+- 스킬 `references/`: pitfalls.md(증상→원인), detection-channels.md(채널 전수), neuter-rebuild.md, frida-analysis.md
+- **SKILL.md "하면 안 되는 것" 절대금지 목록을 어떤 실험 전에도 선독** (위반 전례: GL 토큰 제거→부트 크래시 루프, goldfish ENOENT 은닉→화면 사망 — 1시간 낭비 다수)
+
+### 작업 ↔ 도구 매핑
+| 작업 | 쓸 것 |
+|---|---|
+| 부팅 후 전체 복구 | 스킬 `scripts/boot_recover.sh 10179` (ANDROID_SERIAL 필수) |
+| 탐지 채널 실측(ftrace) | 스킬 `scripts/channel_trace.sh` + chan19 인스턴스(boot_recover가 구성) |
+| 가드 힙 어휘 스냅샷/diff | 스킬 `scripts/toss_heap_snapshots.sh` |
+| 사망 N런 측정 | **워크스페이스** `tmp-artifacts/tools/launch_stats_bash3.sh` (스킬 판 toss_launch_stats.sh는 macOS bash3에서 `declare -A` 불가) |
+| 종료 차단·caller 관찰 | 스킬 `scripts/exit_trap.js` (attach@~3.5s 레시피, spawn은 무력화됨) |
+| LKM 빌드·비섹션 | **워크스페이스** `avd-camouflage/lkm/build-in-docker.sh` (소스 3세대: 현재본/pre_bisectA/B) |
+| 판정 라벨 캡처 | logstore 런 중 폴링(§5 측정 표준) — 패턴 원문 `tmp-artifacts/run-logs/logstore_live_s153_최신판정.txt` |
+| 가드 문자열/DEX 재분석 | dexguard-reVERSE + 워크스페이스 디코더 `tmp-artifacts/tools/decode_dbg_gate{,2,3}.py` |
+| Ghidra 네이티브 분석 | `analyzeHeadless tmp-artifacts/native-engine/gproj toss5 …` + 스킬 `scripts/ghidra_decompile_at.java` |
+
+## 3. 현재 상태 스냅샷 (2026-10-01 §153 종료 시점)
 
 - **판정**: [EMULATOR] 1건 발화, T+11s 로컬 사멸 (logstore 실측, DEBUGGER 음성 — 9일 불변)
 - camo33(emulator-5554) 가동 중: LKM=bisectB(v4.22/4.24/4.7 off), target_uids=10179,
@@ -21,7 +51,7 @@
 - 비섹션 완료(전부 네거티브): bisectA/B, GL축 전체 순정화(→2s 악화 후 롤백), 런타임 파라미터 3종, 사이드로드/설치자
 - **범인은 libea56 네이티브 엔진의 메모리 거주 입력** (ARCHITECTURE [O]-1)
 
-## 3. 다음 작업 (우선순위 — 자율 진행 시 이 순서)
+## 4. 다음 작업 (우선순위 — 자율 진행 시 이 순서)
 
 1. **[O]-1**: 판정 cmp 직전 최종 GOT-CALL 핸들러 ftrace 캡처 → 발화 입력 특정 (§150 P3-1 절차)
    - 도구: 스킬 `scripts/channel_trace.sh` 변형 + chan19 인스턴스(boot_recover가 재구성)
@@ -29,7 +59,7 @@
 3. 입력 특정 후 §151 P3 dynstr 런타임 스크럽 정타 / dmap 미등록 4채널 등록(10분 수정)
 4. [O]-4 서버 403 지문: 로컬 판정 통과 후에만 (도구: `tmp-artifacts/tools/hook_did.js`+`attach_run.py`)
 
-## 4. 운영 법칙 (위반 시 실측 피해 목록 — 전부 전례 있음)
+## 5. 운영 법칙 (위반 시 실측 피해 목록 — 전부 전례 있음)
 
 ### 환경/도구
 - **`ANDROID_SERIAL=emulator-5554` 필수** — redroid(localhost:5556) 병렬, 미지정 시 엉뚱한 디바이스 조작
@@ -51,14 +81,14 @@
   `cat /data/data/viva.republica.toss/files/logstore/logitems/*.json` 300ms 간격, 패턴은 `run-logs/logstore_live_s153_최신판정.txt`
 - 생존 판정 3점 검증: topResumedActivity + 스크린샷 + 탭 반응 (백그라운드 생존은 프리저 아티팩트)
 
-## 5. 기록 의무 (모든 실험 후 — 사용자가 안 물어도)
+## 6. 기록 의무 (모든 실험 후 — 사용자가 안 물어도)
 
 1. FINDINGS.md 해당 § 추기 (양식: [P0 결론/P1 증거/P2 절차/P3 교훈])
 2. ARCHITECTURE.md 해당 행/증거수준 갱신 ([O]→[C] 등)
 3. 세션 종료 시: 루트에 새 `HANDOFF_S<n+1>_<날짜>.md` 작성, 구 핸드오프는 `toss-rasp/handoffs/`로
 4. git 커밋 — 정책: **텍스트(md/sh/py/js/java/c/h/json)만 추적**, 바이너리(apk/dex/so/dump/img/zip)는 .gitignore로 로컬 보존
 
-## 6. 저장소 지도
+## 7. 저장소 지도
 
 ```
 ARCHITECTURE.md            ← 최상위: 확정 모델·증거 원장·검증 지도
