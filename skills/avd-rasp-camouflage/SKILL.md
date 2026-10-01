@@ -336,3 +336,14 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   가드 스레드 단일 tid. 관측 창은 T+0.5-2.3s로.
 - frida 관찰 런의 사망은 native 경로(~2.3-4.6s) — Java exit 함정으로 창 연장 불가(§143 관찰자 효과 사망경로 전환).
 - rw-diff 유일 활동: T+1.0s 복호화 어휘 기입(selinux/load, reflect/Field 시그니처 등) + T+1.4s 0x174008+ 제로화.
+
+## §161 성과 요약 (2026-10-01 심야 5차)
+- **★모듈 init 최소 법칙**: module_init에서 프로브 등록·동적 심볼 해결(kallsyms_lookup_name kprobe 트릭 등) 금지 —
+  init 데드락 = 게스트 소프트락 = 재부팅으로만 회복(실측 사고). 주소는 userspace 파라미터 전달, 주기 작업은
+  지연워커(v4.22a 패턴). tick 컨텍스트 함수(update_vsyscall)의 kretprobe 등록은 데드락 위험.
+- **vdso/vvar 스푸핑 인프라(v4.22a)**: `vdso_page_addr`(/proc/kallsyms, kptr_restrict=0 필요) → vdso_mult/shift/mode
+  → vdso_spoof. 검증: `scripts/vdso_check.c`(auxv→vvar mult/shift 판독, docker gcc:14 정적 빌드).
+- **vvar mult 판독 가설 기각 [C]**: 24→19.2MHz 인코딩 스푸핑(프로세스 가시 검증 완료)에 판정·타이밍 완전 불변.
+- **adb 취소 데드락**: 사용자 입력으로 인한 명령 취소가 in-flight adb를 뭉개 adbd offline화(호스트 리셋 무효,
+  에뮬 재시작으로만 회복) — 장기 작업은 진성 백그라운드 태스크 + 로그 파일 폴링. 재부팅 후 구 백그라운드 태스크
+  잔존 확인(이중 복구 경합 사고).

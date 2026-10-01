@@ -1544,6 +1544,56 @@ static int hwbp_go_set(const char *val, const struct kernel_param *kp)
 static const struct kernel_param_ops hwbp_go_ops = { .set = hwbp_go_set };
 module_param_cb(hwbp_go, &hwbp_go_ops, NULL, 0644);
 
+/* ── v4.22 §161: vdso_data(vvar) 스푸핑 — 타이밍 채널(vvar 직접판독) 인과검증/대응
+ * v4.22a 재설계(초판 init-데드락 사면): ① 심볼 해결을 커널에서 하지 않는다 — userspace가
+ * /proc/kallsyms에서 vdso_data_store 주소를 파라미터로 전달(vdso_page_addr) ② kretprobe 대신
+ * 2ms 지연워커로 재위조(커널이 매 틱 mult를 다시 쓰므로) — probe 등록 데드락 클래스 자체 제거.
+ * 전제(ack-kernel 5.15 arm64): struct vdso_data 240B, store.data[CS_BASES=2]
+ * (CS_HRES_COARSE=0, CS_RAW=1), mult@+24 shift@+28, vvar은 유저매핑과 동일 페이지. */
+static int vdso_spoof;
+module_param(vdso_spoof, int, 0644);
+static uint vdso_mult;
+module_param(vdso_mult, uint, 0644);
+static uint vdso_shift;
+module_param(vdso_shift, uint, 0644);
+static int vdso_mode = -1;
+module_param(vdso_mode, int, 0644);
+static ulong vdso_hits;
+module_param(vdso_hits, ulong, 0444);
+static ulong vdso_page_addr;	/* userspace 지정: /proc/kallsyms 의 vdso_data_store */
+module_param(vdso_page_addr, ulong, 0644);
+
+#define VD_SZ        240
+#define VD_SEQ_OFF   0
+#define VD_MODE_OFF  4
+#define VD_MULT_OFF  24
+#define VD_SHIFT_OFF 28
+
+static void vdso_patch_entry(u8 *e)
+{
+	u32 seq;
+	seq = *(u32 *)(e + VD_SEQ_OFF);
+	*(u32 *)(e + VD_SEQ_OFF) = seq + 1;
+	wmb();
+	if (vdso_mult)  *(u32 *)(e + VD_MULT_OFF)  = vdso_mult;
+	if (vdso_shift) *(u32 *)(e + VD_SHIFT_OFF) = vdso_shift;
+	if (vdso_mode >= 0) *(s32 *)(e + VD_MODE_OFF) = vdso_mode;
+	wmb();
+	*(u32 *)(e + VD_SEQ_OFF) = seq + 2;
+	vdso_hits++;
+}
+
+static void vdso_work_fn(struct work_struct *w)
+{
+	if (vdso_spoof && vdso_page_addr) {
+		vdso_patch_entry((u8 *)vdso_page_addr);
+		vdso_patch_entry((u8 *)(vdso_page_addr + VD_SZ));
+	}
+	queue_delayed_work(system_wq, to_delayed_work(w), msecs_to_jiffies(2));
+}
+static DECLARE_DELAYED_WORK(vdso_dw, vdso_work_fn);
+
+
 /* ── v4.18: 네이티브 자폭(§14 poison→PC=저주소→instr abort) 커널 복구 ───────────
  * 유저랜드 시그널 핸들러는 libsigchain이 덮어 무용(§69). 커널에서 force_sig_fault를
  * 가로채: 표적 uid + 유저 PC가 저주소(<0x10000, null 점프=자폭)면 시그널 대신
@@ -1778,6 +1828,13 @@ static int __init hide_init(void)
 	/* v4.3 utsname 치환은 철회됨(2026-09-21): 적재 직후 게스트 재부팅 + "no symbol version
 	 * for module_layout" — 빌드 환경 심볼버전 불일치 상태에서 init_uts_ns 쓰기가 메모리
 	 * 손상을 일으킨 추정. uname 채널은 미해결 과제로 FINDINGS에 기록. */
+	/* v4.22a §161: vdso 스푸핑 상시 워커 — 플래그 OFF면 no-op. page 주소는 userspace가
+	 * /proc/kallsyms의 vdso_data_store를 vdso_page_addr로 전달 (커널측 심볼해결 데드락 방지). */
+	INIT_DELAYED_WORK(&vdso_dw, vdso_work_fn);
+	queue_delayed_work(system_wq, &vdso_dw, msecs_to_jiffies(100));
+	pr_info("hide_kmod v4.22a: armed (nuid=%d) + vdso worker (page=0x%lx)\n",
+		n_target_uids, vdso_page_addr);
+
 	pr_info("hide_kmod v4.17: armed (nuid=%d, deny+redirect+acc-stat+getdents+dpath+mrs 필터)\n",
 		n_target_uids);
 	return 0;
@@ -1805,6 +1862,7 @@ static void __exit hide_exit(void)
 	unregister_kprobe(&kp_eg);
 	unregister_kprobe(&kp_showmap);
 	unregister_kprobe(&kp_ioctl);
+	cancel_delayed_work_sync(&vdso_dw);
 	if (hwbp_ev)
 		perf_event_release_kernel(hwbp_ev);
 	pr_info("hide_kmod v4.18: removed (nmissed=%d, mrs_hits=%lu, segv_recover=%lu)\n",

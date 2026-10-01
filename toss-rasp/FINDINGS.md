@@ -7465,3 +7465,44 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 1. "상태변수 후보 주소"는 경로·시대마다 재검증 — §154 추기5의 0x181758은 그 시대 fault-probing 이야기.
 2. 관측 순서의 정석: **먼저 diff로 '변하는 곳'을 지도 → 그 주소를 hwbp로 '누가 쓰나'** — 이번엔 diff가
    "변하는 곳 없음"을 먼저 증명해 hwbp 타깃 자체가 소멸(네거티브의 정보량).
+
+## 161. S161 세션 (2026-10-01 심야 5차) — ★vvar 스푸핑 실현(LKM v4.22a) + E5 완결: vvar mult 판독 가설 기각 [C] — 타이밍 채널 추론 체인 붕괴, 판정 입력 미지로 회귀
+
+### 161-1. P0 결론
+1. **★LKM v4.22a: vdso_data(vvar) 스푸핑 실현 [C]** — 워킹 카운터메저:
+   - 검증: vvar mult 699050667(=24MHz shift24 인코딩 — **데이터 페이지에서 CNTFRQ 재확인**) →
+     스푸핑 후 **873813333(=19.2MHz 인코딩) 프로세스 가시 교체**(vdso_check 자체 바이너리로 확인).
+     워커 126Hz 재위조 유지, 셸 도구 부작용 없음(vDSO 사용자만 25% 빠른 시계 — 분 단위 테스트 무해).
+2. **★E5 완결 — vvar mult/shift 판독 가설 기각 [C]**: 동일 세계에서 스푸핑 ON/OFF 토글 ×3+3런:
+   **ON 11440/11420/11411ms · OFF 11413/11284/11445ms — 전부 [EMULATOR] EXIT/RASP/handleExitPlan 불변.**
+   가드는 vvar의 주파수 인코딩(mult/shift)을 입력으로 쓰지 않는다.
+3. **타이밍 채널 추론 체인 붕괴**: §155의 "타이밍 [C]"는 '환경이 타이밍으로 구별 가능함'의 실증 +
+   채널 소거에 따른 '추론'이었다. 이제 **관측 가능한 모든 시간 경로(MRS/PLT/vDSO API/Java/원시 syscall/vvar 데이터)가
+   소거**되어 "가드가 타이밍을 잰다"의 직접 증거는 0. 잔여: fork 자식 / 클럭프리 상대타이밍 / **미지 채널**.
+   → 해법 공간(베어메탈 유일)은 불변이지만, 메커니즘 규명은 "미지 입력" 프레임으로 회귀.
+4. **운영 사고 2건(법칙화)**:
+   - **LKM v4.22 초판 init 데드락**: module_init에서 ①kallsyms_lookup_name kprobe 트릭 ②tick 컨텍스트 함수
+     (update_vsyscall) kretprobe 등록 — insmod 무한행 + 게스트 소프트락(재부팅으로만 회복). v4.22a 재설계:
+     **주소는 userspace가 /proc/kallsyms에서 파라미터 전달**(kptr_restrict=0 필요), **재위조는 2ms 지연워커**
+     (probe 등록 클래스 자체 제거). 모듈 init에서 프로브 등록·심볼 해결 금지 교훈.
+   - **adb 취소 데드락 패턴**: 사용자 입력으로 실행 중 명령이 취소되면 in-flight adb shell이 디바이스측 adbd를
+     뭉개서 offline화(호스트 adb 리셋 무효 — 에뮬 재시작으로만 회복). **장기 작업은 진성 백그라운드 태스크로**,
+     폴링은 로그 파일만. + **이중 복구 경합**: 구 백그라운드 복구가 살아서 새 에뮬에 연결 — 재부팅 후 구 태스크
+     잔존 확인 필수.
+
+### 161-2. P1 증거
+- E5 로그(`toss-rasp/session161/e5_result.log`): 6런 전부 ~11.3-11.4s EXIT/RASP.
+- vdso_check 출력: 스푸핑 전 mult=699050667/shift=24(seq 양방향 갱신 관찰) → 후 mult=873813333.
+- vdso_hits=252/1s(워커 재위조율 실측) · dmesg "v4.22a: armed + vdso worker".
+- v4.22 초판 사고: insmod 무한행(10분+), 게스트 shell 전면 무응답, 콘솔은 생존 — 콘솔 emu kill로 회복.
+
+### 161-3. P2 절차/도구
+- **`scripts/vdso_check.c`**(스킬 — 정적 빌드 docker gcc:14): auxv AT_SYSINFO_EHDR → vvar(=vdso-0x2000) →
+  mult/shift/seq/mode 출력. 스푸핑 검증 표준 도구. `tools/vdso_ab.sh`(A/B 러너).
+- LKM 파라미터: `vdso_page_addr`(userspace 전달) → `vdso_mult`/`vdso_shift`/`vdso_mode` → `vdso_spoof` 순서.
+  kptr_restrict 해제(`echo 0 > /proc/sys/kernel/kptr_restrict`) 후 `/proc/kallsyms | grep -w vdso_data_store`.
+
+### 161-4. P3 교훈
+1. 인과 실험 도구(스푸핑)가 "실현+검증" 단계를 거치면 가각이 확정적이 된다 — 이번 기각은 도구 검증 덕에 [C].
+2. 모듈 init은 최소만: 프로브 등록·동적 심볼 해결은 지연/외부화. init 데드락 = 게스트 소프트락 = 최악의 사고 등급.
+3. 추론으로 쌓은 결론("타이밍")도 소거 실험이 쌓이면 '미지'로 정직하게 되돌려야 한다.
