@@ -319,3 +319,12 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   통제 실험은 무보고 조합(iptables+clock만료)으로.
 - **frida adb forward는 부트마다 소멸** — attach 전 `adb forward tcp:39871 tcp:39871` 재확인.
 - E4 도구 완성: `tools/hook_vdso_plus.js`(vDSO+PLT 동시·exit_trap 생존·60s 틱) — 정상화 후 즉시 재사용.
+
+## §159 성과 요약 (2026-10-01 심야 3차)
+- **네거티브 유효성 법칙**: 관측기(훅)가 대상(모듈 로드)보다 먼저 arm돼도 **모듈 범위 필터가 null 고정**이면 결과가
+  전부 0으로 나온다 — 조기 attach 스크립트는 모듈 지연해석(100ms 폴링) 필수. "0 결과는 먼저 의심".
+- **vDSO ELF는 섹션헤더 없음** — 심볼 파싱은 PT_DYNAMIC → DT_SYMTAB/DT_STRTAB 경로가 정석.
+- **메인 libea56은 시간 API를 전혀 호출하지 않음 [C]**(3세대×10.7만 회, PLT+vDSO 동시 감시) — 시계 기반 타이밍
+  측정 가설의 마지막 관측 가능 경로 소멸. 잔여: fork 자식 / vvar 직접판독 / 클럭프리.
+- **재attach 루프 러너**: 사망→재기동→신규 pid 재주입으로 1런 다세대 관찰(hook_vdso_plus.js v3).
+- **집행 경로 드리프트는 한시적**(2-3분 자연 회복) — 재발 시 시간 경과 관찰 후 재실험.
