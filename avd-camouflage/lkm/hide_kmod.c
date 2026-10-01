@@ -459,6 +459,8 @@ static struct kprobe kp_ksig = {
  * 설정 → -EFAULT (kill 위장과 동일 패턴). pvm_block=1일 때만 동작(기본 OFF). */
 static int pvm_block = 0;
 module_param_named(pvm_block, pvm_block, int, 0644);
+static int pvm_log = 0;
+module_param_named(pvm_log, pvm_log, int, 0644);
 static ulong pvm_hits;
 module_param(pvm_hits, ulong, 0444);
 
@@ -466,12 +468,16 @@ static int pvm_pre(struct kprobe *p, struct pt_regs *regs)
 {
 	struct pt_regs *ul;
 
+	ul = (struct pt_regs *)regs->regs[0];
+	/* S154: 호출자 관측 — 유저 컨텍스트의 pc(svc 사이트)와 x30(복귀주소=호출자) */
+	if (pvm_log && pvm_hits < 40)
+		pr_info("pvmcall: pid=%lu lr=%px pc=%px remote_iov=%px riovcnt=%lu\n",
+			ul->regs[0], ul->regs[30], ul->pc, ul->regs[3], ul->regs[4]);
 	if (!pvm_block)
 		return 0;
 	if (!uid_allowed())
 		return 0;
 	pvm_hits++;
-	ul = (struct pt_regs *)regs->regs[0];
 	ul->regs[1] = 0;   /* local_iov = NULL → EFAULT */
 	return 0;
 }

@@ -6846,3 +6846,22 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - 부트 직후 qemu누수=4 재발 1회 — props-apply 수동 재적용으로 0 (boot_recover [2c]/[11] 타이밍 변동성, 차기 교정 과제).
 - macOS BSD grep `-Z`≠NUL(`--null`이 정답) 재확인. guard_capture 1차 버그: tracing_on 재활성화 누락(런2 12행).
 - 측정 자산: /tmp/guard_run{1,2,3}(trace+maps), /tmp/guard_probe/(프로빙 페이지 5종+maps) — 세션 종료 후 toss-rasp 보존 권장.
+
+[§154 추기 — ★"boot.art를 왜 읽나" 완전 해명: art::SafeCopy 경유 힙 순회 (사용자 Q에 대한 추적)]
+- **질문**: boot.art 읽기는 토스 코드인가? → **읽히는 대상은 OS(ART 부트 이미지), 읽는 주체는 토스 가드** —
+  그러나 경로가 밝혀짐: **가드가 순정 ART의 공개 함수를 빌려 쓴다**.
+- **pvm 호출부 모듈 분리(LKM pvm_log: 유저 pt_regs의 pc/x30 캡처, 638건 전수)**:
+  ① 6건(ART 체인, rlen=4) → **lr=libartbase.so+0xb4dc**(r-xp 세그먼트 오프셋) = 실제 vaddr 0x314dc 복귀.
+  ② 632건(.text 316페이지 무결성, rlen=1) → **lr=libea56+0xbee40, pc=+0xbea28/+0xbed9c** = 가드 자체 raw syscall.
+- **libartbase 측 해부(순정 APEX pull, capstone)**: 복귀주소 소속 함수 = **`_ZN3art8SafeCopyEPvPKvm`
+  (art::SafeCopy(void*, const void*, size_t), 0x31430, 248B, dynsym export)** —
+  getpid()+process_vm_readv(페이지분할 iov)로 **fault 없이 자기 메모리를 읽는 ART 공식 헬퍼**(실패 시 0 반환).
+  libartbase는 순정 APEX(verity)로 이 함수/임포트는 **Android 원래 존재** — 변조 아님.
+- **전역 관측**: 앱 미기동 20s에 pvmcall 0건 — system_server 등은 평상시 미사용. **앱(가드)이 유발**한 검사.
+- **호출 경로 추정(facts+추정 분리)**: 가드는 dlopen/dlsym 임포트 보유 → **dlsym("art::SafeCopy") 경유 추정**(미확정 —
+  bl 직접호출 0건 = 함수포인터/간접호출). 호출부 libea56 오프셋 특정은 SafeCopy 진입 kprobe로 다음 관측기 과제.
+- **의미**: 가드의 boot.art/LinearAlloc/자바힙 읽기 = **"런타임 내부 구조 순회"** — boot.art 자체가 표적이 아니라
+  Runtime→힙 접근 경로(포인터 체인). 최종적으로 자바힙 4바이트(이번 런 0x0)를 검사 — 안티훅/힙 무결성 계열.
+  이것이 §150 "메모리 거주 채널"의 **관측 가능한 일면**(SafeCopy는 syscall을 남기므로 ftrace에 걸렸던 것).
+- **신규 관측기 제안(차기 정공)**: **SafeCopy 진입 kprobe(src,dst,len 전수 기록)** — syscall보다 풍부한
+  "가드가 읽는 메모리의 전체 지도"를 얻는다. (대응 실험 시 주의: §154 본문 — 차단/실패 위장은 fail-closed 자폭.)
