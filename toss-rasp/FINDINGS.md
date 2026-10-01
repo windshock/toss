@@ -7050,3 +7050,19 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **운영**: exit_block=0 원복(기본. 사용 시에만 1). 강제종료는 SIGKILL으로 언제나 동작.
 - **교훈(스킬 반영)**: el0_svc_common scno 재작성 패턴(인자2)은 syscall 무력화의 범용 프리미티브.
   bionic _exit은 반환하지 않는다 — "성공 반환" 전략은 커널 syscall 재작성과 함께 무한 재시도를 낳는다.
+
+[§155 추기8 — 동결 포렌식 창 실전 가동: logstore 업로드 버퍼 전문 확보 + 페이로드는 자식 주소공간/스크럽]
+- **도구**: `tools/verdict_forensics.sh {post|pre}` — exit_block=1(v5 동결) 후 EXITSTOP 확인 시점에
+  /proc/pid/mem 리전 덤프(main 96MB·LOS 16MB·scudo·LinearAlloc·libea56 rw). 판정전(T+3s) 대조본 포함.
+  보존: `toss-rasp/session155/verdict_{pre,post}` + 문자열 diff 3종.
+- **★획득: logstore 업로드 버퍼(JSON) 전문이 메인 힙에 잔존** — 완전한 텔레메트리 스키마:
+  - device_id=314872ec53f9319ffc498ee44ed8f2ef(이미지 상수 재확인) · install_id=357429601 · tsid=1013973/word
+  - fds_debug(detected:emulator/attendingDetectorSet/guardLevel:LOW)·fds_detected([EMULATOR]) 원문 그대로
+  - **api_toss_error 403 URL 신규**: api-gateway.toss.im:11099/api/v3/tuba/distributions/is-target/by-device-id?**code=android.platform.logLowMemory**
+    (TUBA 분배 게이트 — 403이 device_id 키드 목록 전면이 아니라 코드별 is-target 거부일 가능성, §152 재해석 재료)
+  - logstore 버퍼는 런 경계를 넘어 잔존(pre 덤프에 직전 런 항목 포함) — pre/post 문자열 diff는 이 오염 보정 필요
+- **페이로드(%lld;%s;…완성본)/result:191은 메인 스냅샷에 없음** → ①판정 계산·조립은 fork 자식 주소공간
+  (동결 시 자식 일부는 별도 tgid로 SIGSTOP됨 — EXITSTOP Thread-45 관측) ②조립 후 스크럽 가능성.
+  **차기**: 동결 시점 toss-uid 전 프로세스(pidof -s 모든 자식) 열거→각각 덤프 → 자식 힙에서 페이로드/191 검색.
+- 판정후 신규 물질화 문자열 6,921건 중 가드 관련 직접 신호는 logstore 항목뿐 — 판정 결과의 메인-프로세스
+  발자국은 텔레메트리 조립이 전부(판정 계산 흔적은 자식에).
