@@ -392,3 +392,11 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   원인을 '대상의 조건'과 '관측기의 선택' 양쪽에서 검토하라.
 - Ghidra: dispatch_resolved.json 핸들러 구간 탐색으로 임의 주소의 소속 핸들러 특정 가능 — decomp_at_create.java.
   단 핸들러 대부분은 트램폴린 — 직독엔 디플래트닝 필요.
+
+## §169 성과 요약 (2026-10-02 오전)
+- **★COW 트리프와이어(v4.27)**: VMA 쓰기유지+PTE만 RO → 쓰기 폴트=do_wp_page(COW 자가복구, 앱 무사)+
+  do_wp_page kprobe가 전-스레드 pc 관측. arm64 워치포인트 스레드 제약의 완전 우회. 도구 pw_toss{,0}.sh.
+- **이 커널(GKI 5.15 CFI)에서 유저 폴트 신호는 force_sig_fault 무경유** (실증: 보장 SIGSEGV에
+  force_sig_fault/arm64_notify_die kprobe 0발화, get_signal/prepare_signal만 발화) — 폴트 훅 설계 필독.
+- tracefs 메인 인스턴스 버퍼는 웨지 가능(§139 법칙 재확인) — 컨트롤 프로브 정상성 확인 후 실험.
+- do_page_fault/handle_mm_fault/__send_sig_info는 kprobe 블랙리스트(NOKPROBE).

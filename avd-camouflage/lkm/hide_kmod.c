@@ -1728,7 +1728,17 @@ static int pagewatch_arm(void)
 	unsigned long a;
 
 	if (!pagewatch_pid || !pagewatch_addr) {
-		/* 해제 */
+		/* 해제 — PW 꼬리 덤프(256엔트리: 마지막 쓰기 폴트 pc들) */
+		{
+			int i, n = pwtail_wrapped ? 256 : pwtail_idx;
+			pr_info("PW-TAIL begin n=%d total=%lu\n", n, pagewatch_hits);
+			for (i = 0; i < n; i++) {
+				int k = pwtail_wrapped ? (pwtail_idx + i) % 256 : i;
+				pr_info("PW-T pc=0x%lx\n", pwtail_pc[k]);
+			}
+			pr_info("PW-TAIL end\n");
+			pwtail_idx = 0; pwtail_wrapped = 0;
+		}
 		if (pw_mm) {
 			pw_pte_rw(pw_mm, pw_page, 1);
 			rcu_read_lock();
@@ -1765,7 +1775,8 @@ static int pagewatch_arm(void)
 		return -ENOENT;
 	}
 	pw_saved_flags = vma->vm_flags;
-	vma->vm_flags &= ~(VM_WRITE | VM_MAYWRITE);
+	/* v4.27 설계B: VMA 쓰기유지 + PTE만 RO → 쓰기 폴트가 do_wp_page(COW)로 —
+	 * 시그널 경로 미경유(앱 무사) + do_wp_page kprobe로 전-스레드 관측 */
 	pw_vma = vma;
 	pw_page = pagewatch_addr & PAGE_MASK;
 	a = pw_page;
@@ -1777,6 +1788,32 @@ static int pagewatch_arm(void)
 		pw_page, pagewatch_pid, pw_saved_flags, vma->vm_flags);
 	return 0;
 }
+
+/* v4.27: COW 경유 트리프와이어 — do_wp_page에서 타깃 페이지 쓰기 폴트 관측 */
+static int wpp_pre(struct kprobe *p, struct pt_regs *kregs)
+{
+	struct vm_fault *vmf = (struct vm_fault *)kregs->regs[0];
+	unsigned long faddr;
+	struct pt_regs *u;
+	if (!pagewatch || !pw_mm || current->tgid != (pid_t)pagewatch_pid || !vmf)
+		return 0;
+	faddr = vmf->address;              /* struct vm_fault 5.15: address 첫 필드 근방 */
+	if (faddr < pw_page || faddr >= pw_page + PAGE_SIZE)
+		return 0;
+	u = task_pt_regs(current);
+	pagewatch_hits++;
+	pwtail_pc[pwtail_idx] = u ? u->pc : 0;
+	if (++pwtail_idx >= 256) { pwtail_idx = 0; pwtail_wrapped = 1; }
+	if ((pagewatch_hits & 0x3F) == 1)
+		pr_info("PW #%lu pc=0x%lx comm=%s tid=%d\n", pagewatch_hits,
+			u ? u->pc : 0, current->comm, current->pid);
+	mod_delayed_work(system_wq, &pw_work, msecs_to_jiffies(2));  /* COW 완료 후 재 RO */
+	return 0;
+}
+static struct kprobe kp_wpp = {
+	.symbol_name = "do_wp_page",
+	.pre_handler = wpp_pre,
+};
 
 static int pagewatch_go_set(const char *val, const struct kernel_param *kp)
 {
@@ -1851,12 +1888,21 @@ static struct kprobe kp_prctl = {
 	.pre_handler	= prctl_pre,
 };
 
+static int pw_dbg;
+module_param(pw_dbg, int, 0644);
+static ulong pw_dbg_n;
 static int fsf_pre(struct kprobe *p, struct pt_regs *kregs)
 {
 	int sig = (int)kregs->regs[0];
 	unsigned long addr = kregs->regs[2];   /* force_sig_fault(sig, code, addr) */
 	struct pt_regs *u;
 	unsigned long xv;
+
+	if (pw_dbg && pw_dbg_n < 50) {
+		pw_dbg_n++;
+		pr_info("PWDBG fsf sig=%d addr=0x%lx tgid=%d comm=%s\n",
+			sig, addr, current->tgid, current->comm);
+	}
 
 	/* v4.26: 페이지 트리프와이어 — 감시 페이지 쓰기 폴트는 통과+로깅 */
 	if (pagewatch && pw_mm && current->tgid == (pid_t)pagewatch_pid &&
@@ -2040,6 +2086,10 @@ static int __init hide_init(void)
 	/* v4.3 utsname 치환은 철회됨(2026-09-21): 적재 직후 게스트 재부팅 + "no symbol version
 	 * for module_layout" — 빌드 환경 심볼버전 불일치 상태에서 init_uts_ns 쓰기가 메모리
 	 * 손상을 일으킨 추정. uname 채널은 미해결 과제로 FINDINGS에 기록. */
+	ret = register_kprobe(&kp_wpp);
+	if (ret) pr_err("hide_kmod: do_wp_page kprobe failed: %d\n", ret);
+	else pr_info("hide_kmod v4.27: pagewatch COW tripwire armed (do_wp_page)\n");
+
 	/* v4.22a §161: vdso 스푸핑 상시 워커 — 플래그 OFF면 no-op. page 주소는 userspace가
 	 * /proc/kallsyms의 vdso_data_store를 vdso_page_addr로 전달 (커널측 심볼해결 데드락 방지). */
 	INIT_DELAYED_WORK(&vdso_dw, vdso_work_fn);
@@ -2074,6 +2124,7 @@ static void __exit hide_exit(void)
 	unregister_kprobe(&kp_eg);
 	unregister_kprobe(&kp_showmap);
 	unregister_kprobe(&kp_ioctl);
+	unregister_kprobe(&kp_wpp);
 	cancel_delayed_work_sync(&vdso_dw);
 	if (hwbp_ev)
 		perf_event_release_kernel(hwbp_ev);

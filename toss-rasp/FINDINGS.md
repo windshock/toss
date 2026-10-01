@@ -7727,3 +7727,35 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 1. **모듈에서 set_pte_at 불가**(arm64 미익스포트 의존) — set_pte 원시 접근 + 별도 코히런시 고려.
 2. **param_cb 전용 파라미터에 param_set_int 금지**(NULL arg 옵스) — kstrtoint 직접 파싱.
 3. 폴트 경로 디버깅은 '훅 지점 도달 여부'부터 무조건 로깅으로 분리할 것.
+
+## 169. S169 세션 (2026-10-02 오전) — ★★COW 트리프와이어(v4.27) 완성·실측 성공: force_sig_fault 우회 경로 판명 + 첫 작성기 pc 5건 확보
+
+### 169-1. P0 결론
+1. **★§168 수수께끼 완전 해결 [C]**: arm64 유저 폴트의 신호는 **force_sig_fault 계열을 경유하지 않는다**
+   (등록된 kprobe가 보장 SIGSEGV에 무발화 — GKI 경로가 __send_signal/prepare_signal로 직행하는 것을
+   tracefs(chan19 인스턴스) 실험으로 실증: get_signal 66회/prepare_signal 66/__send_signal 66 vs
+   force_sig_fault·to_task·arm64_notify_die 전부 0). §168의 "폴트 미발화"는 훅 지점 오류였다.
+   - 부수 판명: **tracefs 메인 인스턴스 버퍼는 웨지 상태**(§139 법칙 — 컨트롤 프로브조차 0이벤트;
+     chan19 인스턴스는 정상). kprobe 목록 37개 등록 확인, 엔진 정상(getname 96만 이벤트).
+   - do_page_fault는 kprobe 블랙리스트(NOKPROBE) — 직접 훅 불가.
+2. **★v4.27 COW 트리프와이어 완성·selftest 통과 [C]**: 설계 B — **VMA 쓰기 유지 + PTE만 RO** → 쓰기 폴트가
+   do_wp_page(COW)로 자가복구(시그널 무경유 = 앱 무사) + **do_wp_page kprobe**로 전-스레드 관측:
+   - selftest: 346힛/3s, 작성기 생존 ✓, pc=쓰기 명령 주소 로깅 ✓ (writer_inf)
+   - 스레드 로또 해소(arm64 워치포인트의 아키텍처 제약 우회)
+   - 히트당 1회 COW(4KB 복사)+2ms 후 재RO — 저오버헤드
+3. **★첫 실측: toss rw 첫 페이지(0x174000) 작성기 pc 5건 [C]**: hits=5, 유니크 5 —
+   **libea56+0x101920, +0x93aa0, +0x919c0, +0x157200, +0xd1d30** (어휘 복호화/상태 제로화 구역 작성자).
+   앱 정상 사멸(11s) — 관측 무섭침. 상태 페이지(0x183000)는 런-로또(1/7 핫런: 363힛 관측 1회).
+4. **[C] 상태기계 런-레벨 조건부 재확 인**: 스레드 무관 트리프와이어로도 콜드런 존재(7연속 0힛) —
+   §166의 "핫/콜드"는 스레드 로또+**런-레벨 조건부(심층스캔 경로 선택)** 혼합이었음.
+
+### 169-2. 차기 최우선
+1. **작성기 5개 디컴파일**(decomp_at_create.java — 0x101920/0x93aa0/0x919c0/0x157200/0xd1d30):
+   어휘 복호화·상태 기입 코드 직독 → 가드 내부 구조.
+2. **핫런 상태 페이지 트레이스**(자동 루프, 꼬리 덤프 견고) → 킬체인 핸들러 시퀀스.
+3. printk 증발 수수께때(샘플 PW 라인이 링에 안 남음 — 꼬리 덤프로 우회 완료, 원인은 미상).
+
+### 169-3. 운영 법칙
+1. **유저 폴트 신호 훅은 force_sig_fault 금지(이 커널)** — do_wp_page(COW)·prepare_signal 계열 사용.
+2. **tracefs는 인스턴스 단위로** — 메인 버퍼 웨지 시 컨트롤 프로브로 정상성 확인부터.
+3. do_page_fault·handle_mm_fault·__send_sig_info는 kprobe 블랙리스트.
