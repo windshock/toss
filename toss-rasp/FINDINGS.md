@@ -6774,3 +6774,11 @@ libea56 16k 루프:
 - **[R] 확정 폐기**: Custom VM 계층, Packed/SIMD 계층, 중앙 Verdict Engine 단일 모델, "서버→로컬 킬 명령" 모델.
 - **저장소 재정렬(아키텍처 기준)**: `tmp-artifacts/{target-app, guard-orchestrator, native-engine, countermeasures}` — 박스별 실물 배치,
   INDEX.md 갱신. REVIEW zip의 요약은 구버전(S150 강등 전) — ARCHITECTURE.md가 우선.
+
+[§153 추기5 — 루트 정리 + AGENTS.md/README.md 신설 (에이전트 자율 진행 기반)]
+- **AGENTS.md**(루트) 신설: 진입 순서(ARCHITECTURE→HANDOFF→[O] 항목), 운영 법칙(ANDROID_SERIAL/frida 커스텀포트/
+  ro.hardware.egl delete 금지 등 절대금지 목록), 측정 표준(logstore 라이브 폴링), 기록 의무(FINDINGS→ARCHITECTURE→핸드오프→커밋).
+- **README.md**(루트) 신설: 사람용 개요·문서 체계·git 정책.
+- **루트 정리**: originals/(xapk·extracted), evidence/(§97-108 패키지+REVIEW zip), kisa/(제보 서류, git 제외),
+  toss-rasp/handoffs/(구 핸드오프 7건 아카이브) — 루트에는 문서 3종+최신 핸드오프+인프라 디렉터리만.
+  신규 관례: **루트 핸드오프는 최신 1건만**, 세션 종료 시 구본을 handoffs/로 이동.

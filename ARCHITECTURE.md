@@ -162,11 +162,12 @@
 | `tmp-artifacts/tools/` | 검증 도구(디코더·frida 훅·측정 러너) |
 | `avd-camouflage/` | 대응 스택 본체(lkm·host-patch·스크립트) |
 | `toss-rasp/FINDINGS.md` | 전체 근거 기록(§1-§153) — `toss-rasp/INDEX.md`로 탐색 |
+| `originals/`(xapk·extracted), `evidence/`(§97-108 패키지·REVIEW zip), `kisa/`(제보 서류, git 제외), `ack-kernel/`·`host-patch-root/`(빌드·패치 의존) | 인프라 |
 | `toss-rasp/sessionN·heap·dump·apk_backup` | 세션별 원증거 (FINDINGS "산출" 문단 참조) |
-| `HANDOFF_S15x_*.md`(루트) | 세션 인계 — **최신 작업 상태는 HANDOFF_S153** |
-| `REVIEW_S148_S153_2026-10-01.zip` | §153 시점 검토 스냅샷(봉인 — 본 문서의 S150 강등은 미반영) |
+| `HANDOFF_S153_*.md`(루트, 최신 1건) + `toss-rasp/handoffs/`(아카이브 7건) | 세션 인계 |
+| `evidence/REVIEW_S148_S153_2026-10-01.zip` | §153 시점 검토 스냅샷(봉인 — 본 문서의 S150 강등은 미반영) |
 
-> 루트 `REVIEW_…zip`의 `00_REVIEW_SUMMARY.md`는 본 문서 이전 판본 — S150 표현이 구버전(강등 전)이다. 충돌 시 **본 문서가 우선**.
+> `evidence/` REVIEW zip의 `00_REVIEW_SUMMARY.md`는 본 문서 이전 판본 — S150 표현이 구버전(강등 전)이다. 충돌 시 **본 문서가 우선**.
 
 ## 5. 갱신 규칙
 
