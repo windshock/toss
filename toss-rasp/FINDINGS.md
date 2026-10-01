@@ -6764,3 +6764,13 @@ libea56 16k 루프:
   로컬 11s 킬의 원인 아님. 부가 반증: 17차 7분 생존도 동일 사이드로드 설치였음.
 - **운영 변경 유지**: installer=com.android.vending 상태 유지(실기기 정합성 향상 — 텔레메트리가 vending 보고).
   원복 필요 시 재설치에서 -i 제거. GKI 런타임 파라미터 아님(재부팅 유지 — PMS 설정).
+
+[§153 추기4 — 기술 아키텍처 문서화 + 저장소 아키텍처 정렬 (사용자 리뷰 모델 채택)]
+- **루트 `ARCHITECTURE.md` 신설 = 최상위 출입구**: 박스→코드→증증의 검증 지도 + 증거수준 원장([C]/[S]/[O]/[R]).
+- **모델 확정(사용자 §153 리뷰)**: Hidden DEX=Guard Orchestration/Policy Layer(ART 직접 실행) + libea56=Native Detector Engine(1,969 핸들러)
+  + **집행 워크플로우 병렬 2개**(A: DetectFactor/lifecycle→postDelayed→System.exit, B: watchdog R()→afed8(4)→poison) + **서버 평면 별도**(telemetry/FDS/403).
+- **S150 결론 강등(중요)**: "네이티브 독립 체크가 JNI로 직접 System.exit" edge는 미확증 — 확보 증거는 logstore EXIT/RASP + System.exit(0)까지.
+  아키텍처에는 "Native detector state → RASP verdict → Java enforcement → System.exit"로만 적재. 정확한 caller chain은 [O] 3번.
+- **[R] 확정 폐기**: Custom VM 계층, Packed/SIMD 계층, 중앙 Verdict Engine 단일 모델, "서버→로컬 킬 명령" 모델.
+- **저장소 재정렬(아키텍처 기준)**: `tmp-artifacts/{target-app, guard-orchestrator, native-engine, countermeasures}` — 박스별 실물 배치,
+  INDEX.md 갱신. REVIEW zip의 요약은 구버전(S150 강등 전) — ARCHITECTURE.md가 우선.

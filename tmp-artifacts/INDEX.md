@@ -1,26 +1,24 @@
-# tmp-artifacts 인덱스 (2026-10-01 §153 정리)
+# tmp-artifacts 인덱스 — 아키텍처 정렬판 (2026-10-01 §153)
 
-§149-153 세션 작업 자산. **2026-10-01 재구성 전 경로**(FINDINGS/핸드오프 옛 문서 참조용):
-`toss_base.apk`→`apk/`, `toss_alldex·toss_dex27`→`dex/`, `jadx_*`→`jadx/`,
-`libea56_live.so·c13_dump.txt·dispatch_resolved.json·final_vocabulary.json·gproj`→`native/`,
-`pristine_egl_s153`→`gl/`, `guest_ovl`→`guest/`, `launch_stats_bash3.sh`→`tools/`.
+> **최상위 지도는 저장소 루트 `ARCHITECTURE.md`** — 이곳은 그 박스별 실물 자산 배치.
+> 같은 날 2차 재구성(유형별→아키텍처별). 대응: `jadx/`→`target-app/jadx-app/`·`guard-orchestrator/`,
+> `native/`→`native-engine/`, `gl/`·`guest/`→`countermeasures/`.
 
-| 경로 | 내용 | 언제 쓰나 |
+| 경로 | 아키텍처 위치 | 내용 |
 |---|---|---|
-| `apk/toss_base.apk` | 원본 base APK (188MB) | 재설치/재분석 |
-| `dex/toss_alldex/` | 전체 classes dex 추출 (30 dex) | 정적 분석 입력 |
-| `dex/toss_dex27/` | classes27(가드 스레드 dex) 관련 | §151 DEBUGGER 게이트 등 |
-| `jadx/jadx_hidden/` | **숨은 DEX(가드 자바측) 역컴파일 391파일** — 사멸 체인 코드(s3, getBooleanFromFullResponse, createFromParcel, UST_CRYPT…) | 원인 재검토의 1차 원문 |
-| `jadx/jadx_c4,c11,c13,c16,c19,c30/` | 통합 APK 부분 디컴파일 트리 (각 classesN) | 클래스 출처 대조 |
-| `jadx/jadx_dbg, jadx_ve/` | DEBUGGER/VIRTUAL_ENV 게이트 분석 트리 | §151 decA/B/C 재검 |
-| `native/libea56_live.so` | 가드 네이티브 라이브 덤프본 | Ghidra 재분석 |
-| `native/gproj/` | Ghidra 프로젝트 toss5 | `analyzeHeadless native/gproj toss5 …` |
-| `native/c13_dump.txt` (44MB) | 16k 루프 디스패처 원시 덤프 | §149-3 재해석 |
-| `native/dispatch_resolved.json` | 1980 reloc 해석·핸들러 분류(1,969개) | 네이티브 지도 |
-| `native/final_vocabulary.json` | 확정 탐지 어휘 | 체크리스트 대조 |
-| `gl/pristine_egl_s153/lib64/` | **순정 GL 11종**(vendor.img 직출, md5 목록 FINDINGS §153 P1) | 17차 GL 세계 재현 (레시피: §153 P1) |
-| `guest/` | 게스트 오버레이 관련(§151 system.img 수술) | — |
-| `tools/` | decode_dbg_gate 1~3, hook_did/hook_fdleak, attach_run, launch_stats_bash3(측정 러너), tombstone_09 | 실험 재현 |
-| `run-logs/` | §151 4련 logstore/logcat + `logstore_live_s153_최신판정.txt`(**현재 판정 [EMULATOR] 실측 원문**) | 판정 증거 |
-
- REVIEW zip(루트 `REVIEW_S148_S153_2026-10-01.zip`)의 원본 스테이징은 정리 때 삭제(zip이 원본).
+| `target-app/apk/toss_base.apk` | [입력] | 원본 base APK (188MB) |
+| `target-app/dex/toss_alldex·toss_dex27` | [입력] | 전체 30 dex · classes27 추출 |
+| `target-app/jadx-app/jadx_c4·c11·c13·c16·c19·c30·dbg·ve` | [입력] | 통합 APK 부분 디컴파일 트리 (installer 소비처 c13·텔레메트리 c4 포함) |
+| `guard-orchestrator/jadx-hidden/` | **박스 1: Hidden DEX 오케스트레이터** | 숨은 DEX 역컴파일 391파일 — s3/getBooleanFromFullResponse/createFromParcel/UST_CRYPT… (§148 체인 원문) |
+| `native-engine/libea56_live.so` | **박스 2: libea56 엔진** | 라이브 덤프 바이너리 (Ghidra 재임포트용) |
+| `native-engine/gproj/` | 〃 | Ghidra 프로젝트 toss5 |
+| `native-engine/dispatch_resolved.json` | 〃 | 1980 reloc 해석·핸들러 1,969 분류 |
+| `native-engine/final_vocabulary.json` | 〃 | 확정 탐지 어휘 |
+| `native-engine/c13_dump.txt` (44MB) | 〃 | 디스패처 원시 덤프 |
+| `run-logs/logstore_live_s153_최신판정.txt` | **집행 A + 서버 평면** | 현재 판정 [EMULATOR] 실측 원문 + 403 3건 |
+| `run-logs/logstore_run5~9·toss_run2/3·toss_cert_run` | 집행 A/B 증거 | §151 4련 logstore/logcat |
+| `tools/tombstone_09.txt` | 집행 B 증거 | native poison 계열 툼스톤 |
+| `tools/decode_dbg_gate1~3·hook_did·hook_fdleak·attach_run` | 검증 도구 | 디코더·frida(커스텀포트)·측정 |
+| `tools/launch_stats_bash3.sh` | 검증 도구 | N런 사망 분류 러너 (macOS bash3 호환) |
+| `countermeasures/gl/pristine_egl_s153/lib64/` | 대응 스택 | 순정 GL 11종(vendor.img 직출, md5: FINDINGS §153 P1) — 17차 GL 세계 재현 레시피 재료 |
+| `countermeasures/guest/` | 대응 스택 | §151 system.img 수술 관련 게스트 오버레이 |
