@@ -40,8 +40,11 @@ const iv = setInterval(() => {
           if (!seen.has(key)) { seen.add(key); fresh.push(s); }
         }
       }
-      send("[rwstr] dt=" + ((now - lastT) / 1000).toFixed(1) + "s ch=" + ch.length + " new=" + fresh.length +
-           (fresh.length ? " :: " + fresh.slice(0, 12).join(" | ") : ""));
+      send("[rwstr] dt=" + ((now - lastT) / 1000).toFixed(1) + "s ch=" + ch.length + " new=" + fresh.length);
+      // 전량 송신 — 40개씩 분할
+      for (let i = 0; i < fresh.length; i += 40) {
+        send("[rwstr Full] " + fresh.slice(i, i + 40).join(" | "));
+      }
     }
     last = cur;
   } else { last = cur; send("[rwstr] baseline"); }

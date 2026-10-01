@@ -6978,3 +6978,20 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **의미**: 가드의 검사 대상 문자열은 **정적 바이너리에 없고 실행 중 rw에 조립**된다(§149-5 정적 어휘는
   DEX 측). rw-diff는 이 "살아있는 체크리스트"를 보는 유일한 창 — 차기 런에서 전체 수집(150+ 문자열).
   리플렉션 훅 스캔의 존재가 §149-7 "HOOK=null 고정"과 별개의 **네이티브 자체 훅 스캔**을 시사.
+
+[§155 추기4 — 체크리스트 기반 소거: fd 스캔 세탁 완료 + xattr/채널 정합화 — 전부 비인과]
+- **완성된 체크리스트(182 문자열) ↔ 우리 환경 대조 결과**:
+  | 항목 | 우리 상태 | 조치 | A/B |
+  |---|---|---|---|
+  | /sys/module/intel_powerclamp | ENOENT(부재 — 실기기 정합) | 불필요(v4.22 차단은 과잉이었음) | — |
+  | security.selinux xattr | GL/랜덤명 14파일이 shell_data_file(불일치) | **chcon same_process_hal_file 전수** | 12/11/11/11s 불변 |
+  | /proc/self/task/%d/fd/ 스캔 | goldfish 클론 47fd가 /dev/.wq517h 등 도트명 노출 | **dmap 7채널 확장**(wq517h/tr482w/un394z→/dev/null, ns582t→thread-self/comm, pl728v→cpu/online, s2w6za/t7x3ub→uid_time) — **도트파일 0건 실측** | 11/11/11/11s 불변 |
+  | ro.dalvik.vm.native.bridge | "0"(실기기=빈) | resetprop -d + props-apply 영구화 | 12/11/11/12s 불변 |
+  | 리플렉션 훅 스캔(getDeclaredFields) | 베이스라인 무훅 — 통과 예상 | — | — |
+  | /proc/self/maps·cmdline·getPackageCodePath | camow3 위장/실제 설치 경로 | 기존 대응 유지 | — |
+- **dmap 7채널 확장 상세**: hide_kmod.c dmap에 wq517h(goldfish_pipe 클론)/tr482w(address_space)/un394z(sync)→
+  /dev/null, ns582t(self_task comm)→/proc/thread-self/comm, pl728v→cpu/online, s2w6za/t7x3ub→uid_time 추가.
+  16차 교훈(수집 후 재open 검증) 반영 — 세탁 타깃은 **실존 경로만** 사용.
+- **누적 결론**: 관측 가능한 모든 채널(파일/프롭/fd/xattr/라벨/네이티브 문자열)이 클린 또는 비인과.
+  판정 입력은 **프로세스 내부의 비-syscall 계산**(§150)로 수렴 완료 — 21+채널 소거에 이어 체크리스트 182항목 대조까지.
+  다음: hwbp/frida로 T+3~10s 계산 궤적을 직접 보는 수밖에 없음(OPEN-1/2).

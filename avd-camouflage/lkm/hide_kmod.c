@@ -1021,6 +1021,16 @@ static const struct { const char *fake, *real; } dmap[] = {
 	{ "/dev/.k3v9te", "/sys/fs/selinux/enforce" },
 	{ "/dev/.m8c4kd",
 	  "/sys/devices/system/cpu/cpu0/regs/identification/midr_el1" },
+	/* S155: 미등록 채널 — 가드의 /proc/self/task/%d/fd/ 스캔(§155 문자열 테이블
+	 * 실측)이 readlink로 도트파일명을 수집하는 것을 차단. 세탁 대상은 실존 경로
+	 * (16차 교훈: 수집 후 재open 검증 — 가짜 경로면 ENOENT로 tamper 확정). */
+	{ "/dev/.wq517h", "/dev/null" },   /* goldfish_pipe 클론 */
+	{ "/dev/.tr482w", "/dev/null" },   /* goldfish_address_space 클론 */
+	{ "/dev/.un394z", "/dev/null" },   /* goldfish_sync 클론 */
+	{ "/dev/.ns582t", "/proc/thread-self/comm" },
+	{ "/dev/.pl728v", "/sys/devices/system/cpu/online" },
+	{ "/dev/.s2w6za", "/proc/uid_concurrent_policy_time" },
+	{ "/dev/.t7x3ub", "/proc/uid_concurrent_active_time" },
 };
 
 static int dpath_ret(struct kretprobe_instance *ri, struct pt_regs *regs)
