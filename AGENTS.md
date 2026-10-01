@@ -15,13 +15,18 @@
 
 ## 2. 스킬 사용 규칙 (세션 자동화의 핵심 도구)
 
-### 로드할 스킬 2종 (ZCode Skill 도구로 호출)
+### 로드할 스킬 3종 (ZCode Skill 도구로 호출)
 1. **avd-rasp-camouflage** — 에뮬/카모/LKM/frida 운영 전반
 2. **dexguard-reVERSE** — DexGuard 문자열 복호·숨은 DEX 분석
    (가드 어휘 재검증·앱 버전 갱신 재분석. §149 방법론 = 이 스킬 §7d-7f)
+3. **security-hypothesis-lab** — 가설 기반 실험 루프(question/facts/premises/hypothesis/exit-rule 5항목 +
+   확인사실·추정 전제 분리 + 결론 강도 등급). **이 프로젝트의 실험 설계·보고에 우선 적용** —
+   특히 [O] 항목 공략 시 "다음 실험 1개 = 가설 1개 + exit rule 명시"로 진행, facts/premises 혼동 금지.
 
 ### 스킬 위치 — 저장소 내부 (다른 LLM도 클론 즉시 사용 가능)
-- **진실 소스 = 이 저장소** `skills/avd-rasp-camouflage/`, `skills/dexguard-reVERSE/` (git 추적, 전부 텍스트)
+- **진실 소스 = 이 저장소** `skills/avd-rasp-camouflage/`, `skills/dexguard-reVERSE/`,
+  `skills/security-hypothesis-lab/`(github.com/windshock/security-hypothesis-lab 클론 — 상류 갱신은
+  `git pull` 후 `.git` 재제거로 동기화) (git 추적, 전부 텍스트)
 - `~/.agents/skills/<동일명>`은 **ZCode 스킬 발견용 심볼릭 링크** → 저장소 경로. 다른 도구/LLM은 저장소 경로를 직접 읽는다.
 - 스킬 스크립트 호출(절대경로): `~/Downloads/toss/skills/avd-rasp-camouflage/scripts/boot_recover.sh`(부팅 후 원스텝 복구),
   `deploy.sh` `camow3.sh` `vendor_bind_setup.sh` `props-apply.sh` `channel_trace.sh`(탐지채널 ftrace)

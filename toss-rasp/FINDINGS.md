@@ -6799,3 +6799,10 @@ libea56 16k 루프:
 - **AGENTS.md 신설 2규칙**: ① "도구 없으면 설치해서 쓴다"(brew/pip/docker 우선, bash3·simg2img 우회 전례 교훈)
   ② 자기완결성 불변식 — 라이브 파일 AppSuit 경로 0건 감사 명령 탑재, 발견 시 즉시 수정.
 - macOS 함정 기록: BSD grep `-Z`는 NUL이 아니라 **decompress** (NUL은 `--null`) — 파이프 체인 디버깅 2회 소요.
+
+[§153 추기8 — 연구 방법론 스킬 클론 통합 (security-hypothesis-lab)]
+- `skills/security-hypothesis-lab/` = github.com/windshock/security-hypothesis-lab 클론(148K, 전부 텍스트).
+  중첩 .git 제거 후 부모 저장소 통합(독립 이력은 원격 보존). ~/.agents/skills 심볼릭으로 ZCode 발견 유지.
+- AGENTS.md 스킬 3종화 + **실험 운영 규칙 연결**: [O] 항목 공략은 가설 1개+exit rule 명시로 진행,
+  facts(직접 관측)/premises(미검증 전제) 혼동 금지 — §12-13 누적기 오독, §151 "환경 통과" 재해석 같은
+  과거 판정 드리프트가 premises 오염의 실례.

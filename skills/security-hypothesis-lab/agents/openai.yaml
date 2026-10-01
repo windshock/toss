@@ -1,0 +1,4 @@
+interface:
+  display_name: "Security Hypothesis Lab"
+  short_description: "Run security experiments from explicit hypotheses"
+  default_prompt: "Use $security-hypothesis-lab to structure this security experiment loop."

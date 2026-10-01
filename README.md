@@ -28,7 +28,7 @@ ARCHITECTURE.md / AGENTS.md / README.md / HANDOFF_S153(최신)
 toss-rasp/      FINDINGS + 세션 원증거 아카이브 (INDEX.md)
 tmp-artifacts/  현재 분석 자산 — 아키텍처 박스별 정렬 (INDEX.md)
 avd-camouflage/ 카모 인프라: LKM(hide_kmod), 호스트 dylib 패치, 운영 스크립트
-skills/        프로젝트 내장 스킬 2종(avd-rasp-camouflage·dexguard-reVERSE) — 다른 LLM도 클론 즉시 사용. 실험으로 얻은 법칙을 스킬에 계속 반영
+skills/        프로젝트 내장 스킬 3종(avd-rasp-camouflage·dexguard-reVERSE·security-hypothesis-lab) — 다른 LLM도 클론 즉시 사용. 실험으로 얻은 법칙을 스킬에 계속 반영
 ack-kernel/     LKM 빌드 의존 (ACK 클론)
 host-patch-root/ 호스트 GL 패치 v2/v3
 originals/      원본 xapk, extracted/
