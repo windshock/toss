@@ -32,7 +32,6 @@ ack-kernel/     LKM 빌드 의존 (ACK 클론)
 host-patch-root/ 호스트 GL 패치 v2/v3
 originals/      원본 xapk, extracted/
 evidence/       증거 패키지 (§97-108 DEXGUARD, REVIEW zip)
-kisa/           제보 서류 (git 제외)
 ```
 
 ## git 정책

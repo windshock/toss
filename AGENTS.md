@@ -71,5 +71,4 @@ ack-kernel/                ← LKM 빌드 의존 ACK 클론 (1.6GB, 자체 .git)
 host-patch-root/           ← 호스트 dylib GL 패치 v2/v3
 originals/                 ← 원본 xapk + extracted/
 evidence/                  ← 증거 패키지 (TOSS_DEXGUARD §97-108, REVIEW zip)
-kisa/                      ← 제보 서류 (git 제외)
 ```
