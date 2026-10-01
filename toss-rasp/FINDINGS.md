@@ -6806,3 +6806,43 @@ libea56 16k 루프:
 - AGENTS.md 스킬 3종화 + **실험 운영 규칙 연결**: [O] 항목 공략은 가설 1개+exit rule 명시로 진행,
   facts(직접 관측)/premises(미검증 전제) 혼동 금지 — §12-13 누적기 오독, §151 "환경 통과" 재해석 같은
   과거 판정 드리프트가 premises 오염의 실례.
+
+## §154 2026-10-01(3) — ★★★[O]-1 돌파: 가드 자기검사 시퀀스 3런 완전 재현 + pvm 차단 A/B로 판정 경로 인과 확정 — syscall 관측면 소진 (S154)
+
+[방법 — 보안가설실험(question/facts/premises/hypothesis/exit rule) + ftrace 신설 관측기]
+- 도구 신설: `tmp-artifacts/tools/guard_capture.sh`(sys_enter 전체+getname+pvm 원격주소 kprobe, event-fork pid 상속),
+  `guard_probe_dump.sh`(프로빙 주소 실시간 캡처→/proc/pid/mem 페이지 덤프).
+- kprobe 신설: `p_pvm2 __arm64_sys_process_vm_readv pid=+0(%x0) rbase=+0(+0x18(%x0)) rlen=+8(+0x18(%x0))` —
+  원격 iov 배열 1차 역참조로 **프로빙 대상 주소**를 직접 기록.
+
+[P0 — 사망 시퀀스 지도 (3런 완전 재현, 주소는 ASLR이나 구조·횟수·간격 동일)]
+```
+T+2~3s   pvm rlen=4 시퀀스 6건: boot-framework.art(2) → boot.art(2) → LinearAlloc(1) → 자바힙(1)
+         = ART 메타데이터 포인터 체인 순회 (캡처값: boot.art→자기주소, framework.art→boot.art, LinearAlloc→자바힙)
+T+2.5s   pvm rlen=1 632건: libea56 자기 .text 316페이지 1바이트 스캔(무결성) + 자기스택(tls) 교대 316회
+T+3~10s  syscall 관측면상 앱 정상 활동만 (광고SDK/logstore/lib64 스캔 — 판정 흔적 없음)
+T+10.5s  fork 자식(Thread-0/1) 정리: madvise(DONTNEED)·munmap·brk 연쇄 → exit(93)
+T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"의 정체
+         pvm 검사 종료 → exit_group 간격 = 정확히 9.7s (3런 공통)
+```
+
+[P1 — ★A/B: LKM pvm_block (hide_kmod 신규 파라미터, kill-위장 패턴 재사용)]
+- 구현: kprobe `__arm64_sys_process_vm_readv` 진입에서 타깃 uid면 유저 pt_regs regs[1](local iov)=0 → EFAULT.
+  pvm_block=0 기본 OFF, sysfs 0644 토글. 재빌드+재부팅 완료(519,872B).
+- **결과: OFF 12/11/11s → ON 2/2/3s (pvm_hits=6)** — 차단(EFAULT)이 **즉시 판정 발화**를 유발(3런 재현).
+  가드는 .text 스캔 단계 전에 ART 체인 검사가 실패하면 바로 종료 — **fail-closed**.
+- **해석(인과 확정)**: pvm 자기검사 체인은 판정 경로의 실제 구성요소. 단 현재 **클린 통과 중**(11s 판정의
+  입력 아님) — EFAULT(검사 불능)는 판정 입력과 별개의 변조 신호. pvm 차단은 우회가 아니라 조기 자폭 트리거.
+- 운영: pvm_block=0 유지(차단 금지 — 스킬에 "하면 안 되는 것"으로 등록).
+
+[P2 — 결론: [O]-1의 관측면 소진과 다음 관측기]
+- syscall·파일·프롭·pvm 관측면에서 **T+3~10s 판정 계산 구간에 흔적 없음** — 입력은 **프로세스 내 메모리
+  직접 검사**(§150 P2 예측 확정) 또는 그 이전(T+2-3s 윈도우 내 비-syscall 경로)에 확정됨.
+- 다음 관측기 후보: ① LKM hwbp(watchpoint) — hide_kmod에 hwbp_pid/hwbp_addr 인프라 존재(§14) — 가드 상태
+  변수/판정 누적 후보 오프셋 감시 ② T+2-3s pvm이 읽는 ART 구조 오프셋의 의미(구조체 지도와 대조 —
+  frida/훅 흔적 검사일 가능성) ③ dynstr 스크럽(§151 P3) 여전히 유효 후보.
+
+[P3 — 운영/인프라 교정]
+- 부트 직후 qemu누수=4 재발 1회 — props-apply 수동 재적용으로 0 (boot_recover [2c]/[11] 타이밍 변동성, 차기 교정 과제).
+- macOS BSD grep `-Z`≠NUL(`--null`이 정답) 재확인. guard_capture 1차 버그: tracing_on 재활성화 누락(런2 12행).
+- 측정 자산: /tmp/guard_run{1,2,3}(trace+maps), /tmp/guard_probe/(프로빙 페이지 5종+maps) — 세션 종료 후 toss-rasp 보존 권장.

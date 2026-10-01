@@ -453,6 +453,34 @@ static struct kprobe kp_ksig = {
 	.pre_handler	= kill_pre,
 };
 
+/* ── S154 [O]-1c: process_vm_readv 차단 A/B — 가드의 ART 메타데이터/자바힙
+ * 자기검사(T+2-3s, rlen=4 포인터체인 + .text 316페이지 무결성)가 판정 입력인지 시험.
+ * 방법: 타깃 uid의 pvm syscall 진입에서 유저 pt_regs의 local iov(regs[1])를 0으로
+ * 설정 → -EFAULT (kill 위장과 동일 패턴). pvm_block=1일 때만 동작(기본 OFF). */
+static int pvm_block = 0;
+module_param_named(pvm_block, pvm_block, int, 0644);
+static ulong pvm_hits;
+module_param(pvm_hits, ulong, 0444);
+
+static int pvm_pre(struct kprobe *p, struct pt_regs *regs)
+{
+	struct pt_regs *ul;
+
+	if (!pvm_block)
+		return 0;
+	if (!uid_allowed())
+		return 0;
+	pvm_hits++;
+	ul = (struct pt_regs *)regs->regs[0];
+	ul->regs[1] = 0;   /* local_iov = NULL → EFAULT */
+	return 0;
+}
+
+static struct kprobe kp_pvm = {
+	.symbol_name	= "__arm64_sys_process_vm_readv",
+	.pre_handler	= pvm_pre,
+};
+
 /* ── v4.10: 21차 fault 컨텍스트 덤퍼 ─────────────────────────────────
  * 대상 uid의 EL0 데이터어보트(EC=0x24) 중 far=0(널 읽기/쓰기)인 것의
  * 유저 pt_regs 전체(x0~x30, sp, pc, pstate)를 dmesg로 덤프한다.
@@ -1513,6 +1541,9 @@ static int __init hide_init(void)
 	ret = register_kprobe(&kp_ksig);
 	if (ret)
 		pr_err("hide_kmod: ksig failed: %d\n", ret);
+	ret = register_kprobe(&kp_pvm);
+	if (ret)
+		pr_err("hide_kmod: pvm-block failed: %d\n", ret);
 	ret = register_kprobe(&kp_fault);
 	if (ret)
 		pr_err("hide_kmod: faultdump failed: %d\n", ret);

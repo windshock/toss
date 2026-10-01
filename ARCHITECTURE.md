@@ -134,8 +134,12 @@
 - Java+native detector들이 하나의 DetectFactor/action 프레임워크에 협업
 - 복수 guard workflow 병렬 동작 모델
 
-**OPEN (다음 검증 루트)**
-1. 현재 11s 사멸에서 **정확히 어떤 native 핸들러/입력이 최종 detector를 true로** 만드는가 → §150 P3-1 ftrace(판정 cmp 직전 최종 GOT-CALL)
+**OPEN (다음 검증 루트)** — §154 업데이트: syscall 관측면 소진 확인
+1. ~~판정 직전 syscall/ftrace 관측~~ → **§154 완료**: T+3~10s 구간 흔적 없음 = **프로세스 내 메모리 직접 검사** 확정.
+   다음: ① LKM hwbp watchpoint로 가드 상태 변수 감시 ② T+2-3s pvm이 읽는 ART 구조 오프셋의 의미(훅 흔적 검사?)
+   ③ dynstr 런타임 스크럽(§151 P3)
+1bis. 신규 [C]: 가드 자기검사 시퀀스(pvm ART체인→.text 316페이지 무결성→9.7s→exit_group(0)) 3런 재현.
+   pvm 차단(EFAULT) = 즉시 판정(fail-closed) — **차단 금지**, 우회 아님(§154 P1)
 2. 16k 엔진 결과가 어느 Java state/DetectFactor로 전달되는지의 **마지막 edge**
 3. 현재 System.exit의 정확한 caller chain(Java action 직접 vs JNI 상태 세팅 선행)
 4. 서버 403 지문 성분(device_id/L3/installer) — 로컬 판정 통과 후

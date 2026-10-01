@@ -260,3 +260,14 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
 - DEBUGGER 인자 해독 완료: isDebuggerConnected/waitingForDebugger + ftrace 파일 3종
   (current_tracer=="nop"/ftrace_enabled=="1"/tracing_on=="1") — camo33 전부 클린.
   §149 "VIRTUAL_ENVIRONMENT 정적조건"은 오독(실체=classes27 Thread, native 복호화).
+
+## §154 성과 요약 (2026-10-01) + 신규 금지
+- **토스 가드 자기검사 시퀀스(3런 재현)**: T+2-3s process_vm_readv로 ART 메타데이터 포인터 체인
+  (boot-framework.art→boot.art→LinearAlloc→자바힙, rlen=4×6) 검사 → 직후 자기 .text 316페이지 1바이트
+  무결성 스캔(rlen=1×632) → 정확히 9.7s 후 fork 자식 정리+getuid/writev×2+exit_group(0).
+- **★금지: 타깃 uid의 process_vm_readv 차단/위장 금지** — hide_kmod `pvm_block=1`(EFAULT 위장)로 시험 결과
+  **2-3s 즉시 판정 발화(fail-closed)** 3런 재현. 검사 실패 자체가 변조 신호 — 우회 수단이 될 수 없음.
+- **ftrace 관측면 소진**: T+3~10s(판정 계산 구간)에 syscall/파일/프롭 흔적 없음 = 입력은 프로세스 내 메모리
+  직접 검사. 다음 관측기 = hwbp watchpoint(hide_kmod hwbp_pid/hwbp_addr) 또는 ART 구조 오프셋 의미 분석.
+- 도구: 워크스페이스 `tmp-artifacts/tools/guard_capture.sh`(pvm 원격주소 kprobe 캡처),
+  `guard_probe_dump.sh`(프로빙 주소 페이지 덤프), `launch_stats_bash3.sh`.

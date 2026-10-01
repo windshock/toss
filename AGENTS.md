@@ -54,21 +54,24 @@
 | 가드 문자열/DEX 재분석 | dexguard-reVERSE + 워크스페이스 디코더 `tmp-artifacts/tools/decode_dbg_gate{,2,3}.py` |
 | Ghidra 네이티브 분석 | `analyzeHeadless tmp-artifacts/native-engine/gproj toss5 …` + 스킬 `scripts/ghidra_decompile_at.java` |
 
-## 3. 현재 상태 스냅샷 (2026-10-01 §153 종료 시점)
+## 3. 현재 상태 스냅샷 (2026-10-01 §154 종료 시점)
 
-- **판정**: [EMULATOR] 1건 발화, T+11s 로컬 사멸 (logstore 실측, DEBUGGER 음성 — 9일 불변)
-- camo33(emulator-5554) 가동 중: LKM=bisectB(v4.22/4.24/4.7 off), target_uids=10179,
-  egl=adreno, model=SM-S916N, toss uid=10179(installer=com.android.vending 유지), frida-server 꺼짐
-- 비섹션 완료(전부 네거티브): bisectA/B, GL축 전체 순정화(→2s 악화 후 롤백), 런타임 파라미터 3종, 사이드로드/설치자
-- **범인은 libea56 네이티브 엔진의 메모리 거주 입력** (ARCHITECTURE [O]-1)
+- **판정**: [EMULATOR] 1건 발화, T+11s 로컬 사멸 (불변)
+- camo33 가동 중: LKM=**S154본**(bisectB+pvm_block 지원), target_uids=10179, egl=adreno, uid=10179(installer=vending), frida-server 꺼짐, **pvm_block=0 필수 유지**
+- **§154 신규 facts**: 가드 자기검사 시퀀스 3런 재현(pvm ART체인→.text 316페이지→9.7s→exit_group(0));
+  pvm 차단(EFAULT)=즉시 판정(fail-closed) — 판정 경로 구성요소이나 통과 중; **T+3~10s syscall 흔적 없음 = 프로세스 내 메모리 검사 확정**
+- 비섹션 완료: bisectA/B, GL축, 런타임 파라미터, 사이드로드/설치자, pvm 차단(조기 자폭) — 전부 네거티브/부작용만
+- **[O]-1 잔여**: 입력 = 비-syscall 메모리 검사 → 다음 관측기는 hwbp watchpoint 또는 ART 구조 오프셋 의미 분석
 
 ## 4. 다음 작업 (우선순위 — 자율 진행 시 이 순서)
 
-1. **[O]-1**: 판정 cmp 직전 최종 GOT-CALL 핸들러 ftrace 캡처 → 발화 입력 특정 (§150 P3-1 절차)
-   - 도구: 스킬 `scripts/channel_trace.sh` 변형 + chan19 인스턴스(boot_recover가 재구성)
-2. [O]-2/3: native→Java 전달 edge, System.exit caller chain (exit_trap.js 변형)
-3. 입력 특정 후 §151 P3 dynstr 런타임 스크럽 정타 / dmap 미등록 4채널 등록(10분 수정)
-4. [O]-4 서버 403 지문: 로컬 판정 통과 후에만 (도구: `tmp-artifacts/tools/hook_did.js`+`attach_run.py`)
+1. **[O]-1 다음 관측기**: T+2-3s pvm이 읽는 ART 구조 오프셋 의미 분석(boot.art/framework.art/LinearAlloc/힙의
+   4바이트 = ART 내부 구조 필드 — 훅/주입 흔적 검사 후보). Ghidra toss5 + scan_struct_offset.py로 대조
+2. **hwbp watchpoint**: hide_kmod hwbp_pid/hwbp_addr(§14 인프라)로 가드 판정 상태변수 감시 — T+3~10s의
+   "보이지 않는" 판정 계산을 하드웨어 관측면에서 포착
+3. §151 P3 dynstr 런타임 스크럽(마지막 .so init_array mprotect→치환) — 메모리 검사 입력의 정타 대응
+4. dmap 미등록 4채널 등록(10분 수정) — 마이크로 픽스
+5. [O]-4 서버 403 지문: 로컬 판정 통과 후에만 (도구: `tmp-artifacts/tools/hook_did.js`+`attach_run.py`)
 
 ## 5. 운영 법칙 (위반 시 실측 피해 목록 — 전부 전례 있음)
 
