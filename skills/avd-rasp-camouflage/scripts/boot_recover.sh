@@ -65,6 +65,9 @@ echo "[6b] 프로퍼티 원시 영역 잔존 토큰 스크럽 (§141: --delete �
 adb push "$SKILL_DIR/scripts/prop_area_scrub.sh" /data/local/tmp/.prop_scrub.sh >/dev/null
 dsh "su 0 sh /data/local/tmp/.prop_scrub.sh"
 
+echo "[6b2] 부활 에뮬 프로퍼티 재삭제 (§163: init이 부트 후반에 svc/boottime 재기입 — 1회 스크럽 무력화. E6-1 실측: 이 4건 삭제는 fail-closed 유발 안함)"
+dsh "su 0 sh -c '/data/local/tmp/magisk resetprop --delete init.svc.ranchu-setup; /data/local/tmp/magisk resetprop --delete init.svc_debug_pid.ranchu-setup; /data/local/tmp/magisk resetprop --delete ro.boottime.ranchu-setup; /data/local/tmp/magisk resetprop --delete vendor.qemu.dev.bootcomplete; echo resurrected=\$(getprop | grep -ciE "qemu|ranchu")'"
+
 echo "[6c] 에뮬 전용 패키지 은닉 (§147: 패키지 레지스트리의 goldfish/EmulationPixel/EmulatorTalkBack — 실기기 부재 = 즉시 폭로)"
 dsh 'for p in $(pm list packages | sed s/package:// | grep -iE "emulation|goldfish|talkbackoverlay"); do pm hide $p >/dev/null 2>&1; done; echo hidden=$(pm list packages | grep -ciE "emulation|goldfish|talkbackoverlay")'
 

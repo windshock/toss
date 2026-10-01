@@ -7583,3 +7583,32 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 1. "스크럽 했다"의 유효기간을 검증하라 — init이 다시 쓰는 프로퍼티(svc/boottime 계열)는 부활한다.
 2. 인과실험에서 '변함 없음'과 '양상 변화'를 분리 기록 — E6-2의 양상 변화는 입력 기각의 증거가 아니라 부작용
    신호였을 수 있음(해석 보류가 정직).
+
+## 164. S164 세션 (2026-10-02 심야 2차) — 스캔 파이프라인 내부 가시화: /proc/self/status(TracerPid)·maps 파서 확보 + frida 생명주기 법칙 정정 + 카모 보강([6b2])
+
+### 164-1. P0 결론
+1. **[C] 가드 내부 파이프라인 memcpy 관측**(libea56발 memcpy 덤프 — 진입 버퍼 판독):
+   - `libea56+0x10953c` = **/proc/self/status 파서**(T+1.7s, 234-248B 청크: State/Tgid/PPid/TracerPid/Uid/Gid/Groups)
+     — TracerPid 안티디버그 체크 실물.
+   - `libea56+0xb6708` = **/proc/self/maps 파서**(T+2.2s, 385-427B 라인 버퍼: 부트 이미지 리전
+     [anon:dalvik-/system/framework...] 전체 라인) — §154 pvm ART 체인의 주소 획득부(자기무결성 검사 경로).
+   - 발화 체크 자체는 여전히 미관측 — 관측된 것은 자기검사·파싱 파이프라인.
+2. **[C] frida 생명주기 법칙 정정**: §158 "기동 자체 무해"는 **기동 직후 짧은 창만 성립** — 이번 관측: 기동 ~2분 후
+   스폰 크래시 시대(§158式 드리프트), **frida-server 종료 즉시 스폰 정상화**(11s). → **원칙: 켜자마자 1실험,
+   끝나면 즉시 kill**(per-run lifecycle).
+3. **[C] 카모 보강**: boot_recover **[6b2] 부활 에뮬 프로퍼티 재삭제** 스텝 추가(§163 4건 — E6-1로 안전성 확인).
+   매부팅 자동 적용.
+
+### 164-2. P1 증거
+- memcpy 덤mp 30건(로그 — session164): status 청크 8 + maps 라인 22(부트 프레임워크 리전 0x6ffa8000-0x7070e000).
+- frida 종료→스폰 회복 실측(pid 24028 → DEAD ~11s).
+- 비교 API 미임포트 확인(dynsym 74: memcmp/strcmp/strlen 부재 — 인라인 비교).
+
+### 164-3. 차기
+1. **Ghidra 직독(메인)**: +0x10953c(status 파서)·+0xb6708(maps 파서)는 이미 심볼화된 좋은 진입점 — 이 핸들러들의
+   호출자 체인을 dispatch_resolved.json과 대조해 스캔 row 전개 → cmp 게이트 직독.
+2. maps 내용 검사 의미론: LKM maps_filter가 걸러준 라인만 보이는 중 — 가드가 maps에서 '무엇'을 찾는지
+   (부재 탐지 포함) 파서 디컴파일로 확인.
+
+### 164-4. 교훈
+1. 관측 도구의 필터(사이즈 상한)가 정보를 가린다 — 1차 실험(sz≤128)은 전부 "sz=N"만 보다가 상한 512에서 실물 출현.
