@@ -6,7 +6,7 @@ with x0 = R's invocation object (0xebc5400b3a90, stable across runs). At that
 stop arm Z2 (8B) on scratch slot0 = sp-0x14e0 (bridge-1 subs 0xe0 then 0x1400)
 and record every write (PC + regs). Ends at afed8(x0==4). Observation only."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -16,7 +16,7 @@ SOINFO_NOTIFY = LINKER_BASE + 0x68bb4
 AFED8 = 0xafed8
 BRIDGE1 = 0xebc639586c70
 R_INVOBJ = 0xebc5400b3a90
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_scratch0_watch4.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_scratch0_watch4.json"
 
 
 def adb(*a):

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import json, time, frida
 PKG = "viva.republica.toss"
-JS = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts/hook_pvm_e5.js"
-OUT = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/e5_pvm.log"
+JS = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts/hook_pvm_e5.js"
+OUT = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/e5_pvm.log"
 dev = frida.get_device_manager().get_device("localhost:5556", timeout=8)
 pid = dev.spawn([PKG])
 print("pid=", pid, flush=True)

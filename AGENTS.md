@@ -68,12 +68,22 @@
 ## 5. 운영 법칙 (위반 시 실측 피해 목록 — 전부 전례 있음)
 
 ### 환경/도구
+- **도구가 없으면 "없다"로 끝내지 말고 설치해서 쓴다 (의무)**
+  - 패키지매니저 우선: `brew install` / `pip3 install` / `npm i -g` / docker 이미지 pull — 설치는 되돌릴 수 있는 로컬 변경이므로 묻지 말고 진행
+  - 전례: simg2img·debugfs 없어서 7z로 우회(됐지만), macOS bash3 `declare -A` 때문에 이식본 제작 — **`brew install bash e2fsprogs`가 정답이었음**. 다음부턴 설치 우선.
+  - 필수 도구 모음: adb(SDK), emulator+AVD camo33, Docker Desktop, python3(+frida 16.6.6), Ghidra(`brew install --cask ghidra`), jadx(`brew install jadx`), 7z(있음), bash5·simg2img(e2fsprogs)·file/xxd 계열
 - **`ANDROID_SERIAL=emulator-5554` 필수** — redroid(localhost:5556) 병렬, 미지정 시 엉뚱한 디바이스 조작
 - adb가 PATH에 없음: `~/Library/Android/sdk/platform-tools/adb`
-- 호스트 셸은 **macOS bash 3.2** — `declare -A` 불가. 측정은 `tmp-artifacts/tools/launch_stats_bash3.sh [N] [watch초]`
+- 호스트 셸은 **macOS bash 3.2** — `declare -A` 불가. 측정은 `tmp-artifacts/tools/launch_stats_bash3.sh [N] [watch초]` (bash5 설치 후에도 이 러너 무해)
 - LKM 빌드: `avd-camouflage/lkm/build-in-docker.sh` (docker + `ack-kernel/`, 산출 `hide_kmod.built.ko`)
 - 에뮬 재기동: `adb emu kill` 후 `~/Library/Android/sdk/emulator/emulator -avd camo33 -no-snapshot -no-boot-anim`
 - 부팅 후 복구: 스킬 `scripts/boot_recover.sh 10179` (전체 스택 원스텝, 완주 기대값은 스크립트尾部)
+
+### 자기완결성 (이 저장소만으로 실험 가능해야 함)
+- 저장소 밖 의존은 **도구·런타임뿐**(SDK/emulator/AVD/docker/Ghidra/frida/python) — 데이터·스크립트·설정의 경로 참조는 전부 이 저장소 기준
+- **AppSuit 잔존 경로 불변식**: 라이브 파일(스크립트·ARCHITECTURE·INDEX·루트 문서)에 `Downloads/AppSuit` 참조가 0건이어야 한다.
+  감사: `find . \( -path ./.git -o -path ./ack-kernel -o -name "REVIEW_S*" -o -path "*/session*" -o -path "*/handoffs/*" \) -prune -o -type f \( -name "*.sh" -o -name "*.py" -o -name "*.js" \) -print | xargs grep -l "Downloads/AppSuit"`
+  → 발견 시 즉시 경로 수정 + 커밋. (예외: `session*/`, `handoffs/`, `REVIEW_*` 아카이브와 도메인 용어 "libAppSuit.so/AppSuit RASP" 제품명 언급 — 이들은 역사 기록이므로 그대로)
 
 ### 절대 금지
 - **frida 기본포트 27042** — 0.2s 즉사. 커스텀포트(`-l 0.0.0.0:39871`+forward+add_remote_device)만. **테스트 후 frida-server 종료 필수**

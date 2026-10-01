@@ -1,6 +1,6 @@
 import frida, sys, time
 REMOTE="127.0.0.1:27045"; PKG="viva.republica.toss"
-SCRIPT=open("/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts/hook_proptrace.js").read()
+SCRIPT=open("/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts/hook_proptrace.js").read()
 KEEP=int(sys.argv[1]) if len(sys.argv)>1 else 90
 import base64 as _b64
 def om(m,d):

@@ -11,7 +11,7 @@ target process context):
 Also captures a comparison x29-walk on the first id=0 entry. Observation only.
 """
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -19,7 +19,7 @@ DEV = "localhost:5555"
 LINKER_BASE = 0xebc8ffebf000
 SOINFO_NOTIFY = LINKER_BASE + 0x68bb4
 AFED8 = 0xafed8
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_afed8_caller2.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_afed8_caller2.json"
 
 
 def adb(*a):

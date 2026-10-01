@@ -1,12 +1,12 @@
 #!/bin/bash
 # deploy.sh — 부팅 후 AVD RASP 무화 환경을 한 번에 복구 (호스트에서 실행)
 #
-# 사용법: deploy.sh <uid[,uid,...]> [워크스페이스 경로=~/Downloads/AppSuit]
+# 사용법: deploy.sh <uid[,uid,...]> [워크스페이스 경로=~/Downloads/toss]
 #   uid: 쉼표 목록 — 앱마다 다르다. 확인: adb shell dumpsys package <pkg> | grep userId
 #   예:  deploy.sh 10179,10181
 set -e
 UIDS="${1:?usage: deploy.sh <uid[,uid,...]> [workspace]}"
-WS="${2:-$HOME/Downloads/AppSuit}"
+WS="${2:-$HOME/Downloads/toss}"
 SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 LKM="$WS/avd-camouflage/lkm/hide_kmod.built.ko"
 

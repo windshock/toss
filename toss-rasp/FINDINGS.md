@@ -6788,3 +6788,14 @@ libea56 16k 루프:
   `~/.agents/skills/<동일명>`은 ZCode 발견용 심볼릱 — 타 LLM/도구는 저장소 경로 직접 사용.
 - AGENTS.md에 **"스킬은 살아있는 문서" 갱신 의무** 명시: 법칙·함정·레시피 확정 → SKILL.md/references/scripts 반영 + 커밋
   (§144/§149 성과 요약 적재가 전례, boot_recover [6c] 수정이 스크립트 사례).
+
+[§153 추기7 — AppSuit 디펜던시 전수 청소 + 도구 설치 의무화]
+- **전수 감사**: 경로형 `Downloads/AppSuit` 참조 라이브 파일에서 전부 제거 — 매핑:
+  `AppSuit/avd-camouflage/analysis/toss-rasp/ → toss/toss-rasp/`, `~/Downloads/AppSuit → ~/Downloads/toss`.
+  수정: 스킬 6(deploy/neuter_rebuild/frida_runner/run_e1/dexstr×2) + analysis-lab 84 + harness 1 = 91파일.
+  스팟 검증: deploy.sh 기본 WS=~/Downloads/toss, frida_runner/LAB/DEX 경로 전부 실존 파일 지시 확인.
+- **남은 AppSuit 언급은 2종뿐(정상)**: ① libAppSuit.so/AppSuit RASP 등 제품·도메인 용어 ② session*/handoffs/REVIEW_* 동결 아카이브의 역사 기록.
+  avd-camouflage/STATUS.md:52 `cd ~/AppSuit/clean`은 레거시 주석 처리(모니모 neuter 자산, toss 미이관).
+- **AGENTS.md 신설 2규칙**: ① "도구 없으면 설치해서 쓴다"(brew/pip/docker 우선, bash3·simg2img 우회 전례 교훈)
+  ② 자기완결성 불변식 — 라이브 파일 AppSuit 경로 0건 감사 명령 탑재, 발견 시 즉시 수정.
+- macOS 함정 기록: BSD grep `-Z`는 NUL이 아니라 **decompress** (NUL은 `--null`) — 파이프 체인 디버깅 2회 소요.

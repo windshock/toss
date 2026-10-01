@@ -1,5 +1,5 @@
 import struct, sys
-dex = open('/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_hidden_dex.bin','rb').read()
+dex = open('/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_hidden_dex.bin','rb').read()
 code = open(sys.argv[1],'rb').read()
 def u32d(o): return struct.unpack_from('<I', dex, o)[0]
 def ulebd(o):

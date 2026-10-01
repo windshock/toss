@@ -49,7 +49,7 @@ adb shell am force-stop net.ib.android.smcard
 
 # 원본→neutered 교체
 adb uninstall net.ib.android.smcard
-cd ~/Downloads/AppSuit/clean
+cd ~/Downloads/AppSuit/clean  # ※ 레거시 아카이브(모니모 neuter 자산, toss 미이관) — 실험 불필요 시 무시
 adb install-multiple monimo-debug.apk monimo-config-arm64-patched-signed.apk /tmp/config.en.debug.apk /tmp/config.hdpi.debug.apk
 
 # neutered→원본 교체

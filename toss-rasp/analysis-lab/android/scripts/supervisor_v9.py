@@ -8,7 +8,7 @@ Classifier (adb-only, no gdbstub): per app incarnation record pid, libea56
 load, death mechanism (System.exit vs other). JAVA_EXIT -> next run.
 Observation only. SIGTERM detaches gdbstub cleanly."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -19,7 +19,7 @@ BRIDGE1_OFF = 0x186c70
 SIG = "ff8303d11083bcb0"
 R_IDX = 0xe7b
 MAX_RUNS = 40
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s100_supervisor.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s100_supervisor.json"
 
 
 def adb(*a, t=12):

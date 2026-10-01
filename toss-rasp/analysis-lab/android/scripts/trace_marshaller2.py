@@ -12,7 +12,7 @@ At the afed8(x0=4) entry stop (same process context), dump:
 Observation only. SIGTERM always detaches.
 """
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 from capstone import Cs, CS_ARCH_ARM64, CS_MODE_LITTLE_ENDIAN
 
@@ -21,7 +21,7 @@ DEV = "localhost:5555"
 LINKER_BASE = 0xebc8ffebf000
 SOINFO_NOTIFY = LINKER_BASE + 0x68bb4
 AFED8 = 0xafed8
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_marshaller_dump.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_marshaller_dump.json"
 
 
 def adb(*a):

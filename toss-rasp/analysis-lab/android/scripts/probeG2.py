@@ -9,7 +9,7 @@ after exactly 46 id0s); a heavy bridge-1 bp (76k stops) kills it. So:
  scratch[0]=sp-0x14e0 -> capture the exact writer of 4 (+full regs, frames,
  code window) -> confirm afed8(4) in the SAME run. Observation only."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -19,7 +19,7 @@ BRIDGE1 = 0xe14bc0d86d00          # stable across incarnations (this phase)
 R_INVOBJ = 0xe14ac00b3a90         # from classify-run x1 (stable low bits)
 R_IDX = 0xe7b
 ARM_BRIDGE_AT = 46
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2.json"
 
 
 def adb_sh(cmd, t=15):

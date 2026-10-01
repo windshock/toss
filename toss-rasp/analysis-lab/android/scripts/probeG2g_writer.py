@@ -16,7 +16,7 @@ window. Test: arm Z2 on B ONLY at call#46.
   B storms unchanged -> bail to afed8(4) + posthoc (B also loop-hot).
   B silent + af4     -> B's 4 predates #46; posthoc relocates."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -25,7 +25,7 @@ AFED8 = 0xafed8
 ARM_AT = 46
 SLOT_A = -0x3e0
 SLOT_B = 0x558
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2g.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2g.json"
 
 
 def adb_sh(cmd, t=15):

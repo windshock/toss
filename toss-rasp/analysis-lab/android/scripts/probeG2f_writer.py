@@ -17,7 +17,7 @@ Plan (O(1) stops):
              (pc-4 window, regs, slot window, frame windows, raw stop);
   afed8(4) -> same-run chain confirmation."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -27,7 +27,7 @@ ARM_AT = 46
 LOOP_PC = 0xe14e7e365240          # deterministic (G2d + G2e, 2 incarnations)
 LOOP_SP_DELTA = -0x3a0            # loop frame sp - sp46 (stable, 2 runs)
 SLOT_A = -0x3e0                   # sp46-relative
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2f.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2f.json"
 
 
 def adb_sh(cmd, t=15):

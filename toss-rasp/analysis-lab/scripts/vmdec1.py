@@ -18,7 +18,7 @@ grounded in captured runtime values (S103/S105/S106 artifacts):
 Hypotheses are labelled as such - nothing here claims opcode semantics yet."""
 import json
 
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/vmdec1_census.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/vmdec1_census.json"
 out = {"tool": "vmdec1", "milestone": 1}
 
 # ---------- (a) validated core regression ----------
@@ -32,7 +32,7 @@ print("regression:", "PASS" if core_ok else "FAIL",
       "- field=%#x lanes=%s" % (field, [hex(x) for x in lanes]))
 
 # ---------- (b) sample census ----------
-s106 = json.load(open("/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s106_x27.json"))
+s106 = json.load(open("/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s106_x27.json"))
 bw4 = [w for w in s106["bank_writes"] if w.get("bank_after") == "0x4"][0]
 hexstr = s106["final4_writer"]["caller_ctx"]["args_x2_win"] if False else None
 # args window lives on the S106 bank4 caller_ctx

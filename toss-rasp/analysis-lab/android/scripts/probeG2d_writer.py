@@ -13,7 +13,7 @@ in the SAME run. Light: only ~47 Z1 stops + a handful of Z2 stops.
 Fallbacks: if the Z2s never fire but afed8(4) does (delta drift), the posthoc
 dump at afed8(4) re-locates the 4s and reports corrected deltas."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -23,7 +23,7 @@ ARM_AT = 46           # arm Z2s at the 46th afed8 entry (empirically the last id
 D4 = 0x930            # sp47 - sp46 (this phase; low12s 0x0f0 vs 0x7c0)
 SLOT_A = -0x3e0       # sp46-relative
 SLOT_B = 0x558        # sp46-relative
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2d.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2d.json"
 
 
 def adb_sh(cmd, t=15):

@@ -22,14 +22,14 @@ This run (user-directed design - NO worker breakpoint):
     histogram -> quantifies "many writers" and P1/P2 dominance.
 Observation only."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
 DEV = "localhost:5555"
 AFED8 = 0xafed8
 SLOT_A = -0x3e0
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s102_probeG2k_final4.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s102_probeG2k_final4.json"
 
 
 def adb_sh(cmd, t=15):

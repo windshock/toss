@@ -14,7 +14,7 @@ import json, re, sys
 import capstone
 
 ART = sys.argv[1] if len(sys.argv) > 1 else \
-    "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s105_bank.json"
+    "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s105_bank.json"
 d = json.load(open(ART))
 steps = d.get("success_steps") or []
 ib = (d.get("success") or {}).get("insn_bytes") or {}

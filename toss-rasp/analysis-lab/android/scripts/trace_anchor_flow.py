@@ -12,7 +12,7 @@ import subprocess
 import sys
 import time
 
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 LINKER_BASE = 0xebc8ffebf000
@@ -21,8 +21,8 @@ ANCHOR_OFF = 0x13a4bc
 AFED8_OFF = 0xafed8
 AFED8_END = 0xb0900
 DEV = "localhost:5555"
-LIB = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/libea56.so"
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_anchor_flow.json"
+LIB = "/Users/1004276/Downloads/toss/toss-rasp/libea56.so"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_anchor_flow.json"
 
 
 def adb(*a):

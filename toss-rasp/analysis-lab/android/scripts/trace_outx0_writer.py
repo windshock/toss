@@ -8,7 +8,7 @@ entry: record (t, x19, x20) per hit; at afed8(x0==4) read bridge+0xa8 to
 identify the killing args area and correlate the matching 0x458b60 hit.
 Observation only. SIGTERM detaches."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -17,7 +17,7 @@ LINKER_BASE = 0xebc8ffebf000
 SOINFO_NOTIFY = LINKER_BASE + 0x68bb4
 AFED8 = 0xafed8
 STORE = 0xebc639458b60          # str x20,[x19] — outgoing x0 write
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_outx0_writer.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_outx0_writer.json"
 
 
 def adb(*a):

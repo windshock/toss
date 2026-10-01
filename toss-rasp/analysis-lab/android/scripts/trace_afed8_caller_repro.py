@@ -13,14 +13,14 @@ are anon-exec-mapping + 0x186d00, kind=blr x16, ids {0:46, 4:1},
 id0 caller_offs {0xf8a98: 45, 0x1438b0: 1}. Observation only. SIGTERM detaches.
 """
 import json, re, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
 DEV = "localhost:5555"
 AFED8 = 0xafed8
 B02AC = 0xb02ac
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_afed8_caller_repro.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_afed8_caller_repro.json"
 
 
 def adb(*a):

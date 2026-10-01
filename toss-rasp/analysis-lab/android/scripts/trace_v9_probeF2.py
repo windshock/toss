@@ -9,7 +9,7 @@ Addresses drift per boot/incarnation, so everything is discovered at runtime:
  4. Z2 write-watch scratch0 = sp-0x14e0 during the killing dispatch;
     record every write PC/regs; end at afed8(x0==4)."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -21,7 +21,7 @@ AFED8 = 0xafed8
 BRIDGE1_OFF = 0x186c70           # within the interpreter module (fixed content)
 SIG = "ff8303d11083bcb0"         # sub sp,#0xe0; stp d0,d1,[sp,#0x10] @ bridge-1
 R_IDX = 0xe7b
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_v9_probeF2.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_v9_probeF2.json"
 
 
 def adb(*a):

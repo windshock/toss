@@ -5,7 +5,7 @@ afed8=base+0xafed8, capture entry state, then trace afed8's internal indirect
 br/blr to the selected handler and judge the +0xa8f70 hypothesis. Observation only.
 """
 import json, signal, struct, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 LINKER_BASE = 0xebc8ffebf000
@@ -14,8 +14,8 @@ AFED8_OFF = 0xafed8
 AFED8_END = 0xb0900
 CAND_A8F70 = 0xa8f70
 DEV = "localhost:5555"
-LIB = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/libea56.so"
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_afed8_flow.json"
+LIB = "/Users/1004276/Downloads/toss/toss-rasp/libea56.so"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_afed8_flow.json"
 
 
 def adb(*a): return subprocess.run(["adb", "-s", DEV] + list(a), capture_output=True, text=True)

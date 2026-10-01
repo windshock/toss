@@ -9,13 +9,13 @@ starved. This light run re-derives, for the CURRENT phase:
 plus: 16B SIG at bridge1, scratch[0] posthoc (sp-0x14e0, expect 4).
 No bridge bp, no watchpoint - lightest possible (§100: afed8-only 3/3)."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
 DEV = "localhost:5555"
 AFED8 = 0xafed8
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2b.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2b.json"
 
 
 def adb_sh(cmd, t=15):

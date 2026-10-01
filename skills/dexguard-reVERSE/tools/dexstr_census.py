@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dexstr
 
 SRC = "/tmp/jadx_hidden/sources"
-OUT = ("/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/"
+OUT = ("/Users/1004276/Downloads/toss/toss-rasp/"
        "analysis-lab/artifacts/android/hidden_strings")
 
 # guest-harvested API constants (this build, API level)

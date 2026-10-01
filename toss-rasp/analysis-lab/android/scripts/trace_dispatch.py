@@ -5,7 +5,7 @@ selected handler. Judge the +0xa8f70 hypothesis from the real CPU x8 across
 dispatches. Observation only.
 """
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 LINKER_BASE = 0xebc8ffebf000
@@ -13,7 +13,7 @@ SOINFO_NOTIFY = LINKER_BASE + 0x68bb4
 DISPATCH_OFF = 0xb02c4          # blr x8 = handler call
 CAND = 0xa8f70
 DEV = "localhost:5555"
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_dispatch.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_dispatch.json"
 
 
 def adb(*a): return subprocess.run(["adb", "-s", DEV] + list(a), capture_output=True, text=True)

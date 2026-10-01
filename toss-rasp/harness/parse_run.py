@@ -17,7 +17,7 @@ import sys
 
 
 PKG = "viva.republica.toss"
-LIBEA = Path("/Users/1004276/Downloads/AppSuit/avd-camouflage/libea56.so")
+LIBEA = Path("/Users/1004276/Downloads/toss/avd-camouflage/libea56.so")
 START_RE = re.compile(r"Start proc (\d+):viva\.republica\.toss/")
 CREATED_RE = re.compile(r"viva\.republica\.toss \((\d+)\)")
 FRAME_RE = re.compile(r"pc ([0-9a-f]+)\s+\S*libea56\.so")

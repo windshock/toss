@@ -12,7 +12,7 @@ object; re-derive the bytecode stream via the same table chain the marshaller
 uses; dump the invocation object and the method bytecode. Observation only.
 """
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -22,7 +22,7 @@ SOINFO_NOTIFY = LINKER_BASE + 0x68bb4
 AFED8 = 0xafed8
 MARSH_IDX = 0xebc639594984          # tbnz w8,#0x12 — x19 already loaded
 THUNK_SLOT = 0xebc639e0d348         # -> table -> +0x10 -> dex-like struct
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_vm_trace6.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_vm_trace6.json"
 
 
 def adb(*a):

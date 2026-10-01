@@ -15,7 +15,7 @@
 set -e
 PKG="${1:?usage: neuter_rebuild.sh <pkg> [redirect_sym] [workspace]}"
 REDIR="${2:-getpid}"
-WS="${3:-$HOME/Downloads/AppSuit}"
+WS="${3:-$HOME/Downloads/toss}"
 SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 KS="$HOME/.android/debug.keystore"
 BT="$(ls -d "$HOME/Library/Android/sdk/build-tools/"* | tail -1)"

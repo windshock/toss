@@ -248,7 +248,7 @@ def main():
         return "".join(ch if 32 <= ord(ch) < 0x10000 and not (0xD800 <= ord(ch) < 0xE000) else "?" for ch in s)
     for r in results:
         if "str" in r: r["str"] = san(r["str"])
-    json.dump(results, open("/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/sweep6_results.json", "w"), indent=1, ensure_ascii=False)
+    json.dump(results, open("/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/sweep6_results.json", "w"), indent=1, ensure_ascii=False)
 
 
 if __name__ == "__main__":

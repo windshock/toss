@@ -14,7 +14,7 @@ call site, frame windows -> identifies which interpreter instruction
 sources the 4. Then keep afed8 Z1 armed for the same-run afed8(4) chain.
 Observation only."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -22,7 +22,7 @@ DEV = "localhost:5555"
 AFED8 = 0xafed8
 ARM_AT = 46
 WORKER_ENT = 0xda2c8          # libea56-relative (stp x28,x27,[sp,#-0x60]!)
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2j.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2j.json"
 
 
 def adb_sh(cmd, t=15):

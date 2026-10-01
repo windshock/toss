@@ -3,7 +3,7 @@
 at the first afed8 id0 stop (anon module is mapped in-context), then confirm
 the anchor by continuing to afed8(x0==4). Observation only. SIGTERM detaches."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -14,7 +14,7 @@ AFED8 = 0xafed8
 MARSH2 = 0xebc6394586c4
 THUNK = 0xebc639586b30
 SLOT = 0xebc639e0d348
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_marsh2_code.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_marsh2_code.json"
 
 
 def adb(*a):

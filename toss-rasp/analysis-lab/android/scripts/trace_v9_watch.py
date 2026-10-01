@@ -7,7 +7,7 @@ watchpoint on args slot0 (= thunk-entry sp - 0xe0) and record every write:
 PC, value written (source reg at stop), plus key registers. Ends at afed8
 entry. Observation only. SIGTERM detaches."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -17,7 +17,7 @@ SOINFO_NOTIFY = LINKER_BASE + 0x68bb4
 AFED8 = 0xafed8
 THUNK = 0xebc639586b30
 R_IDX = 0xe7b
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_v9_watch.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_v9_watch.json"
 
 
 def adb(*a):

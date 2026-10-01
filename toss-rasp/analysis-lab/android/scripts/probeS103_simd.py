@@ -23,7 +23,7 @@ Method (all stops dance-verified, register numbers from target.xml ONLY):
   E. Offline (host): reproduce ldr/lsr/lsl/orr + dup/ushl/and from the
      captured raw bytes/registers -> expect q0.high64 lane2 == 4."""
 import json, re, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -33,8 +33,8 @@ AFED8 = 0xafed8
 # (S102: 0xe14bc1318f70 -> new layout 0xfffd35518f70, low bits preserved).
 # STUR/BLK_ENT/signature all come from the LATEST probeG2k_final4 artifact.
 SLOT_A = -0x3e0              # sp46-relative
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s103_simd.json"
-S102 = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s102_probeG2k_final4.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s103_simd.json"
+S102 = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s102_probeG2k_final4.json"
 _g2k = json.load(open(S102))
 STUR = int(_g2k["final4_writer"]["pc"], 16)
 BLK_ENT = STUR - 0x38

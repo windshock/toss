@@ -16,15 +16,15 @@ STORE-0x34 (=8f3c). On each hit: dance + 4-step micro-trace capturing
 pre-regs, the row window [x12-0x10,+0x40], and the ORR result. Ride to
 afed8(4) same-run. Offline: reconstruct the width table + field sequence."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
 DEV = "localhost:5555"
 AFED8 = 0xafed8
 SLOT_A = -0x3e0
-S102 = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s102_probeG2k_final4.json"
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s109_width.json"
+S102 = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s102_probeG2k_final4.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s109_width.json"
 _g2k = json.load(open(S102))
 _sig = None
 try:

@@ -9,7 +9,7 @@ Usage:
 See dexdis.py for a disassembler on extracted code."""
 import struct, sys
 
-DEX = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_hidden_dex.bin"
+DEX = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_hidden_dex.bin"
 
 
 def uleb(dex, o):

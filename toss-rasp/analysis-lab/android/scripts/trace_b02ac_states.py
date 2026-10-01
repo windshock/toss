@@ -15,7 +15,7 @@ Context memory (x19, tag-masked) is snapshotted per hit for the pre-poison diff.
 Observation only. SIGTERM/SIGINT always detach (else guest freezes).
 """
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -28,8 +28,8 @@ POISON = 0x95224
 BR_X10 = "4001 1fd6".replace(" ", "")   # d61f0140 le -> "40011fd6"
 BLR_X8 = "0001 3fd6".replace(" ", "")   # d63f0100 le -> "00013fd6"
 MAX_HITS = 600
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_b02ac_states.json"
-TXT = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_b02ac_states.txt"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_b02ac_states.json"
+TXT = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_b02ac_states.txt"
 
 
 def adb(*a):

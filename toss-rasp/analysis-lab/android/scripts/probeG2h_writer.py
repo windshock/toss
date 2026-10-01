@@ -17,7 +17,7 @@ State machine per stage:
 Converges on the final calm marshalling: vA becomes 4 -> FULL CAPTURE,
 then afed8(4) in the same run closes the chain."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -27,7 +27,7 @@ ARM_AT = 46
 SLOT_A = -0x3e0
 BUD = 40
 MAX_STAGES = 24
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2h.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s101_probeG2h.json"
 
 
 def adb_sh(cmd, t=15):

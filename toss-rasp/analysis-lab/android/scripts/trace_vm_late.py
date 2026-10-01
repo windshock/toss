@@ -8,7 +8,7 @@ chunk-wise so the whole hidden DEX lands on the host for offline parsing of
 method 3707 (the afed8(4,..) invoker). Observation only. SIGTERM detaches.
 """
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -17,7 +17,7 @@ LINKER_BASE = 0xebc8ffebf000
 SOINFO_NOTIFY = LINKER_BASE + 0x68bb4
 AFED8 = 0xafed8
 MARSH_IDX = 0xebc639594984
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_vm_late.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_vm_late.json"
 BIN = "/tmp/savedargs_probe.bin"
 DEX_SIZE = 0x200000
 CHUNK = 0x1000

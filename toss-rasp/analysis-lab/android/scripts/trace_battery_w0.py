@@ -11,7 +11,7 @@ Output: JSON list of {pc, target, ret_w0} for API call analysis.
 Budget: ~5k steps (first 5k of the 16k loop covers initial checks).
 """
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -20,7 +20,7 @@ LINKER_BASE = None
 SOINFO_NOTIFY_OFF = 0x68bb4
 AFED8 = 0xafed8
 BUDGET = 8000
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_battery_w0.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_battery_w0.json"
 
 def adb(*a):
     return subprocess.run([ADB, "-s", DEV] + list(a), capture_output=True, text=True)

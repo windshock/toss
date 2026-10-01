@@ -20,7 +20,7 @@ from call#46:
   - ride to afed8(4) same-run.
 Artifacts per-run, dance invariant everywhere."""
 import json, signal, subprocess, sys, time
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
@@ -28,7 +28,7 @@ DEV = "localhost:5555"
 AFED8 = 0xafed8
 SLOT_A = -0x3e0
 BANK_OFF = 0x338            # bank v3 slot EA - sp46 (S105 run measurement)
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_s106_x27.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_s106_x27.json"
 
 
 def adb_sh(cmd, t=15):

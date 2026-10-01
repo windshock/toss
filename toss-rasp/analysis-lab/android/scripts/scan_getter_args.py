@@ -13,8 +13,8 @@ Static only; parses artifacts toss_hidden_dex.bin (canonical §98 dump).
 """
 import json, struct
 
-DEX = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_hidden_dex.bin"
-OUT = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_getter_census.json"
+DEX = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_hidden_dex.bin"
+OUT = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_getter_census.json"
 
 data = open(DEX, "rb").read()
 u32 = lambda o: struct.unpack_from("<I", data, o)[0]

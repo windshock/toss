@@ -21,7 +21,7 @@ before the wrapper filters/links it.
 SAFETY: a SIGTERM/exception ALWAYS detaches (else the guest freezes). No RASP bypass.
 """
 import sys, time, subprocess, struct, json, signal
-sys.path.insert(0, "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/scripts")
+sys.path.insert(0, "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/scripts")
 from hvf_hwbreak_toy import RSP
 
 BASE = 0xebc8ffebf000
@@ -30,7 +30,7 @@ RDEBUG = BASE + 0x180bd8
 SOINFO_NOTIFY = BASE + 0x68bb4
 ANCHOR_OFF = 0x13a4bc
 DEV = "localhost:5555"
-ART = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab/artifacts/android/toss_anchor_capture.json"
+ART = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab/artifacts/android/toss_anchor_capture.json"
 
 
 def adb(*a):

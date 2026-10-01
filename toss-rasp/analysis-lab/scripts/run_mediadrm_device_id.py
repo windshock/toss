@@ -33,7 +33,7 @@ ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
 DEV = "localhost:5556"
 PKG = "viva.republica.toss"
 ACT = "viva.republica.toss/.splash.SplashActivity"
-LAB = Path("/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab")
+LAB = Path("/Users/1004276/Downloads/toss/toss-rasp/analysis-lab")
 JS = LAB / "scripts" / "hook_mediadrm_device_id.js"
 ART = LAB / "artifacts" / "android"
 

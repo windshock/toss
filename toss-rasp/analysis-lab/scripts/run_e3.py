@@ -5,7 +5,7 @@ import json, subprocess, sys, time
 ADB = "/Users/1004276/Library/Android/sdk/platform-tools/adb"
 DEV = "localhost:5556"
 PKG = "viva.republica.toss"
-LAB = "/Users/1004276/Downloads/AppSuit/avd-camouflage/analysis/toss-rasp/analysis-lab"
+LAB = "/Users/1004276/Downloads/toss/toss-rasp/analysis-lab"
 JS = LAB + "/scripts/hook_e3_returns.js"
 OUTLOG = LAB + "/artifacts/android/e3_frida.log"
 
