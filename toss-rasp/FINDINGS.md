@@ -7095,3 +7095,21 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **운영 지식**: 11s 관문 생존 런(레이스)은 골든 윈도우 — "죽지 않은 채 판정 완료 상태"의 전 메모리를 준다.
   gdc.sh+사이클 재시도가 재현 가능한 레시피(이번 부트 1회차 성공).
 - 보존: `toss-rasp/session155/live_capture/`(300MB, 6프로세스 431리전 + maps).
+
+[§155 추기11 — ★dword 해부: 서버 메시지 채널의 실체 (dwordStore.xml 해독 + 타이밍 지도)]
+- **dwordStore.xml(shared_prefs) 해돌** — 3키뿐인 최소 구조:
+  `dinitialize`=6e2e3a10-…(UUID 비밀 — "acquireNewSecretSuccess"의 실체, sec/dinitialize에서 수령),
+  `clockValidUntil`(절대시각 ms), `uptimeValidUntil`(초 — 20일 창, 재발급 조건).
+  ⇒ **dword = 서버가 발급한 비밀+유효창으로 지속 검증하는 원격 상태 캐시** (§48 "판정 캐시"의 실체).
+- **타이밍 지도(살아있는 런 텔레메트리로 정밀화)**:
+  T+10.6s sec/dinitialize POST(1307B) + tuba-static variables/v2/default(703B) →
+  T+11.80s acquireNewSecretSuccess → T+11.802 fds_debug(emulator) → T+11.803 fds_detected →
+  T+11.804 dword getDwordResult(**message_present**) — **전체가 3ms 안에 완결.**
+  ⇒ 판정 보고와 dword 결과 조회가 동기 연쇄 = **dword 메시지가 FDS 액션 선택에 직접 입력**.
+- **'메시지' 본문은 미회수**: 힙에는 logstore JSON(resultType만)뿐, 본문은 dinitialize 응답(1307B)에서
+  3ms 내 소비. 회수 루트: ① T+10.6s 창의 okio 응답버퍼 즉시 덤프(gdc.sh 타이밍 조정) ② TLS 언피닝 pcap.
+  — §97-108의 fds_cap.pcap 장비 재사용 가능.
+- **mmkv 발견**: tubaVars(TUBA 원격설정 캐시), serviceGatorProvider, tmsOtaResourcesStore — 차기 역해독 대상.
+- **핵심 가설 갱신 [S→O]**: "판정"의 최종 액션 선택이 **서버가 내린 dword 메시지**일 수 있음 —
+  로컬 [EMULATOR] 판정은 '보고'이고, 죽음/다이얼로그 선택은 dword 메시지가 결정했을 가능성.
+  검증법: dwordStore.xml의 dinitialize 키를 오염/삭제한 A/B → getDwordResult 결과 변화 관찰.
