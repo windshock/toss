@@ -16,19 +16,25 @@
 ## 2. 스킬 사용 규칙 (세션 자동화의 핵심 도구)
 
 ### 로드할 스킬 2종 (ZCode Skill 도구로 호출)
-1. **avd-rasp-camouflage** — 에뮬/카모/LKM/frida 운영 전반. 디렉터리 `~/.agents/skills/avd-rasp-camouflage/`
-2. **dexguard-reVERSE** — DexGuard 문자열 복호·숨은 DEX 분석. 디렉터리 `~/.agents/skills/dexguard-reVERSE/`
+1. **avd-rasp-camouflage** — 에뮬/카모/LKM/frida 운영 전반
+2. **dexguard-reVERSE** — DexGuard 문자열 복호·숨은 DEX 분석
    (가드 어휘 재검증·앱 버전 갱신 재분석. §149 방법론 = 이 스킬 §7d-7f)
 
-### 진실 소스 이원 주의 (중요)
-- **LKM 소스·빌드 = 워크스페이스** `avd-camouflage/lkm/` (스킬에는 없음)
-- **운영 스크립트 = 스킬 디렉터리** `~/.agents/skills/avd-rasp-camouflage/scripts/` — 워크스페이스 밖이므로
-  **호출은 항상 절대경로**: `boot_recover.sh`(부팅 후 원스텝 복구) `deploy.sh` `camow3.sh` `vendor_bind_setup.sh`
-  `props-apply.sh` `channel_trace.sh`(탐지채널 ftrace) `toss_heap_snapshots.sh`(가드 복호화 어휘 스냅샷)
-  `toss_child_scan.sh` `exit_trap.js` `frida_spawn.py` `ghidra_decompile_at.java` 등
-- 2026-10-01 boot_recover [6c] 인용버그 수정은 **스킬 디렉터리 쪽에 반영 완료** — 다른 사본(있으면)은 구버전일 수 있음
+### 스킬 위치 — 저장소 내부 (다른 LLM도 클론 즉시 사용 가능)
+- **진실 소스 = 이 저장소** `skills/avd-rasp-camouflage/`, `skills/dexguard-reVERSE/` (git 추적, 전부 텍스트)
+- `~/.agents/skills/<동일명>`은 **ZCode 스킬 발견용 심볼릭 링크** → 저장소 경로. 다른 도구/LLM은 저장소 경로를 직접 읽는다.
+- 스킬 스크립트 호출(절대경로): `~/Downloads/toss/skills/avd-rasp-camouflage/scripts/boot_recover.sh`(부팅 후 원스텝 복구),
+  `deploy.sh` `camow3.sh` `vendor_bind_setup.sh` `props-apply.sh` `channel_trace.sh`(탐지채널 ftrace)
+  `toss_heap_snapshots.sh`(가드 복호화 어휘) `toss_child_scan.sh` `exit_trap.js` `frida_spawn.py` `ghidra_decompile_at.java` 등
 - 스킬 `references/`: pitfalls.md(증상→원인), detection-channels.md(채널 전수), neuter-rebuild.md, frida-analysis.md
 - **SKILL.md "하면 안 되는 것" 절대금지 목록을 어떤 실험 전에도 선독** (위반 전례: GL 토큰 제거→부트 크래시 루프, goldfish ENOENT 은닉→화면 사망 — 1시간 낭비 다수)
+
+### ★ 스킬은 살아있는 문서 — 실험하며 계속 갱신 (의무)
+새 법칙·함정·레시피가 확정되는 즉시 **스킬에 반영하고 커밋**한다(전례: §144/§149 성과가 SKILL.md 성과 요약·references에 적재됨):
+- `SKILL.md` — 새 "법칙/금지/워크플로"를 1~3줄 요약 추가 (상세 이력은 FINDINGS가 담당, 스킬은 현재 운영 지식만 유지)
+- `references/*.md` — 증상→원인·탐지 채널·트러블슈팅 해당 절 갱신
+- `scripts/` — 스크립트 수정·신설 (2026-10-01 boot_recover [6c] 인용버그 수정이 모범 사례)
+- 반대 방향도 유효: 스킬의 경고를 실험으로 반박하면 스킬을 고친다
 
 ### 작업 ↔ 도구 매핑
 | 작업 | 쓸 것 |
@@ -85,14 +91,16 @@
 
 1. FINDINGS.md 해당 § 추기 (양식: [P0 결론/P1 증거/P2 절차/P3 교훈])
 2. ARCHITECTURE.md 해당 행/증거수준 갱신 ([O]→[C] 등)
-3. 세션 종료 시: 루트에 새 `HANDOFF_S<n+1>_<날짜>.md` 작성, 구 핸드오프는 `toss-rasp/handoffs/`로
-4. git 커밋 — 정책: **텍스트(md/sh/py/js/java/c/h/json)만 추적**, 바이너리(apk/dex/so/dump/img/zip)는 .gitignore로 로컬 보존
+3. **스킬 갱신** — 새 법칙·함정·레시피가 생겼으면 `skills/`에도 반영 (§2 "살아있는 문서" 규칙: SKILL.md·references·scripts)
+4. 세션 종료 시: 루트에 새 `HANDOFF_S<n+1>_<날짜>.md` 작성, 구 핸드오프는 `toss-rasp/handoffs/`로
+5. git 커밋 — 정책: **텍스트(md/sh/py/js/java/c/h/json)만 추적**, 바이너리(apk/dex/so/dump/img/zip)는 .gitignore로 로컬 보존
 
 ## 7. 저장소 지도
 
 ```
 ARCHITECTURE.md            ← 최상위: 확정 모델·증거 원장·검증 지도
 HANDOFF_S153_*.md          ← 최신 인계 (아카이브: toss-rasp/handoffs/)
+skills/                    ← 스킬 2종(진실 소스) — ~/.agents/skills는 발견용 심볼릭
 toss-rasp/                 ← FINDINGS.md(전체 기록) + 세션 원증거(11GB) + INDEX.md
 tmp-artifacts/             ← 현재 분석 자산, 아키텍처 박스별 (INDEX.md)
   target-app/ guard-orchestrator/ native-engine/ countermeasures/ tools/ run-logs/

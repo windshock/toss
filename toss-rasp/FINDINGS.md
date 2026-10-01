@@ -6782,3 +6782,9 @@ libea56 16k 루프:
 - **루트 정리**: originals/(xapk·extracted), evidence/(§97-108 패키지+REVIEW zip), kisa/(제보 서류, git 제외),
   toss-rasp/handoffs/(구 핸드오프 7건 아카이브) — 루트에는 문서 3종+최신 핸드오프+인프라 디렉터리만.
   신규 관례: **루트 핸드오프는 최신 1건만**, 세션 종료 시 구본을 handoffs/로 이동.
+
+[§153 추기6 — 스킬 저장소 내재화 + 갱신 의무화]
+- 스킬 2종(avd-rasp-camouflage·dexguard-reVERSE)을 **저장소 `skills/`로 이관**(진실 소스, git 추적 — 전부 텍스트 py/sh/js/md/java).
+  `~/.agents/skills/<동일명>`은 ZCode 발견용 심볼릱 — 타 LLM/도구는 저장소 경로 직접 사용.
+- AGENTS.md에 **"스킬은 살아있는 문서" 갱신 의무** 명시: 법칙·함정·레시피 확정 → SKILL.md/references/scripts 반영 + 커밋
+  (§144/§149 성과 요약 적재가 전례, boot_recover [6c] 수정이 스크립트 사례).

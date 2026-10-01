@@ -1,0 +1,302 @@
+---
+name: dexguard-reVERSE
+description: DexGuard-protected Android app reverse engineering. Hidden DEX dumping (InMemoryDexClassLoader/mCookie/direct-buffer), 6-variant string decryption (tbl/tea/native-xor), OLLVM flattening static decode (SWAR constant-cancellation + reloc-addend 2D table), native guard chain tracing (GOT dispatch/16k battery), runtime observation (frida patterns/observer-effect laws/property tracing). Use when analyzing apps with DexGuard packing, string encryption, code virtualization, native RASP, environment detection, or self-destruct mechanisms.
+---
+
+# DexGuard Reverse Engineering
+
+## When to use
+- App is packed with DexGuard (hidden DEX via InMemoryDexClassLoader)
+- Strings are encrypted (6 known variants)
+- Native library contains OLLVM control-flow flattening
+- App has environment detection / anti-emulator / anti-root logic
+- App self-destructs (SIGSEGV/SIGABRT/System.exit) on detection
+
+## Protection layers (bottom-up)
+
+```
+Main DEX (app code + trampoline lambdas)
+  └── InMemoryDexClassLoader (DexGuard unpacker)
+       ├── Stub/decoy DEX (empty strings, deterministic bytes)
+       └── Real hidden DEX (601 classes, boot-stable)
+            ├── Guard classes (renamed o/*)
+            ├── String decoders (6 variants)
+            └── native bridge → libea56.so (RASP engine)
+                 ├── OLLVM flattening (16k loop)
+                 ├── 2D dispatch table (0x17c1e0, stride 0x960)
+                 └── GOT entries (system_property, dl_iterate_phdr, syscall...)
+```
+
+## 1. Dumping the hidden DEX
+
+### Method A: invobj chain (gdbstub, most reliable)
+```python
+# At afed8(x0=4) stop → invobj arg1 → [0]→+0x10→[+0x10]→+0x18 = dex base
+# See: dump_hidden_dex_repro.py
+```
+
+### Method B: mCookie route (frida)
+```javascript
+// loader → pathList.dexElements[].dexFile.mCookie (long[])
+// → reflection Array.getLong(cookie, 1) = art::DexFile*
+// → begin_/size_ direct read (validate: header_size==0x70 ∧ endian_tag)
+// See: hook_dump_cookies.js
+```
+
+### Method C: ByteBuffer.wrap hook (frida)
+```javascript
+// ByteBuffer.wrap(byte[]) → arg = Java byte[] → Base64.encodeToString(arr, 2)
+// Note: direct-buffer dexes (JNI/memcpy) are NOT caught by this
+```
+
+### Key facts
+- Real DEX is **boot-stable** (byte-identical across boots/devices)
+- Stub/decoy DEX is also deterministic but has **empty string_data**
+- Header 0x00-0x38 is scrubbed (magic/checksum/sig randomized per boot)
+- map_list at end of file; rebuild with 18 entries for jadx/dexdump
+
+## 2. String decryption (6 variants)
+
+| Variant | Algorithm | Key extraction |
+|---------|-----------|----------------|
+| tbl (central) | `rotl16(T[i+k],13) ^ ((k·rotl64(R,45))&0xFFFF) ^ c` | literal in class, 3363 chars |
+| tea-standard | TEA 16-round char cipher | per-class 4 keys from decompiled source |
+| tea-XOR | `c[k] ⊕ (k·seed) ⊕ const` | known-plaintext |
+| tea-bit-select | bit-select + XOR chain | RepeatModeUtil reverse |
+| v3 (alternate table) | radix div/mod + XOR | per-class key/table |
+| native-xor | `(T[i+k]^XK) ^ ((k·W)&0xFFFF) ^ c` | W=rotl64(R,6)&0xFFFF; R=class long field |
+
+### Decryption formula discovery (native-xor)
+```python
+# 1. Hook RegisterNatives → get fnPtr of b/c natives
+# 2. Hook the native fn → capture (j, k, R, c) tuples live
+# 3. Verify: out[k] = (T[i+k] ^ XK) ^ ((k * rotl64(R,6)) & 0xFFFF) ^ c
+# 4. Ground truth: known plaintext (e.g. "java.lang.System")
+```
+
+### Census tool
+```bash
+python3 dexstr_census.py  # sweeps all classes, applies 5+ variants
+python3 dexstr_sweep6.py  # native-xor variant with runtime keys
+```
+
+## 3. OLLVM static decode
+
+### SWAR constant-cancellation pattern
+```arm
+ldr  x10, [key_slot]     ; load hardcoded key
+neg  w10, w10            ; negate
+mov  w11, #magic         ; load magic (= key_lo32 usually!)
+orr  w12, w10, w11       ; SWAR add components
+...
+add  w10, w12, w10       ; result = (-key) + magic = CONSTANT
+```
+When `magic == key_lo32`, result is **always 0** → constant index.
+
+### 2D dispatch table resolution
+```python
+# table_base = 0x17c1e0 (from adrp/add pairs)
+# slot = base + row*0x960 + col*8
+# reloc = R_AARCH64_RELATIVE → addend = function offset in libea56
+# reloc = R_AARCH64_ABS64 → libc API (system_property, dlopen, etc.)
+```
+
+### Key tools
+```bash
+llvm-readelf -r libea56.so     # reloc table
+llvm-objdump -d --start-address=0xXXXX --stop-address=0xYYYY libea56.so
+```
+
+## 4. Native guard chain
+
+### Kill chain (confirmed)
+```
+Java R(0,0) → afed8(id) → state4 → b0354
+  → SWAR constants → 2D table → GOT API calls
+  → 16,383-iteration loop (property checks)
+  → conditional dispatch (cmp x23,#0 → cset → tst/csel)
+  → if detected: poison block (LR corruption → SIGSEGV)
+  → if clean: normal return
+```
+
+### 2D table GOT entries (58 APIs)
+- **Property**: __system_property_get/find_nth/read_callback/foreach
+- **File**: opendir/readdir/closedir/stat/statfs/basename
+- **Dynamic**: dl_iterate_phdr/dlopen/dlsym/dlerror
+- **Process**: fork/execv/_exit/syscall/prctl/getppid
+- **Memory**: malloc/calloc/realloc/free/mprotect/sysconf
+
+## 5. Runtime observation
+
+### Frida patterns (proven safe)
+| Hook | Safety | Notes |
+|------|--------|-------|
+| afed8 entry (native) | ✓ safe | Light bp preserves native path 3/3 |
+| RegisterNatives vtable[215] | ✓ safe | Captures native fnPtrs |
+| getMethod/getDeclaredMethod | ✓ safe (signature-filtered) | After guard activation only |
+| libc property_get | ✓ safe | For property trace |
+| ByteBuffer.wrap | ✓ safe | For DEX dump |
+| Class.forName | ✗ CRASH | Breaks loader context |
+| Method.invoke (global) | ✗ kills sequence | Perturbs flow |
+| Stalker | ✗ CRASH | Too invasive |
+
+### Observer-effect laws
+1. Java hooks on hidden-DEX classes: only fire on **one loader copy**
+2. Long returns lose precision (>2^53) → use `NativeFunction('int64')` or Java-side `Long.toString()`
+3. `ByteBuffer[]` args arrive as value-wrappers (no `$handle`)
+4. frida-server zombie → restart, then `adb forward` correct port
+5. Emulator port conflict: SDK emulator adb=5555 vs redroid hostfwd=5555 → use 5556+
+
+### Property trace (libc hook)
+```javascript
+// Hook __system_property_get + __system_property_find + openat
+// Arm at first afed8(0), capture until death
+// See: hook_proptrace.js
+```
+
+## 6. Detection surface (what the guard checks)
+
+### Property channel
+- ro.kernel.qemu, qemu.sf.fake_camera, init.svc.qemu-props
+- ro.product.model/device/manufacturer/brand
+- build fingerprint (5 variants)
+- ro.boot.redroid_net_dns1/2
+- persist.vmos.root.enable
+
+### File channel
+- /proc/self/maps (goldfish/qemu device nodes)
+- /proc/net/unix (qemud sockets)
+- Virtual env paths: /data/data/com.gbox.android/vfs_data, /system/vphone_space
+
+### Dynamic library channel
+- dl_iterate_phdr → loaded .so names (gralloc.redroid.so etc.)
+
+### Java API channel (NOT used by Toss guard — verified)
+- Display.getOwnerPackageName: NOT in code
+- Sensor list: NOT in code
+- GL extensions: NOT in code (checked at native level only)
+
+## 7. Tool inventory
+
+| Tool | Purpose |
+|------|---------|
+| dexstr.py | Central tbl + TEA decryptor |
+| dexstr_census.py | Multi-variant string census |
+| dexstr_sweep6.py | Native-xor variant sweep |
+| dex_namemap.py | Boot-stable structural class matching |
+| scan_getter_args.py | Call-site (i,n,c) extraction |
+| hook_dump_cookies.js | mCookie DEX dump |
+| hook_dump_imdex.js | ByteBuffer.wrap DEX dump |
+| hook_proptrace.js | libc property/file trace |
+| hook_subchecks.js | Battery presence probe |
+| hook_sigrefl.js | Signature-filtered reflection capture |
+| hook_r_jni.js | RegisterNatives + JNI arg capture |
+| repair_hidden_dex.py | Scrubbed header + map_list rebuild |
+| hook_e1_syscall.js | Property spoof + ftrace marker syscalls |
+| run_e1_syscalltrace.py | Kernel-level battery syscall capture orchestration |
+| ftrace_guest_setup.sh | Guest instance reset/arm/stop (recreate, not truncate) |
+| ftrace_alltid_trace.sh | All-tid syscall+getname(kprobe) trace until death |
+| fd_poll.sh | Guest fd-table snapshot poller (what the fd walk sees) |
+| extract_vocab.py | Full vocabulary extraction from DEX string pool (§149 decoder) |
+
+## 7b. Kernel-level observation (when libc hooks go blind — §139)
+
+The guard reads `/dev/__properties__/*` by direct open+mmap and calls
+readlinkat/getsockopt/fgetxattr/getdents64 that no libc hook covered. Observe at the kernel:
+- Tracepoints `raw_syscalls/sys_enter+sys_exit` in a dedicated instance; kprobe
+  `p:a2p getname_flags path=+0(%x0):ustring` for path strings.
+- Reset an instance by **rmdir+mkdir** — `echo > trace` wedges it (0 entries, per_cpu files vanish; kernel 6.8).
+- `common_pid == N` filters **one tid only**; for the thread group write all tids from
+  `/proc/PID/task` to `set_event_pid` and refresh periodically. Guard thread is `RxCachedThreadS` (tid ≠ pid).
+- Align timelines with marker syscalls: openat(flags=0x241, mode=0x1a4) is greppable in raw args.
+- Push guest scripts as files and run `su 0 sh /path` — nested quotes through adb silently no-op filters.
+
+## 7c. Frida return-value (w0) capture — §143
+
+libc hooks are safe on this guard (Interceptor onLeave), and gdbstub/hw-bp are unnecessary for w0:
+- Hook the §139-discovered unhooked set: readlinkat (buffer on leave), uname (utsname at +130/+195/+260/+325),
+  sysconf, dlsym (symbol census), getsockopt/fgetxattr, syscall wrapper.
+- **uname is a live channel**: container guests leak "Ubuntu/-generic" kernel strings; hook it AND the
+  /proc/version file channel (guard cross-checks — spoofing uname alone does not flip the verdict).
+- frida "need Gadget / jailed Android" on spawn = a **shell-uid frida-server holding port 27042**;
+  kill by `pidof frida-server` (not `pkill -f`, which self-matches) and start one root instance (-D).
+- Observer effect: with frida attached the guard switches its death path (Java System.exit → native
+  SIGSEGV self-destruct in RxCachedThreadS). Frida-read verdicts are valid; frida-free behavior is not.
+
+## 7d. Static vocabulary extraction — §149
+
+The guard's detection vocabulary can be fully decrypted from the DEX string pool:
+- **Decoder**: `out[k] = rotl16(tbl[i+k], 13) ^ ((k*W)&0xFFFF) ^ c` where `W = rotl64(R, 45) & 0xFFFF`
+- **Table**: DEX string #4236 (MUTF-8 4380 chars, all <256 → getBytes(ISO-8859-1) = 4380 bytes → CharBuffer BE = 2190 chars)
+- **Keys**: `R = 6339512474634032604`, `W = 0x3D77`
+- Each call site uses `(i, len, c)` where c must be brute-forced from jadx constant reconstruction (±2 error due to ViewConfiguration expressions)
+- First-char heuristic: `/` for paths, uppercase for tags (`GENERIC`, `GOLDFISH`, `BLUESTACKS`), `g` for `generic`
+- **Result**: ~35 file paths + ~12 build tags + `ro.product.{manufacturer,device,model}` value matching list
+
+## 7e. DetectFactor enumeration — §149
+
+5 enum checks (s8ExternalSyntheticLambda1), each with `checkUnsafeInternal(Context)`:
+- **EMULATOR**: Java = `ro.product.*` value matching (Genymotion/Genymobile/vbox86p/generic/emulator/
+  "Android SDK built for x86"/"App Runtime for Chrome") + native run() file checks
+- **ROOT**: RootBeer library (asInterface/onExtraCallbackWithResult/onNavigationEvent)
+- **HOOK**: hardcoded `return null` — always safe (disabled in release)
+- **VIRTUAL_ENVIRONMENT**: static condition → always null (disabled)
+- **DEBUGGER**: `== 1` gate → always null in release; reflection on `isDebuggerConnected`
+- **TAMPER_CERT**: Crosscert `ToolkitManager.getAppCertList()` → remote certificate pinning
+
+## 7f. Global kill flag — §149
+
+The exit is gated by a single static boolean in `getBooleanFromAdObject`:
+- `IAuthTabCallback` (private static boolean, default false)
+- Set by `UST_CRYPT_VerifySignatureValue_NoAlgorithmInfo.onExtraCallback(z)` = cert verification result
+- `onNavigationEvent()` returns it → logging + `exitPlan` decision
+- This means TAMPER_CERT is the **only path** to setting the global kill flag to true
+
+## 8. Methodology (learned the hard way)
+
+1. **Verify environment identity first** — getprop + model after ANY emulator lifecycle change
+2. **Don't trust state-id block descriptions** — flattening state IDs ≠ code addresses
+3. **Check superclass_idx at +8** (not +4 which is access_flags)
+4. **Use dexdump as ground truth** over custom parsers
+5. **Verify strings ARE populated** — early DEX snapshots have empty string_data
+6. **Reloc addend + SWAR = static table decode** — no runtime needed
+7. **cmp x23,#0 after API call** is the detection gate, not error handling
+
+## 9. Reference: Toss 5.276.0 case study (§97-§134)
+
+### Guard architecture discovered
+```
+AbsAppGuard (hidden DEX "o.createFromParcel") — abstract base
+  └── s3 (concrete, singleton) — execution policy: 0s/10s delay
+       └── getBooleanFromFullResponse (detector manager)
+            └── guardLevel gate: LOW={DEBUGGER,EMULATOR} HIGH=+HOOK MAX=+6
+                 └── s8ExternalSyntheticLambda1 (enum, 6 types)
+                      └── EMULATOR.checkUnsafeInternal(ctx)
+                           └── DataSourceBitmapLoader…onNavigationEvent(ctx,1,3)
+                                └── native run() → libea56 → 16k loop → verdict
+```
+
+### R-tick mechanics
+- Scanner cache seeded -1/0 at <clinit> → first tick always mismatch → rescan
+- R(0,0) → afed8(4) → state4 → constant SWAR → 2D table → GOT → property checks
+- **CONDITIONAL**: `cmp x23,#0 → cset → tst/csel → br` = detection gate
+  - Found (detected) → early ret → Java EXIT action
+  - Not found (clean) → memset + continue loop → clean return
+
+### Timing
+- ~5s: Java-exit (if detection) = System.exit(0)
+- ~15-20s: R-tick (if guard active) = native poison (LR corruption → SIGSEGV)
+- Activation: lifecycle START event (AppLifecycleEventObserver, no server gate)
+
+### Key artifacts
+- `toss_hidden_fixed.dex` — repaired hidden DEX (dexdump-passing)
+- `toss_hidden.jar` — jadx-decompilable JAR
+- `hidden_strings.txt` — 201 decrypted strings
+- `proptrace_run1.log` — complete property/file access census
+- FINDINGS.md §97-§134 — full analysis chain
+
+### Environment laws (learned)
+- Emulator port 5555 conflict (SDK emulator vs redroid hostfwd) → use 5556+
+- Guest identity changes after reboot → always verify getprop+model
+- frida long marshaling loses >2^53 precision → NativeFunction('int64')
+- Per-boot dex name randomization is FALSE — stub dexes are deterministic

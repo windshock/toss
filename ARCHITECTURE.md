@@ -109,7 +109,7 @@
 | 대응 | 닫는 채널 | 위치 |
 |---|---|---|
 | LKM hide_kmod (현재 bisectB) | 파일경로 리다이렉트/차단(v4.22 probe·v4.24 net/unix는 off), fd readlink 세탁(v4.6b dmap), dirent 텔레텔 은닉(v4.2), kill/segv 개입 | `avd-camouflage/lkm/`(소스 3세대: 현재본+pre_bisectA/B) |
-| boot_recover/camow3/props | 프롭 신원(SM-S916N 세트), 위장 파일 writer, 패키지 hide, qemu 잔탁 스크럽 | `~/.agents/skills/avd-rasp-camouflage/scripts/` |
+| boot_recover/camow3/props | 프롭 신원(SM-S916N 세트), 위장 파일 writer, 패키지 hide, qemu 잔탁 스크럽 | `skills/avd-rasp-camouflage/scripts/` |
 | 호스트 dylib GL 패치 | Vendor/Renderer/Version/토큰 문자열(Adreno 740) | `avd-camouflage/host-patch/`, `host-patch-root/` |
 | §142 랜덤명 체인·§146 GL 반환필터 | 라이브러리명/phdr·GL 문자열 반환 | 게스트 dm-33 상태(롤백 레시피: §153 P1) |
 | **잔여 미봉쇄** | ① /proc/self/fd **readdir** 도트파일명(.wq517h 등) ② 매핑 라이브러리 .dynstr goldfish_*/emugl* 심볼(§151 P3 런타임 스크럽 설계) ③ Widevine L3/device_id ④ dmap 미등록 4채널 | — |
@@ -161,6 +161,7 @@
 | `tmp-artifacts/countermeasures/` | 대응 스택 실험 자산(순정 GL 세트, 게스트 오버레이) |
 | `tmp-artifacts/tools/` | 검증 도구(디코더·frida 훅·측정 러너) |
 | `avd-camouflage/` | 대응 스택 본체(lkm·host-patch·스크립트) |
+| `skills/` | 에이전트 스킬 2종(운영 지식 진실 소스 — ~/.agents/skills는 심볼릭) |
 | `toss-rasp/FINDINGS.md` | 전체 근거 기록(§1-§153) — `toss-rasp/INDEX.md`로 탐색 |
 | `originals/`(xapk·extracted), `evidence/`(§97-108 패키지·REVIEW zip), `ack-kernel/`·`host-patch-root/`(빌드·패치 의존) | 인프라 |
 | `toss-rasp/sessionN·heap·dump·apk_backup` | 세션별 원증거 (FINDINGS "산출" 문단 참조) |
