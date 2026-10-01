@@ -7200,3 +7200,22 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   3. **제한 모드 수용** — dword 만료 시 다이얼로그 + ~15s 창 (§155 추기12)
 - **우연의 발견**: redroid getpid가 148ns로 **에뮬레이터(350ns)보다 2.4x 빠름** — 컨테이너는 호스트 커널을
   직접 공유하므로 syscall 경로가 더 짧음. 이것 자체는 또 다른 지문(syscall 속도가 실기기보다 빠름 = 가상화 흔적).
+
+[§155 추기17 — 자기 검증: 3가지 정정 (실측 vs 문헌값 구분 + redroid 가상화 표현)()]
+- **정정 1: 실기기 참고치는 문헌값/계산값이지 실측이 아님**:
+  - CNTFRQ 19.2MHz — ARM/Qualcomm 일반 문헌값 (디바이스트리에서 확인 필요)
+  - 루프 ~0.31 ns/iter — 3.2GHz 역수 계산 (이론치, 실측 아님)
+  - 분기예측 1.5-2.5x — 일반적 ARM Cortex 문헌 범위
+  → **에뮬레이터 측정값(24MHz, 1.00x, 2.32ns)은 실측이지만 실기기 참고치는 추정**.
+  실기기 확보 시 timing_bench.c로 실측 필요.
+- **정정 2: redroid의 "HVF 공유" 표현 부정확**:
+  - 에뮬레이터(camo33) = QEMU + HVF 백엔드
+  - redroid = Docker 컨테이너 (macOS Apple Virtualization Framework → Linux VM → Docker)
+  - **둘 다 "Apple Silicon 가상화 환경" 위에서 실행되므로 결과가 유사한 것** — "HVF가 같은 주파수를
+    하드코딩"이라기보다 "Apple Silicon 가상 카운터 설정이 두 경로 모두에 반영"
+  → 표현을 "Apple Silicon 가상화 환경 공통"으로 정정
+- **정정 3: "CNTFRQ는 QEMU 하드코딩" → 부정확**: 실제로는 Apple Silicon 하이퍼바이저가 게스트에게
+  제공하는 가상 카운터 주파수가 24MHz인 것 (QEMU 설정이 아니라 플랫폼 특성)
+- **결론의 유효성**: 위 3가지는 표현/근거의 정밀화이며 핵심 결론(에뮬레이터와 redroid의 타이밍 지문이
+  동일 → 베어메탈 필요)은 변하지 않음. 단, "실기기가 반드시 19.2MHz"라고 단정할 수 없음 —
+  Qualcomm 기기 다수가 19.2MHz를 사용한다는 문헌 근거일 뿐, SM-S916N 실측은 차기 확인 필요.
