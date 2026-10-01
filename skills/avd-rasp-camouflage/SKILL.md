@@ -311,3 +311,11 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
 - **attach_run.py 함정**: PATH에 adb 없으면 서브프로세스 실패가 조용히 묻힘("no pid" 오탐) — pyenv+platform-tools
   PATH 세팅 후 실행. adb shell 중첩 인용은 list 형식 또는 `su 0 cat …` 직통으로.
 - **반복 frida attach 후 am start timeout**(AM 킬) → 부트 경계 회복. 세션당 attach 절제.
+
+## §158 성과 요약 (2026-10-01 심야 2차)
+- **톰브스톤/이벤트 크래시 해석 법칙**: 가드는 자신/자식의 cmdline을 위장(bluetooth 등) — 크래시 원인 분석은
+  pid+uid+타임스탬프 교차검증. "시스템 앱 부트 노이즈" 오판 주의.
+- **하루 보고 런 예산**: 반복 [EMULATOR] 보고 후 사망 경로가 드리프트(Java exit→네이티브 포이즌 즉사) 관찰 —
+  통제 실험은 무보고 조합(iptables+clock만료)으로.
+- **frida adb forward는 부트마다 소멸** — attach 전 `adb forward tcp:39871 tcp:39871` 재확인.
+- E4 도구 완성: `tools/hook_vdso_plus.js`(vDSO+PLT 동시·exit_trap 생존·60s 틱) — 정상화 후 즉시 재사용.

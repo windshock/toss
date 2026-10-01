@@ -7353,3 +7353,41 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 2. "시간을 잰다"는 가정도 API 계층별로 소거해야 한다: MRS → PLT → Java → vDSO 직접 → 클럭프리. 불가시성
    증가 순서가 곧 탐색 순서.
 3. 오퍼레이터 노이즈(광고 SDK의 시간 호출)는 콜사이트 필터(모듈 범위/스택)로만 분리된다.
+
+## 158. S158 세션 (2026-10-01 심야 2차) — E4(vDSO 직접호출) 도구 완성·이행 차단 + ★집행 경로 드리프트 실측(Java exit→네이티브 포이즌 SIGSEGV) + 톰브스톤 cmdline 위장 함정
+
+### 158-1. P0 결론
+1. **★집행 경로 드리프트 [C:관측] / 원인 [O]**: 오늘 21:32경부터 toss 사망 양상이
+   **Java System.exit(11s 정상 체인) → 스폰 직후 네이티브 SIGSEGV(am_crash, 0.2s) + "start timeout" 행업**으로 전환.
+   - 같은 부트 내에서도 깨끗한 11s 사멸(21:30-31, 2런 — frida-server 기동 상태 포함) → 21:32부터 크래시 시대.
+   - **dwordStore 삭제로도 회복 안 됨**(유효창 게이트 아님) · segv_recover=0도 무관 · 재부팅(21:28) 후 일시 정상이었다가 재발.
+   - 원인 후보: ① 오늘 누적 ~20회 [EMULATOR] 보고 후 서버 정책이 경로 B(native poison) 선택(§156 타이밍 가각과 달리
+     **경로 선택은 서버 정책 후보로 부활** — dwordStore가 아닌 deeper 캐시: mmkv/tubaVars 또는 재발급 응답 자체)
+     ② 로컬 누적 상태(kill 카운터류). **미분리 [O]** — 차기 판별: 크래시 시대에 §155 시절 dword 백업본 이식 A/B,
+     tubaVars/mmkv 클리어, 그리고 무보고 런(iptables+만료 조합) 후 경과 관찰.
+2. **★톰브스톤 cmdline 위장 함정 [C]**: 토스(및 fork 자식)의 네이티브 크래시가 tombstoned에 **다른 cmdline**
+   (com.google.android.bluetooth 등)로 기록됨 — 가드의 cmdline 위장(§25차 "uid 기반 pid 탐색" 노트의 확장).
+   **크래시 아티팩트 해석은 pid+uid+타임스탬프 교차검증 필수** — "블루투스가 죽는 부트 노이즈"로 읽힌 일부 크래시는
+   실제 토스 포이즌이었을 가능성.
+3. **포이즌 크래시 시그니처 [S]**: fault addr = libart RELRO(r--p) 페이지+0xa48, x16=페이지 정렬, SEGV_ACCERR,
+   백트레이스 #03 <unknown> — 서명 일치 크래시가 inputmethod/maps 등에도 위장 기록됨.
+4. **frida-server 기동 자체는 스폰 무해 [C]**(2부트 2회 검증: 기동 상태에서 정상 11s 사멸). §157의 "attach 후
+   스폰 불안정" 상관은 부분 철회 — 두 번째 부트에서 attach 없이도 크래시 시대 도래(드리프트와 동반 발생으로 재해석).
+5. **E4(vDSO 직접호출 포착) 이행 차단**: 도구는 완성(`tools/hook_vdso_plus.js` — vDSO ELF 수동 파싱 + libc PLT
+   동시 감시 + libea56 범위 필터 + exit_trap 생존 모드 + 60s 틱 커버 설계) — 그러나 위 드리프트로 런 확보 불가.
+   **차기 세션: 드리프트 판별 → 정상화 → E4 즉시 실행**(스크립트 재사용).
+
+### 158-2. P1 증거
+- 크래시 시대 am events: `am_proc_start toss → 0.2s 후 am_crash SIGSEGV` ×2(21:32:19 등), `am_kill start timeout`.
+- tombstone_20(pid 20140): cmdline=bluetooth(위장 의심), fault 0x7464e0fa48(libart relro), #03 unknown.
+- 깨끗한 대조: 21:30:44(무frida 11s 사멸 am_proc_died 정상), 21:31:5x(frida-server 기동 상태 11s 사멸).
+- dword 삭제 런: 스폰 즉사, dwordStore 미재생성(런이 발급 단계 도달 못함).
+
+### 158-3. P2 절차
+- 크래시 시대 판별 트리(차기): ① 부트 후 무활동 10분 경과 관찰(시간 회복 여부) ② iptables+clock만료(무보고 런)
+  으로 경로 관찰 ③ §155 dword 백본 이식 ④ tubaVars/mmkv 선택적 클리어.
+- 운영: frida 실험 전 `adb forward` 상태 점검(재부팅마다 소멸 — ServerNotRunningError 오탐 방지).
+
+### 158-4. P3 교훈
+1. 시스템 크래치 노이즈와 가드 사망은 cmdline 위장으로 구분 불가 — pid/uid/시각 교차검증을 습관화.
+2. 하루에 너무 많은 보고 런을 돌리면 대상의 행동 양상 자체가 드리프트한다 — 실험 설계 시 보고 런 예산 관리.
