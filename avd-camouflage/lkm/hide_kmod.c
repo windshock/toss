@@ -461,6 +461,8 @@ static int pvm_block = 0;
 module_param_named(pvm_block, pvm_block, int, 0644);
 static int pvm_log = 0;
 module_param_named(pvm_log, pvm_log, int, 0644);
+static ulong pvm_stack_hits;
+module_param(pvm_stack_hits, ulong, 0444);
 static ulong pvm_hits;
 module_param(pvm_hits, ulong, 0444);
 
@@ -473,6 +475,19 @@ static int pvm_pre(struct kprobe *p, struct pt_regs *regs)
 	if (pvm_log && pvm_hits < 40)
 		pr_info("pvmcall: pid=%lu lr=%px pc=%px remote_iov=%px riovcnt=%lu\n",
 			ul->regs[0], ul->regs[30], ul->pc, ul->regs[3], ul->regs[4]);
+	/* S154+: 유저 스택 샘플 — SafeCopy 프레임의 저장 x30 = 호출자(가드) 복귀주소.
+	 * svc 진입 시 pt_regs->sp = libc wrapper 진입 시점 sp. bionic wrapper는
+	 * 프레임 없이 svc하므로 [sp+8] = SafeCopy가 저장한 x30. 프레임 체인 4워드 샘플. */
+	if (pvm_log && pvm_stack_hits < 40) {
+		unsigned long w0 = 0, w1 = 0, w2 = 0, w3 = 0;
+		unsigned long __user *sp = (unsigned long __user *)ul->sp;
+		if (!get_user(w0, sp) && !get_user(w1, sp + 1) &&
+		    !get_user(w2, sp + 2) && !get_user(w3, sp + 3)) {
+			pvm_stack_hits++;
+			pr_info("pvmstack: sp=%px w=[%px %px %px %px]\n",
+				ul->sp, w0, w1, w2, w3);
+		}
+	}
 	if (!pvm_block)
 		return 0;
 	if (!uid_allowed())
@@ -485,6 +500,37 @@ static int pvm_pre(struct kprobe *p, struct pt_regs *regs)
 static struct kprobe kp_pvm = {
 	.symbol_name	= "__arm64_sys_process_vm_readv",
 	.pre_handler	= pvm_pre,
+};
+
+/* ── S154+: art::SafeCopy 진입 관측기 — 가드가 읽는 메모리의 전체 지도.
+ * SafeCopy(dst, src, len)는 ART 공식 fault-safe 리더(dynsym export)이며 가드가
+ * 런타임 구조/힙 검사에 사용(§154 추기). 진입 인자+복귀주소+호출자 comm 기록.
+ * sc_log=1 활성(기본 OFF), sc_max건 후 자동 중단. 전역 kprobe라 타 프로세스 것도
+ * 기록됨 — comm 필드로 분류. */
+static int sc_log = 0;
+module_param_named(sc_log, sc_log, int, 0644);
+static int sc_max = 2048;
+module_param_named(sc_max, sc_max, int, 0644);
+static ulong sc_hits;
+module_param(sc_hits, ulong, 0444);
+
+static int sc_pre(struct kprobe *p, struct pt_regs *regs)
+{
+	struct pt_regs *ul;
+
+	if (!sc_log || sc_hits >= (ulong)sc_max)
+		return 0;
+	sc_hits++;
+	ul = (struct pt_regs *)regs->regs[0];
+	pr_info("safecopy: comm=%s pid=%d dst=%px src=%px len=%lu lr=%px\n",
+		current->comm, current->pid,
+		ul->regs[0], ul->regs[1], ul->regs[2], ul->regs[30]);
+	return 0;
+}
+
+static struct kprobe kp_sc = {
+	.symbol_name	= "_ZN3art8SafeCopyEPvPKvm",
+	.pre_handler	= sc_pre,
 };
 
 /* ── v4.10: 21차 fault 컨텍스트 덤퍼 ─────────────────────────────────
@@ -1550,6 +1596,9 @@ static int __init hide_init(void)
 	ret = register_kprobe(&kp_pvm);
 	if (ret)
 		pr_err("hide_kmod: pvm-block failed: %d\n", ret);
+	ret = register_kprobe(&kp_sc);
+	if (ret)
+		pr_err("hide_kmod: safecopy failed: %d\n", ret);
 	ret = register_kprobe(&kp_fault);
 	if (ret)
 		pr_err("hide_kmod: faultdump failed: %d\n", ret);

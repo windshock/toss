@@ -6865,3 +6865,23 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   이것이 §150 "메모리 거주 채널"의 **관측 가능한 일면**(SafeCopy는 syscall을 남기므로 ftrace에 걸렸던 것).
 - **신규 관측기 제안(차기 정공)**: **SafeCopy 진입 kprobe(src,dst,len 전수 기록)** — syscall보다 풍부한
   "가드가 읽는 메모리의 전체 지도"를 얻는다. (대응 실험 시 주의: §154 본문 — 차단/실패 위장은 fail-closed 자폭.)
+
+[§154 추기2 — ★연쇄 완성: boot.art 읽기 = SIGSEGV 핸들러 체인 (dmesg 직접 포착)]
+- **결정적 dmesg 흔적(같은 런)**:
+  `faultdump #6 comm=.republica.toss — EL0 DA far=0 esr=0x92000006`(널 리드, 4바이트)
+  `SFI11: handler=0x764cf6908c si_addr=0x0 ... pc=0x71d6f534 lr=0x71d6f52c x0=0x71137248`
+  `SFO: rt_sigreturn restored ... pc=0x73a4c57920 ... x0=0x71137248`
+- **시나리오(사실 기반)**: T+2-3s 가드 스레드에서 널 DA 발생 → 가드의 SIGSEGV 핸들러가
+  **sigaltstack에서 실행**(pvmstack w1/w2 = thread signal stack과 정합) → **art::SafeCopy로
+  자기 메모리/ART 구조(boot.art·LinearAlloc·힙)를 안전하게 읽어** 컨텍스트 검사 → rt_sigreturn으로
+  복구(x0 유지 = §23 "크래프트 복귀" 패턴) → 실행 계속 → T+11s exit.
+- **§154 P1 재해석**: pvm 차단(EFAULT→SafeCopy 0 반환)의 2-3s 사멸 = fail-closed가 아니라
+  **크래시-복구 체인의 SafeCopy 의존 실패** — 핸들러가 컨텍스트를 못 읽어 복구 불가.
+- **sigaltstack 사용 + SafeCopy 조합은 ART StackDumpSignalHandler류 표준 패턴** — 가드가 ART의
+  크래시 핸들링 인프라 위에 자기 복구를 얹은 구조. boot.art 읽기는 "표적"이 아니라
+  **복구/검사 경로의 부수 읽기**였다.
+- **파라미터 상태**: segv_recover_hits=0(커널차원 복구 미발동 — 유저 핸들러가 처리), faultdump 8회 한도 6까지 소진.
+- **잔여 미지(차기)**: ① fault pc=0x71d6f534의 소속 모듈(차기 런에서 maps 동시 캡처 — 0x71xxxxxx 대는
+  boot 이미지 매핑대와 겹칠 가능성) ② 이 널 DA가 **의도적 fault-probe**인가 우연인가
+  ③ 복귀 pc=0x73a4c57920의 모듈(크래프트 복귀 대상 — §23 sigchain 이력과 대조)
+  ④ 11s 판정과 이 fault 체인의 시간상관(T+2-3s fault → 9.7s → exit).
