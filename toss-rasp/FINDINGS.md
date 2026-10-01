@@ -7028,3 +7028,25 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   ② Widevine/서버(로컬 통과 후) ③ §25차식 exit 차단 장생화(판정 유지 실험용).
 - 백업: 게스트 /data/local/tmp/bak_s155_names/(16파일), 호스트 /tmp/vscan+/tmp/name_surgery.
   도구 보존: tmp-artifacts/tools/name_surgery.py(재사용 레시피).
+
+[§155 추기7 — ★장생(immortal) 모드 v1→v5 실측 사면: 커널측 장생은 아키텍처 봉쇄 확정 + 동결 포렌식 창 발견]
+- **구현**(hide_kmod `exit_block` 파라미터, 기본 0): `el0_svc_common(regs, scno, …)` kprobe에서
+  타깃 uid의 NR94(exit_group)을 재작성 — ★scno는 인자2(kregs->regs[1])로 받으므로 이를 바꿔야 함
+  (ur->syscallno 재작성은 무시됨 — 1차 실패 원인).
+- **진화 전수 실측**:
+  | 관문 | 방식 | 결과 |
+  |---|---|---|
+  | v1 | NR94→getpid | exit 루프 1.44M 재시도, CPU 폭탄 → T+30s **SIGABRT 폴백** 사망 |
+  | v2 | +tgkill(6)→0 | 관통(사망 경로가 abort 아닌 ANR로 바뀜) T+45s |
+  | v3 | NR94→rt_sigsuspend(sp) | 보류 시그널 EINTR 즉시 깨어남(1.25M) T+60s |
+  | v4 | NR94→nanosleep(3600s 주입) | 동일(1.39M) T+30s |
+  | v5 | NR94→kill(self,SIGSTOP) | **hits=4 — 루프 완전 절단, 프로세스 동결 성공** → 그래도 T+30s 사망 |
+- **최종 사인(v5)**: 동결된 무응답 프로세스를 ActivityManager가 ANR로 처형(bg anr SIGKILL, system_server발).
+  **커널측 장생 불가 확정**: exit을 막으면 (a) bionic _exit 루프에 갇히거나 (b) 동결 → 어느 쪽이든 메인 무응답 → AM 킬.
+  장생은 §25차식 **Java 레이어(frida Runtime.exit 오버라이드)** 전용 — 앱이 응답성을 유지한 채 System.exit를 no-op.
+- **★부산물: 동결 포렌식 창** — v5는 판정 직후(T+11s EXITSTOP #4) 프로세스를 **동결된 안정 상태**로 ~30s 유지.
+  이 창에서 /proc/pid/mem이 레이스 없이 안정 → **판정 완료 상태의 힙 스냅샷**(§10 어휘·판정 변수의 사후 분석)이
+  처음으로 가능. 차기: exit_block=1 + SIGSTOP 창에서 dd 힙 덤프 → 판정 구조체/문자열 사후 추출.
+- **운영**: exit_block=0 원복(기본. 사용 시에만 1). 강제종료는 SIGKILL으로 언제나 동작.
+- **교훈(스킬 반영)**: el0_svc_common scno 재작성 패턴(인자2)은 syscall 무력화의 범용 프리미티브.
+  bionic _exit은 반환하지 않는다 — "성공 반환" 전략은 커널 syscall 재작성과 함께 무한 재시도를 낳는다.

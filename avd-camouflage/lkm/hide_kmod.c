@@ -533,6 +533,70 @@ static struct kprobe kp_sc = {
 	.pre_handler	= sc_pre,
 };
 
+/* ── S155+ 장생(immortal) 모드 — exit_group/tgkill(SIGABRT) 관문 차단.
+ * 사망 경로(§154): 메인 T+11s exit_group(0). 차단 시 가드 폴백 = abort()→tgkill(6)(§155 실측).
+ * el0_svc_common(regs, scno, ...)는 scno를 인자2로 받는다 — 디스패치에 쓰이는
+ * kregs->regs[1]을 재작성(getpid로). 스레드 exit(93) 허용(자식 정리), 94만 차단. */
+static int exit_block = 0;
+module_param_named(exit_block, exit_block, int, 0644);
+static ulong exit_block_hits;
+module_param(exit_block_hits, ulong, 0444);
+
+static int svc_pre(struct kprobe *p, struct pt_regs *kregs)
+{
+	int scno = (int)kregs->regs[1];
+	struct pt_regs *ur;
+
+	if (!exit_block || !uid_allowed())
+		return 0;
+	if (scno == 94) {   /* __NR_exit_group → kill(self, SIGSTOP) 확정 동결 */
+		/* v1 getpid: bionic _exit 재시도 루프(1.44M, CPU 폭탄+ANR). v3 sigsuspend/
+		 * v4 nanosleep: 보류 시그널 EINTR로 즉시 깨어남(1.25M/1.39M). v5는 인자를
+		 * 커널이 통제: kill(tgid, SIGSTOP) — 프로세스 전체 동결, 시그널로 안 깨어남,
+		 * SIGKILL(force-stop)만 관통. 앱은 살아있고 CPU 0. */
+		ur = (struct pt_regs *)kregs->regs[0];
+		ur->regs[0] = (unsigned long)current->tgid;
+		ur->regs[1] = 19;           /* SIGSTOP */
+		kregs->regs[1] = 129;       /* __NR_kill */
+		exit_block_hits++;
+		if (exit_block_hits < 20)
+			pr_info("EXITSTOP #%lu comm=%s pid=%d\n",
+				exit_block_hits, current->comm, current->pid);
+	}
+	return 0;
+}
+
+static struct kprobe kp_svc = {
+	.symbol_name	= "el0_svc_common",
+	.pre_handler	= svc_pre,
+};
+
+/* 관문2: tgkill(tgid,tid,sig) x2=sig — 가드의 abort 폴백 중립화(Thread- 자기정리 예외) */
+static int tgk_pre(struct kprobe *p, struct pt_regs *regs)
+{
+	struct pt_regs *ur;
+
+	if (!exit_block || !uid_allowed())
+		return 0;
+	{
+		struct task_struct *gl = current->group_leader;
+		if (gl && strncmp(gl->comm, "Thread-", 7) == 0)
+			return 0;
+	}
+	ur = (struct pt_regs *)regs->regs[0];
+	if (ur->regs[2] == 6) {
+		ur->regs[2] = 0;
+		if (exit_block_hits < 40)
+			pr_info("TGKABRT comm=%s pid=%d\n", current->comm, current->pid);
+	}
+	return 0;
+}
+
+static struct kprobe kp_tgk = {
+	.symbol_name	= "__arm64_sys_tgkill",
+	.pre_handler	= tgk_pre,
+};
+
 /* ── v4.10: 21차 fault 컨텍스트 덤퍼 ─────────────────────────────────
  * 대상 uid의 EL0 데이터어보트(EC=0x24) 중 far=0(널 읽기/쓰기)인 것의
  * 유저 pt_regs 전체(x0~x30, sp, pc, pstate)를 dmesg로 덤프한다.
@@ -1643,6 +1707,12 @@ static int __init hide_init(void)
 	ret = register_kprobe(&kp_sc);
 	if (ret)
 		pr_err("hide_kmod: safecopy failed: %d\n", ret);
+	ret = register_kprobe(&kp_svc);
+	if (ret)
+		pr_err("hide_kmod: svc-exitblk failed: %d\n", ret);
+	ret = register_kprobe(&kp_tgk);
+	if (ret)
+		pr_err("hide_kmod: tgkill-abrt failed: %d\n", ret);
 	ret = register_kprobe(&kp_fault);
 	if (ret)
 		pr_err("hide_kmod: faultdump failed: %d\n", ret);
