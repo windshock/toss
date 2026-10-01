@@ -122,8 +122,8 @@
 |---|---|
 | 상행 | auth 텔레메트리 · logstore 업로드(200) · Widevine id(이미지 상수)+L3 |
 | 하행 | api-gateway 403 3건 + **TUBA 원격설정(tuba-static variables/v2/default)** + **sec/dinitialize(비밀 발급)** |
-| **★dword 채널 [C:존재·O:내용]** | dwordStore.xml(비밀 UUID+clock/uptime 유효창) — T+11s에 `acquireNewSecretSuccess`→판정보고→`getDwordResult(**message_present**)`가 3ms 내 동기 연쇄. **dword 메시지가 FDS 액션(죽음/다이얼로그) 선택에 입력** 가능성 — 본문은 3ms 내 소비로 미회수(차기: T+10.6s okio 버퍼 덤프/pcap) |
-| [R] | "서버가 로컬 킬을 직접 명령"(무조건) — 폐기. 단 §155 추기11: **액션 선택의 서버 기여** 가능성은 부활(검증 대기) |
+| **★dword 채널 [C:§155 추기12]** | dwordStore.xml(비밀 UUID+유효창). **A/B 3셀 완결**: 신선+오프라인→exit 11s(캐시 정책으로 집행), 만료→"해킹 위험성" 다이얼로그(원문 확보)→exit ~15s. **dword는 킬 여부가 아닌 집행 경로·타이밍을 결정하는 서버 정책** — 판정 입력([EMULATOR] 여부)은 순수 로컬(§151 강화). 메시지 본문은 3ms 내 소비(미회수) |
+| [C] | 서버(dword)는 **집행 정책**(경로/타이밍)을 내린다 — 킬 여부는 로컬 판정(§155 추기12). "서버 직접 명령"/"무관" 둘 다 정정: **정책은 서버, 판정은 로컬** |
 | [O] | dword 메시지 본문 회수 + dinitialize 키 오염 A/B · 403 지문(로컬 통과 후) |
 
 ---
