@@ -7012,3 +7012,19 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   **파일명이 주된 판별자였고 dynstr 내용은 양쪽 동일** → dynstr 스크럽은 우선권 하향.
 - 차기 우선권 확정: ① dl_iterate_phdr 이름 위조(ABI 수정 후) ② 램덤명→plausible 파일 수술(DT_NEEDED 동기화)
   ③ LKM-side 결정적 스크럽(가드 첫 syscall 트리거) — frida 없이 재현 가능하게.
+
+[§155 추기6 — 램덤명→plausible 이름 수술 완료 + 이름 채널 비인과 확정]
+- **수술**: §142 램덤명 7종을 plausible Qualcomm풍으로 rename(파일+SONAME+DT_NEEDED 동일길이↓ 치환):
+  GfxPerfCollector/glcommon/vulkanqti/renderctrl/glesv2qti/glesv1qti + pc24(≡qti_adreno md5 동일) 삭제·재배선.
+  참조자 패치: egl twins 6종 + **hw/ 3종(mapper@3.0-impl-qti, hwcomposer.ranchu, vulkan.qcom)** —
+  ★hw/ 누락으로 1차 SF 다운(vndksupport 에러로 즉시 진단·수정) — 전수 스캔은 /vendor/lib64 재귀 전체 필수.
+- **검증**: SF 부트·Adreno 740 문자열·렌더링 정상, 앱 maps에 새 이름 6종 로드, **램덤명 잔여 0**.
+- **A/B: 11/11/11/11s 불변 → 이름(dl_iterate_phdr/maps) 채널 비인과 확정.**
+  (S153 순정 2s 대비 11s 차는 '파일명'이 아니라 다른 요소였을 가능성 — 어느 쪽이든 현 세계와 무관)
+- **누적 소거 지도 완결**: 파일·프롭·fd·xattr·라벨·MIDR(mrs·경로)·GL 문자열·네이티브 문자열·라이브러리명
+  = 전부 클린 또는 비인과. **잔여 가능 클래스: 타이밍 채널(cntvct_el0 등 카운터·벤치마크 측정)이
+  사실상 마지막 관측 불가층** — syscall/파일/메모리 어디에도 흔적 없음.
+- 차기 프런티어: ① cntvct_el0/타이밍 채널 검증(LKM mrs 트랩 확장으로 CNTVCT 위조 A/B)
+  ② Widevine/서버(로컬 통과 후) ③ §25차식 exit 차단 장생화(판정 유지 실험용).
+- 백업: 게스트 /data/local/tmp/bak_s155_names/(16파일), 호스트 /tmp/vscan+/tmp/name_surgery.
+  도구 보존: tmp-artifacts/tools/name_surgery.py(재사용 레시피).
