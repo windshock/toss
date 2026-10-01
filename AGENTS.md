@@ -7,7 +7,7 @@
 ## 1. 진입 순서 (매 세션 공통)
 
 1. **`ARCHITECTURE.md`** — 기술 구조 확정 모델 + 증거 원장([C]/[S]/[O]/[R]) + 박스→파일 검증 지도
-2. **`HANDOFF_S155_*.md`(루트)** — 최신 세션 인계 (구 핸드오프는 `toss-rasp/handoffs/`)
+2. **`HANDOFF_S155_FINAL_2026-10-01.md`(루트)** — 최신 세션 인계 (구 핸드오프는 `toss-rasp/handoffs/`)
 3. 작업 결정: ARCHITECTURE **[O] 항목 순서** = 다음 할 일 목록
 4. 근거 필요 시 `toss-rasp/FINDINGS.md`(§1~§153) — `grep -n "^## §N"`으로 절 찾기
 5. 실물 자산: `tmp-artifacts/INDEX.md`(박스별 배치), `toss-rasp/INDEX.md`(세션 아카이브)
