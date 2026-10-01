@@ -1402,6 +1402,11 @@ static unsigned int hwbp_pid;
 module_param(hwbp_pid, uint, 0644);
 static unsigned long hwbp_addr;
 module_param(hwbp_addr, ulong, 0644);
+/* S155: 타입 확장 — 0=X(실행, 기존 afed8용) / 1=W(쓰기 워치포인트, 가드 ctx 스택 감시용) */
+static int hwbp_type = 0;
+module_param(hwbp_type, int, 0644);
+static int hwbp_len = 4;   /* 4 또는 8 */
+module_param(hwbp_len, int, 0644);
 static ulong hwbp_hits;
 module_param(hwbp_hits, ulong, 0444);
 static struct perf_event *hwbp_ev;
@@ -1410,9 +1415,15 @@ static void hwbp_handler(struct perf_event *bp, struct perf_sample_data *data,
 			 struct pt_regs *regs)
 {
 	hwbp_hits++;
-	pr_info("AFED8 w0=0x%x w1=0x%x w2=0x%x lr=0x%lx comm=%s pid=%d\n",
-		(u32)regs->regs[0], (u32)regs->regs[1], (u32)regs->regs[2],
-		(unsigned long)regs->regs[30], current->comm, current->pid);
+	if (hwbp_type == 1)
+		pr_info("CTXW pc=0x%lx x0=0x%lx x1=0x%lx x2=0x%lx x22=0x%lx comm=%s pid=%d\n",
+			(unsigned long)regs->pc, (unsigned long)regs->regs[0],
+			(unsigned long)regs->regs[1], (unsigned long)regs->regs[2],
+			(unsigned long)regs->regs[22], current->comm, current->pid);
+	else
+		pr_info("AFED8 w0=0x%x w1=0x%x w2=0x%x lr=0x%lx comm=%s pid=%d\n",
+			(u32)regs->regs[0], (u32)regs->regs[1], (u32)regs->regs[2],
+			(unsigned long)regs->regs[30], current->comm, current->pid);
 }
 
 static int hwbp_go_set(const char *val, const struct kernel_param *kp)
@@ -1431,8 +1442,8 @@ static int hwbp_go_set(const char *val, const struct kernel_param *kp)
 	}
 	hw_breakpoint_init(&attr);
 	attr.bp_addr  = hwbp_addr;
-	attr.bp_len   = HW_BREAKPOINT_LEN_4;
-	attr.bp_type  = HW_BREAKPOINT_X;
+	attr.bp_len   = (hwbp_len == 8) ? HW_BREAKPOINT_LEN_8 : HW_BREAKPOINT_LEN_4;
+	attr.bp_type  = (hwbp_type == 1) ? HW_BREAKPOINT_W : HW_BREAKPOINT_X;
 	attr.disabled = 0;
 
 	rcu_read_lock();
