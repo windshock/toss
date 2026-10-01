@@ -6728,8 +6728,8 @@ libea56 16k 루프:
 [P4 — 인프라 발견/수정]
 - `lkm/build-in-docker.sh` MOD 경로가 옛 AppSuit 잔존 → toss 경로로 수정(이관 누락 마지막 한 조각).
 - `boot_recover.sh` [6c] 과도 이스케이프(`\$(`)로 게스트 문법에러 — 수정(패키지 hide는 pm hide 지속성으로 이전 상태 유지되고 있었음을 확인, 오염 없음).
-- macOS bash 3.2에 `declare -A` 없어 toss_launch_stats.sh 실행 불가 → `tmp-artifacts/launch_stats_bash3.sh` 동일분류 이식본 신규.
-- 순정 추출물 보존: `tmp-artifacts/pristine_egl_s153/lib64/`(11종).
+- macOS bash 3.2에 `declare -A` 없어 toss_launch_stats.sh 실행 불가 → `tmp-artifacts/tools/launch_stats_bash3.sh` 동일분류 이식본 신규.
+- 순정 추출물 보존: `tmp-artifacts/gl/pristine_egl_s153/lib64/`(11종).
 
 [P5 — 프레임 전환 권고: 맹목 비섹션 → 직접 관측]
 - LKM 행동 표면(파라미터+주요 블록)과 GL축 전부 제외됨. 잔여 후보는 좁혀졌으나 각각 실험 비용이 크다:
@@ -6739,3 +6739,13 @@ libea56 16k 루프:
   ④ §146 adreno 트윈 GL 문자열 필터(현행 세계에 여전히 탑재)
   ⑤ 비LKM 누적(§151 이미지 수술 등) 또는 앱/서버 측 드리프트
 - **다음 세션 정공**: T+11s 사망 직전 창의 가드 관찰 — channel_trace.sh(파일 채널) + toss_heap_snapshots.sh(복호화 어휘 diff) + 39차식 DetectType 재직독으로 "지금 무엇이 발화했나"를 직접 캡처한 뒤 그 채널만 정타. 부차: dmap 4채널 등록 마이크로 픽스.
+
+[§153 추기2 — 현재 판정 logstore 실측 재확인 (사용자 Q: "emulator냐 debugger냐")]
+- 런 중 logstore 실시간 폴링 캡처(사망 후엔 업로드되어 소실 — §152 eventList/send 200과 정합):
+  `{"detected":"emulator", "attendingDetectorSet":"debugger, emulator, root, hook, cert, virtual_environment", "guardLevel":"LOW"}`
+  `{"exitPlan":"EXIT","caller":"RASP"}` / `{"result":"[EMULATOR]","from":"SplashActivity"}`
+- **판정 = [EMULATOR] 1개, DEBUGGER 음성** — §39차(9-22)와 동일, 9일·세계 변화에도 불변.
+  attendingDetectorSet은 배정 목록(§148 guardLevel LOW={DEBUGGER,EMULATOR} 게이트의 전체 표기)이지 발화 목록 아님.
+- 부가 캡처: 서버 403 3건(guest/session/init, version/check, internationalization — 로컬 킬과 별개 채널 재확인),
+  텔레메트리 manufacturer=samsung/model=SM-S916N(앱 관점 위장 유지), params.result 원시코드는 이번 창 미관측.
+- 증거: tmp-artifacts/run-logs/logstore_live_s153_최신판정.txt
