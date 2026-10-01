@@ -1648,6 +1648,147 @@ static void vdso_work_fn(struct work_struct *w)
 static DECLARE_DELAYED_WORK(vdso_dw, vdso_work_fn);
 
 
+/* ── v4.26 §167: 페이지 RO 트리프와이어 — 스레드 무관 쓰기 관측 ──────────────
+ * 무장: 타깃 VMA의 VM_WRITE|VM_MAYWRITE 클리어 + PTE 쓰기비트 클리어(+TLB flush).
+ * 쓰기 폴트 → force_sig_fault 훅에서: pc 로깅 + PTE 쓰기 복원(+flush) + 2ms 후 재보호
+ * (지연워커) + 시그널 스킵(kregs->pc=LR, return 1) → 유저 명령 재실행 성공.
+ * 워치포인트와 달리 arm64 스레드 제약 없음. */
+static int pagewatch;
+module_param(pagewatch, int, 0644);
+static uint pagewatch_pid;
+module_param(pagewatch_pid, uint, 0644);
+static ulong pagewatch_addr;
+module_param(pagewatch_addr, ulong, 0644);
+static ulong pagewatch_hits;
+module_param(pagewatch_hits, ulong, 0444);
+static ulong pwtail_pc[256];
+static int pwtail_idx, pwtail_wrapped;
+
+static struct mm_struct *pw_mm;
+static unsigned long pw_page;
+static unsigned long pw_saved_flags;
+static struct vm_area_struct *pw_vma;   /* flush_tlb_page용 */
+
+#include <asm/pgtable.h>
+#include <asm/tlbflush.h>
+
+static int pw_pte_rw(struct mm_struct *mm, unsigned long addr, int writable)
+{
+	pgd_t *pgd; p4d_t *p4d; pud_t *pud; pmd_t *pmd; pte_t *pte, v;
+	if (!mm)
+		return -EINVAL;
+	pgd = pgd_offset(mm, addr);
+	if (pgd_none(*pgd) || pgd_bad(*pgd))
+		return -ENOENT;
+	p4d = p4d_offset(pgd, addr);
+	if (p4d_none(*p4d) || p4d_bad(*p4d))
+		return -ENOENT;
+	pud = pud_offset(p4d, addr);
+	if (pud_none(*pud) || pud_bad(*pud))
+		return -ENOENT;
+	pmd = pmd_offset(pud, addr);
+	if (pmd_none(*pmd) || pmd_bad(*pmd) || pmd_trans_huge(*pmd))
+		return -ENOENT;
+	pte = pte_offset_map(pmd, addr);
+	if (!pte)
+		return -ENOENT;
+	v = *pte;
+	if (pte_none(v) || !pte_present(v)) {
+		pte_unmap(pte);
+		return -ENOENT;
+	}
+	if (writable)
+		set_pte(pte, pte_mkwrite(v));
+	else
+		set_pte(pte, pte_wrprotect(v));
+	pr_info("pagewatch: pte@0x%lx → %s (raw 0x%llx)\n", addr,
+		writable ? "RW" : "RO", (unsigned long long)pte_val(*pte));
+	pte_unmap(pte);
+	if (pw_vma)
+		flush_tlb_page(pw_vma, addr);
+	else
+		flush_tlb_mm(mm);
+	return 0;
+}
+
+static void pw_reprotect_fn(struct work_struct *w)
+{
+	if (!pagewatch || !pw_mm)
+		return;
+	pw_pte_rw(pw_mm, pw_page, 0);
+}
+static DECLARE_DELAYED_WORK(pw_work, pw_reprotect_fn);
+
+static int pagewatch_arm(void)
+{
+	struct task_struct *t;
+	struct pid *p;
+	struct vm_area_struct *vma;
+	struct mm_struct *mm = NULL;
+	unsigned long a;
+
+	if (!pagewatch_pid || !pagewatch_addr) {
+		/* 해제 */
+		if (pw_mm) {
+			pw_pte_rw(pw_mm, pw_page, 1);
+			rcu_read_lock();
+			p = find_vpid(pagewatch_pid ? pagewatch_pid : 0);
+			(void)p;
+			rcu_read_unlock();
+			pw_vma = NULL;
+			mmput(pw_mm);
+			pw_mm = NULL;
+		}
+		pr_info("pagewatch: cleared\n");
+		return 0;
+	}
+	rcu_read_lock();
+	p = find_vpid(pagewatch_pid);
+	t = p ? pid_task(p, PIDTYPE_PID) : NULL;
+	mm = t ? t->mm : NULL;
+	if (mm && !mmget_not_zero(mm))
+		mm = NULL;
+	rcu_read_unlock();
+	if (!mm) {
+		pr_err("pagewatch: pid %u no mm\n", pagewatch_pid);
+		return -ENOENT;
+	}
+	if (mmap_write_lock_killable(mm)) {
+		mmput(mm);
+		return -EINTR;
+	}
+	vma = find_vma(mm, pagewatch_addr);
+	if (!vma || pagewatch_addr < vma->vm_start || pagewatch_addr >= vma->vm_end) {
+		mmap_write_unlock(mm);
+		mmput(mm);
+		pr_err("pagewatch: addr 0x%lx not in any vma\n", pagewatch_addr);
+		return -ENOENT;
+	}
+	pw_saved_flags = vma->vm_flags;
+	vma->vm_flags &= ~(VM_WRITE | VM_MAYWRITE);
+	pw_vma = vma;
+	pw_page = pagewatch_addr & PAGE_MASK;
+	a = pw_page;
+	for (; a < pw_page + PAGE_SIZE * 4; a += PAGE_SIZE)
+		pw_pte_rw(mm, a, 0);
+	mmap_write_unlock(mm);
+	pw_mm = mm;   /* mmput은 해제 시 */
+	pr_info("pagewatch: armed page=0x%lx pid=%u (vma flags 0x%lx→0x%lx)\n",
+		pw_page, pagewatch_pid, pw_saved_flags, vma->vm_flags);
+	return 0;
+}
+
+static int pagewatch_go_set(const char *val, const struct kernel_param *kp)
+{
+	int v, ret = kstrtoint(val, 0, &v);
+	if (ret)
+		return ret;
+	pagewatch = v;
+	return pagewatch_arm();
+}
+static const struct kernel_param_ops pagewatch_go_ops = { .set = pagewatch_go_set };
+module_param_cb(pagewatch_go, &pagewatch_go_ops, NULL, 0644);
+
 /* ── v4.18: 네이티브 자폭(§14 poison→PC=저주소→instr abort) 커널 복구 ───────────
  * 유저랜드 시그널 핸들러는 libsigchain이 덮어 무용(§69). 커널에서 force_sig_fault를
  * 가로채: 표적 uid + 유저 PC가 저주소(<0x10000, null 점프=자폭)면 시그널 대신
@@ -1717,6 +1858,23 @@ static int fsf_pre(struct kprobe *p, struct pt_regs *kregs)
 	struct pt_regs *u;
 	unsigned long xv;
 
+	/* v4.26: 페이지 트리프와이어 — 감시 페이지 쓰기 폴트는 통과+로깅 */
+	if (pagewatch && pw_mm && current->tgid == (pid_t)pagewatch_pid &&
+	    addr >= pw_page && addr < pw_page + PAGE_SIZE) {
+		/* u는 아래에서 세팅되므로 여기서 직접 취득 */
+		struct pt_regs *uu = task_pt_regs(current);
+		unsigned long wpc = uu ? uu->pc : 0;
+		pagewatch_hits++;
+		pwtail_pc[pwtail_idx] = wpc;
+		if (++pwtail_idx >= 256) { pwtail_idx = 0; pwtail_wrapped = 1; }
+		if ((pagewatch_hits & 0x3F) == 1)
+			pr_info("PW #%lu pc=0x%lx comm=%s tid=%d\n", pagewatch_hits, wpc, current->comm, current->pid);
+		pw_pte_rw(current->mm, pw_page, 1);           /* 쓰기 허용 */
+		mod_delayed_work(system_wq, &pw_work, msecs_to_jiffies(2));  /* 2ms 후 재보호 */
+		kregs->pc = kregs->regs[30];                   /* 시그널 스킵 */
+		kregs->regs[0] = 0;
+		return 1;
+	}
 	if (!segv_recover || !uid_allowed())
 		return 0;
 	if (sig != 11 && sig != 4 && sig != 7 && sig != 6)   /* SEGV/ILL/BUS/ABRT */

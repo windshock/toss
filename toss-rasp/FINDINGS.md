@@ -7700,3 +7700,30 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 ### 167-3. 도구/자산
 - `decomp_at_create.java`(Ghidra: 임의 주소 disassemble+createFunction+디컴파일) · decomp_s165/h_{status,maps}.c
 - v4.25(ALLCPU 모드 — arm64 불가 확인, 무해하게 유지)
+
+## 168. S168 세션 (2026-10-02 심야 6차) — v4.26 페이지 RO 트리프와이어 구현(WIP): 무장·PTE RO·VMA 플래그 확인 — 그러나 폴트 미발화(원인 미완)
+
+### 168-1. P0 (WIP 상태)
+1. **[C] 구현·무장 성공**: pagewatch_{pid,addr,go} 파라미터 — 무장 시 대상 VMA의 VM_WRITE|VM_MAYWRITE 클리어
+   (0x100073→0x100051 실측) + PTE wrprotect(리드백 raw 0xe000004ab18fc3 — **bit7 AP[2]=1 = RO 확인**) +
+   flush_tlb_page(vma기반). fsf_pre(force_sig_fault kprobe)에 트리프와이어 브랜치: pc 로깅+PTE 복원+2ms 재보호
+   (지연워커)+시그널 스킵(kregs->pc=LR, return 1 — segv_recover 패턴 재사용).
+2. **[C] 그러나 selftest 0힛**: 보장된 쓰기(5000회/s)에도 폴트 미발화 — PTE가 실제 RO인데 쓰기가 그냥 성공.
+   수정 이력: ①set_pte→set_pte_at 시도 = **모듈 적재 불가**(미익스포트 __sync_icache_dcache/mte_sync_tags —
+   이 커널에서 set_pte_at 모듈 사용 불가) ②flush_tlb_mm→flush_tlb_page(vma) — 여전히 0힛.
+3. **[O] 남은 원인 후보**: ① 권한 폴트가 force_sig_fault를 경유하지 않는 경로(arm64 fault.c의 do_bad_area→
+   arm64_notify_die→? — fsf 훅 지점이 권한폴트에 안 걸릴 수 있음) ② TLB 무효화가 여전히 미작용(ASID/브로드캐스트)
+   ③ 기타(PAN/hw DBM). **차기 디버그 계획**: fsf_pre에 무조건 로깅(첫 10건: sig/code/addr/tgid)으로 selftest
+   폴트가 force_sig_fault에 도달하는지 분리 → 안 닿으면 hook 지점을 do_page_fault/do_bad_area로 이동.
+4. **[사고] param_set_int(NULL arg) 옵스**(v4.26 초판 — module_param_cb 파라미터에 param_set_int 호출) → kstrtoint
+   수동 파싱으로 수정. panic_on_oops=0 덕에 시스템 생존.
+5. **[관찰] 드리프트(스폰 즉사)가 이날 부트들에서 지속형화** — 2-3분 대기로도 안 가라앉는 부트 존재(150s 무효).
+
+### 168-2. 자산
+- pw_capture.sh(디바이스 내부 고속 캡처: 런치→rw폴 20ms→무장) · hwbp_selftest(트리프와이어 검증 겸용)
+- LKM v4.26(트리프와이어 수록, 미발동 시 무해 — 명시적 무장시에만 동작)
+
+### 168-3. 교훈
+1. **모듈에서 set_pte_at 불가**(arm64 미익스포트 의존) — set_pte 원시 접근 + 별도 코히런시 고려.
+2. **param_cb 전용 파라미터에 param_set_int 금지**(NULL arg 옵스) — kstrtoint 직접 파싱.
+3. 폴트 경로 디버깅은 '훅 지점 도달 여부'부터 무조건 로깅으로 분리할 것.
