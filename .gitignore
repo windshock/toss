@@ -61,3 +61,7 @@ toss-rasp/analysis-lab/artifacts/android/toss_s105_bank.json
 toss-rasp/analysis-lab/artifacts/android/toss_s105b_bankwatch.json
 toss-rasp/analysis-lab/artifacts/android/toss_s106_x27.json
 toss-rasp/analysis-lab/REVIEW_S97_S108_2026-09-29/artifacts/android/*.json
+
+# ACK 커널 클론 (자체 .git 보유 — 별도 관리)
+ack-kernel/
+TOSS_DEXGUARD_EVIDENCE_2026-09-23.zip

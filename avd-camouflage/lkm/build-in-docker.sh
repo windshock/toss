@@ -6,7 +6,7 @@
 # 산출물:  lkm/hide_kmod.ko → 게스트에 push해 insmod
 # =============================================================================
 set -e
-ACK=/Users/1004276/Downloads/AppSuit/ack-kernel
+ACK=/Users/1004276/Downloads/toss/ack-kernel
 MOD=/Users/1004276/Downloads/AppSuit/avd-camouflage/lkm
 UTS='5.15.119-android13-8-00034-gd34029c8258b-ab10871489'
 
