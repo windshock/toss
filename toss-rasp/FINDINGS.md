@@ -7219,3 +7219,85 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **결론의 유효성**: 위 3가지는 표현/근거의 정밀화이며 핵심 결론(에뮬레이터와 redroid의 타이밍 지문이
   동일 → 베어메탈 필요)은 변하지 않음. 단, "실기기가 반드시 19.2MHz"라고 단정할 수 없음 —
   Qualcomm 기기 다수가 19.2MHz를 사용한다는 문헌 근거일 뿐, SM-S916N 실측은 차기 확인 필요.
+
+## 156. S156 세션 (2026-10-01 저녁) — ★제한 모드 실측: 다이얼로그는 서버 message_present 비트 의존 + 서버 지연정책 에스컬레이션(11s→2.3s) + 지연 무장 동결 포렉식 창 확립(4/4) + libea56 rw 자기와이프 발견 + toybox dd 고주소 함정
+
+### 156-1. P0 결론
+1. **"만료+차단 → 다이얼로그"(§155 추기12 셀)는 서버 협조 없이 재현 불가 [C]**:
+   다이얼로그 분기의 진짜 입력은 **dword 결과의 message_present 비트**(서버가 마지막 성공 dinitialize에서 발급).
+   - §155 오전 런: `action=reuse + resultType=message_present` → `dialog_open`(title="해킹 위험성이 탐지됨") → exit
+   - 오늘 저녁 서버도 message_present는 계속 발급(20:42 런·run4 런 모두 reuse+message_present 관측)되었으나
+     **판정→집행 지연이 붕괴**하여 다이얼로그 표시창이 사라짐(아래 2).
+   - validity를 깨뜨린 sed(내 수술)는 refresh 재시도 루프(~10회/2.3s) → fail-closed 즉시 EXIT(3.6s).
+     **"다이얼로그 재현"은 오프라인 dword 조작만으로 불가** — 서버 상태(플래그+정책)에 의존.
+2. **★서버 지연정책 에스컬레이션 실측 [S]**: 판정→집행 지연이 같은 날 안에 **11s → 2.3-3.5s로 붕괴**.
+   - §155 오전(10:37): dialog T+7.6s → exit ~15s (postDelayed 정책)
+   - 20:42 런(구 부트): foreground 진입 ~3.5s 후 dialog_open+EXIT 동시 발화
+   - 20:47 이후(신규 부트): 직접 EXIT 2.3s 고정(run4·5·6·7·8 전부)
+   - 시간 상관: 오전↔저녁 사이 수십 회 [EMULATOR] 판정 보고 누적 + 20:50 dword 재발급.
+     히든 DEX s3의 "실행 정책 0s/10s delay"(§148)와 정합 — **dword 정책 채널은 경로(다이얼로그/직접)뿐 아니라
+     지연(0s~10s)도 제어**. 대안 배제 불완전(미식별 로컬 상태 변화 가능성) → [S].
+3. **★지연 무장 동결 포렉식 창 확립 [C] — 4/4 재현(run5-8)**:
+   - 레시피: dword 신선 + 네트워크 차단(선택) + **exit_block을 T+1.5s에 무장**(가드 자식 which/cmd는 T+1.2s에
+     정상 exit 완료 → 이후 무장하면 메인의 자연 exit만 동결)
+   - 결과: 메인 EXITSTOP @T+2.3-2.6s → **SIGSTOP 동결 100초+ 생존(ANR 미발생, 사실상 무제한)** —
+     run1(v1, 상시 무장)과 달리 조기 자폭 없음. 판정 완료 상태의 안정적 사후 덤프 창.
+   - v1 교훈(법칙화): **상시 exit_block=1은 가드의 which/cmd 프로브 자식을 동결 → 부모가 응답 없음을
+     변조로 해석 → fail-closed 조기 사멸(T+2.5s)**. exit_block은 반드시 자식 프로브 이후 무장.
+4. **★libea56 rw 자기와이프 [C]**: 동결 창(판정 후)에서 libea56 rw(.data+.bss, 0x174000-0x187000) **전체 0**.
+   정적 헬퍼 memread(고주소 정상 읽기 대조 완료: text 91% nonzero)로 확인 — 읽기 실패 아닌 실제 와이프.
+   §155 추기8 "페이로드는 자식 주소공간/스크럽"과 정합 → **네이티브 판정 상태의 포렉식은 판정 완료 이전
+   시점 필요** = hwbp watchpoint([O]-2)가 정공. 동결 창은 Java측 산물(logstore 버퍼 등)에 유효.
+5. **판정 체인 전문 확보(동결 힙에서)** [C]: `raspRootCallback detected` → `fds_debug{debugInfo:34359738558
+   (=0x7FFFFFFFE)}` → `raspEmulatorCallback detected` → `fds_debug{detected:"emulator", attendingDetectorSet:
+   "debugger, emulator, root, hook, cert, virtual_environment", guardLevel:"LOW"}` → `dword_debug{reuse,
+   message_present}` → `handleExitPlan` → exit. **guardLevel=LOW 실측**(§148 해독과 정합 — LOW={DEBUGGER,EMULATOR}).
+
+### 156-2. P1 증거
+- `toss-rasp/session156/run1-8/`: timeline.txt(tms 스탬프), ui_dialog.xml, 스크린샷, maps_at_freeze.txt,
+  dumplist.txt, dumps/(run5=156MB 풀: heap_main 48MB@19%, LOS 16MB@25%, scudo 다수; run8=memread판).
+- 런 타임라인 표(오늘):
+  | 런 | 조건 | 결과 |
+  |---|---|---|
+  | run1(v1) | 만료(양게이트)+차단+상시무장 | 자식 동결→메인 조기 EXIT 2.5s(동결창 90s+ 유지 관찰) |
+  | run2(v2) | 만료(clock)+차단 | refresh×10 → EXIT 3.6s |
+  | run3 | 만료+네트워크 정상 | refresh 성공(dword 재발급) → EXIT 14.2s |
+  | run4 | 신선(재발급)+차단 | reuse+message_present → EXIT 2.26s |
+  | run5-8 | 신선+차단+**T+1.5s 무장** | EXITSTOP 메인 @2.3-2.6s → 동결 100s+ ×4, 덤프 성공 |
+- 20:42:56 런(pid 11507, 구 부트 리시버 시작): logstore에 dialog_open 4건 + EXIT(caller=DexguardWrapper) —
+  오늘 유일한 dialog_open 실측(스폰 레이스로 스크린 확인 못함 — logstore 라벨로만).
+- dmesg: `EXITSTOP #1 comm=which`, `#2 comm=cmd`(가드 루트프로브 자식), `#3-8 comm=.republica.toss`(메인).
+
+### 156-3. P2 절차/도구 (신규 + 함정)
+- **`tools/restricted_run.sh v2`**: 지연 무장 동결 포렉식 원스텝(런치→dialog 폴링→T+1.5s 무장→EXITSTOP→
+  온디바이스 덤프→사망 감시→exit_block 원복 trap 내장).
+- **`tools/memread.c`(신규, 정적 aarch64)**: `memread PID START_HEX LEN_HEX OUT` — lseek64+read 루프.
+  **★toybox dd 함정: skip×bs 곱이 32비트로 오버플로** — 0x7b28… 고주소 매핑(모든 .so rw) 덤프가
+  조용히 실패(0바이트 또는 0으로 채움). 저주소(<4GB, dalvik 힙)만 종래 dd로 읽힘.
+  **§155의 verdict_forensics.sh·gdt 계열 덤프도 동일 버그 암묵 포함**(고주소 리전은 전부 무효였을 것).
+- **AM 잔존 ProcessRecord 함정 [C]**: SIGSTOP 동결/ANR 경위 프로세스가 정상 사망 처리 없이 사라지면
+  system_server ProcessRecord가 "attached to previous process … refused to die"로 잔존 → 이후 그 패키지의
+  am start가 전부 취소됨("top-most instance" 경고와 함께 신규 스폰 안 됨). **해법: 에뮬 재부팅**(프레임워크
+  재시작로도 해결 추정). 동결 프로세스 정리는 am force-stop으로.
+- **부트 리시버 레이스**: 부팅 중 toss가 TmoneyLiveCheckReceiver/JobInfoSchedulerService 등 리시버로
+  자동 시작됨 → am start가 신규 스폰 대신 기존 인스턴스에 전달 → pidof 폴링이 사망 직후를 잡아 NOPID 오판.
+  런 시작 전 am force-stop + am start -S로 방어.
+- **adb 파일 수정 후 sync 없이 emu kill = 롤백**(재확인 — dwordStore sed가 롤백되어 신선하게 되돌아감).
+- boot_recover.sh는 ANDROID_SERIAL 명시 필수(redroid 병렬 — 기존 법칙 위반 시 "부팅 실패" 오탐).
+
+### 156-4. P3 교훈
+1. **"재현된 셀"도 서버 개입 정책은 시시각각** — dword 관련 A/B는 서버 상태(플래그·정책·에스컬레이션)를
+   변수로 명시하고, 오전/오후 재현 불일치를 '레이스'가 아니라 '서버 정책 변화' 후보로 먼저 조사하라.
+2. **판정 완료 '이후'의 네이티브 메모리는 이미 와이프됨** — 포렉식 목표 시점을 판정 이전/도중으로 잡거나
+   하드웨어 관측면(hwbp)을 쓸 것. 사후 창은 Java측(로그 버퍼·문자열)에만 유효.
+3. 관측 도구의 실패 양상(0填充 vs 0바이트)을 구분해 기록하면 함정이 빨리 보인다(本次 dd 오버플로).
+
+### 156-5. 추기 — 세션 말미 기준선: 신규 부트+무차단에서는 11.6s로 회귀 (에스컬레이션 가설 정정)
+- 재부팅+boot_recover 후 무차단·dwordStore 원복(구발급→런 중 재발급) 기준선 1런: **[EMULATOR] EXIT T+11.6s**
+  (표준 §155 타임라인 복귀). DNS 정상.
+- 정리: **T+2.3-2.6s는 "iptables 차단 + 20:50 발급 dword" 조합에서만 관측** —
+  원인 후보: ① 서버 지연정책 변동(재발급 시점 차이) ② 네트워크 차단과의 상호작용(REJECT 즉시거절 경로).
+  **미분리** — §156-1.2는 [S] 유지하되 "하루 붕괴" 서술은 "차단 조건 하 붕괴"로 한정.
+  차기 A/B: 동일 신규 dword로 차단/무차단 1쌍 × N런 (핸드오프 우선순위 2).
+- 운영적 결론은 불변: 동결 포렉식 레시피(T+1.5s 무장)는 2.3s 시대에 맞춘 것 — **11s 시대에는 무장 시점을
+  T+9-10s로 올려야** 메인 exit를 잡는다(자식 프로브 T+1.2s 이후·메인 exit 직전이면 충분; 런 타임라인 먼저 확인).

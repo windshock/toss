@@ -279,3 +279,23 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   고정 주소 — "런 간 동일"이 곧 가드 흔적이 아님).
 - 부트 이미지 매핑대: boot.oat/boot.art/boot-framework.art·oat는 매 부트 고정 주소(ASLR 없음).
 - pvm 차단(pvm_block=1) 재해석: ART NPE 처리 파손 — 어차피 금지.
+
+## §156 성과 요약 (2026-10-01 저녁) + 신규 금지/레시피
+- **★금지: exit_block 상시 무장(런 시작부터 =1)** — 가드의 루트프로브 자식(`which`/`cmd`, T+1.2s exit_group)이
+  SIGSTOP 동결 → 부모가 무응답을 변조로 해석 → fail-closed 조기 사멸. **동결 포렉식은 T+1.5s 지연 무장**:
+  자식 exit 후 무장 → 메인 자연 exit(에스컬레이션 시대 T+2.3-2.6s)만 동결 → **100s+ 안정 창 4/4 재현**
+  (`tools/restricted_run.sh v2`). 조기 동결(스플래시 중)은 ANR 트리거가 없어 사실상 무제한.
+- **★toybox dd 함정: skip×bs가 32비트 오버플로** — 0x7b28… 고주소 매핑(.so rw 전부) 덤프가 조용히 실패
+  (0바이트 또는 0충전). dalvik 힙(<4GB)만 종래 dd로 읽힘. **고주소는 `scripts/memread.c`** (정적 aarch64,
+  `docker run --rm -v /tmp:/src gcc:14 cc -static -O2 /src/memread.c -o /src/memread` → push).
+  과제: verdict_forensics.sh·gtd 계열의 고주소 리전 덤프는 전부 이 버그에 무효였음.
+- **AM 잔존 ProcessRecord 함정**: 동결/ANR 경위 프로세스가 정상 사망 처리 없이 사라지면 그 패키지의
+  am start가 전부 취소됨("refused to die" + "top-most instance" 경고, pidof 비어도). **해법: 에뮬 재부팅**.
+  동결 프로세스 정리는 반드시 am force-stop(raw kill 금지).
+- **부트 리시버 레이스**: 부팅 중 금융앱이 리시버로 자동 시작 중일 수 있음 — am start가 신규 스폰 대신
+  기존 인스턴스에 전달되어 pidof 폴링이 NOPID 오판. 런 전 am force-stop(+필요시 -S) 방어.
+- **판정 완료 후 메모리는 이미 와이프**: libea56 rw(.data+.bss)가 exit 시점 전체 0 — 사후 포렉식은
+  Java측(logstore 버퍼 등)만 유효, 네이티브 상태는 판정 이전 관측(hwbp) 필요.
+- **dword 정책 채널(§156 확장)**: 경로(다이얼로그/직접) + **지연(0s~10s)** — 반복 [EMULATOR] 보고 누적 후
+  하루 만에 11s→2.3s 즉시킬로 에스컬레이션 실측 [S]. 다이얼로그 재현은 서버 message_present 비트 필수
+  (오프라인 dword 조작만으론 불가). "오전 재현이 저녁에 안 되면" 서버 정책 변화를 먼저 의심하라.
