@@ -7506,3 +7506,42 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 1. 인과 실험 도구(스푸핑)가 "실현+검증" 단계를 거치면 가각이 확정적이 된다 — 이번 기각은 도구 검증 덕에 [C].
 2. 모듈 init은 최소만: 프로브 등록·동적 심볼 해결은 지연/외부화. init 데드락 = 게스트 소프트락 = 최악의 사고 등급.
 3. 추론으로 쌓은 결론("타이밍")도 소거 실험이 쌓이면 '미지'로 정직하게 되돌려야 한다.
+
+## 162. S162 세션 (2026-10-01 심야 6차) — ★★afed8 스캔 입력면 노출: 판정 스캔 = 프로퍼티 체계(이름+값)의 힙 사본 처리 — 조회 프로퍼티 전수 목록 확보
+
+### 162-1. P0 결론
+1. **★판정 스캔의 실체 노출 [C]**: §160의 afed8 인자 의미론(x1=0x5C000000=달빅힙 리전 끝, x2=힙 버퍼)에 이어
+   **x2 버퍼 내용물을 직접 덤프**(hook_afed8_peek.js — 진입 시 48바이트 판독): 버퍼 = **프로퍼티 이름+인접 데이터**
+   (prop_info 사본 추정 — 이름 후 값 인라인). 스캔 버스트 = **가드의 프로퍼티 조회 리스트 순회**:
+   - 신원: ro.product.{brand,model,device,manufacturer,system.manufacturer}, ro.build.{host,fingerprint,product,
+     display.id,flavor}, ro.bootimage.build.fingerprint, ro.hardware, ro.bootloader, ro.secure, ro.debuggable
+   - **에뮬 리터럴**: ro.kernel.qemu, ro.kernel.android.qemud, ro.boot.qemu.avd_name, init.svc.qemu-props,
+     qemu.hw.mainkeys, qemu.sf.fake_camera, qemu.sf.lcd_density, **ro.boot.redroid_net_dns1/2**
+   - 기타: persist.sys.bd.debug.gpu.{fake_gpu_renderer,fake_gpu_vendor}, persist.sys.bd.debug.ro.{cqi,lac,mcc,mnc},
+     persist.sys.vold_app_data_isolation_enabled
+   → **판정 입력면이 처음으로 직접 관측됨**: 프로퍼티 체계 원시 메모리(§139 직접 mmap) 순회 —
+   syscall 무흔적(§154)·시간 API 불필요(§157/159/161)·서브초(§160) 제약 전부 만족하는 유일한 구체적 후보.
+2. **현재 API값 전부 클린 [C]**: 가드 조회 리스트 전 프로퍼티 getprop 결과 — qemu/redroid 계열 전부 공백(삭제됨),
+   ro.debuggable=0, ro.secure=1, 신원=samsung/SM-S916N/dm2q. **원시 영역 토큰 잔재도 없음**(x86_64/redroid/generic/
+   gphone/emulator/vbox/genymotion/" for x86" 전수 grep 0건 — §141 스크럽+§148 삭제 유효).
+3. **발화 체크는 '값'이 아닌 무언가 [O]**: 후보 — ① 트라이 구조/톰스톤 엔트리(삭제된 prop의 구조 잔재) ② 미복호화
+   어휘 패턴(§149 어휘의 값 매칭이 실측값과 교차) ③ prop_bt 필드값(serial/offset 계열) ④ 스캔 버퍼의 " for x86_64"
+   인접 문자열(가드 자체 어휘 "…built for x86_64" 단편 추정 — 입력이 아니라 비교 대상일 가능성).
+4. **부산물**: afed8 디스어셈 확인(2D 디스패처 0x17c1e0·stride 0x960·전역 0x183660 — §149 지도 정합).
+   0x5C000000은 코드 리터럴 아님 → ART 구조 체인(§154 pvm)에서 런타임 획득한 힙 상한.
+
+### 162-2. P1 증거
+- 스캔 덤프 40건(T+0.9-1.0s, 이후 [KILL] afed8(4) → T+2.3s 사망) — 위 프로퍼티 목록.
+- getprop 대조: 전건 공백/클린. 원시 영역 잔재 grep 0건(토큰 9종).
+- /tmp/ea56_full.asm(전체 objdump 덤프 — 차기 정적 분석용).
+
+### 162-3. P2 차기 루트(우선순위)
+1. **발화 체크 특정**: ① Ghidra toss5에서 스캔 핸들러(2D 테이블 row=스캔 경로) 디컴파일 — 값 비교 논리 직독
+   ② ftrace chan19로 T+0.9s 버스트의 /dev/__properties__ openat/mmap 관찰(어떤 컨텍스트 파일을 읽는가)
+   ③ **원시 영역 전체 덤프→실기기 형상 대조**(구조/톰스톤 차이 가설)
+2. 극단 대응 실험(인과 봉인): 프로퍼티 영역 전면 재구성(실기기형 최소 트라이) → 판정 반전 여부.
+
+### 162-4. P3 교훈
+1. 관측 도구가 입력 데이터 자체를 보게 만들면(진입 시 버퍼 덤프) 지도가 아닌 '실물'이 나온다 — §160의
+   인자→§162의 내용물로 2단 만에 판정 스캔의 실체가 드러남.
+2. "타이밍" 프레임(§155-161)에서 "프로퍼티 원시 체계"로 후보가 재전환 — 소거 실험의 누적이 프레임 전환을 만든다.
