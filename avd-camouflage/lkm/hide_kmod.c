@@ -1485,19 +1485,35 @@ static ulong hwbp_hits;
 module_param(hwbp_hits, ulong, 0444);
 static struct perf_event *hwbp_ev;
 
+/* v4.24 §165: 406만 히트/런급 워치포인트는 printk 홍수로 링이 뭉개짐 — 샘플+꼬리버퍼 */
+#define HWBP_TAIL 512
+static unsigned long hwbp_tail_pc[HWBP_TAIL];
+static unsigned long hwbp_tail_x0[HWBP_TAIL];
+static int hwbp_tail_idx;
+static int hwbp_tail_wrapped;
 static void hwbp_handler(struct perf_event *bp, struct perf_sample_data *data,
 			 struct pt_regs *regs)
 {
+	unsigned long pc = (unsigned long)regs->pc;
+	unsigned long a0 = (hwbp_type == 1) ? (unsigned long)regs->regs[0] : (u32)regs->regs[0];
 	hwbp_hits++;
-	if (hwbp_type == 1)
-		pr_info("CTXW pc=0x%lx x0=0x%lx x1=0x%lx x2=0x%lx x22=0x%lx comm=%s pid=%d\n",
-			(unsigned long)regs->pc, (unsigned long)regs->regs[0],
-			(unsigned long)regs->regs[1], (unsigned long)regs->regs[2],
-			(unsigned long)regs->regs[22], current->comm, current->pid);
-	else
-		pr_info("AFED8 w0=0x%x w1=0x%x w2=0x%x lr=0x%lx comm=%s pid=%d\n",
-			(u32)regs->regs[0], (u32)regs->regs[1], (u32)regs->regs[2],
-			(unsigned long)regs->regs[30], current->comm, current->pid);
+	hwbp_tail_pc[hwbp_tail_idx] = pc;
+	hwbp_tail_x0[hwbp_tail_idx] = a0;
+	if (++hwbp_tail_idx >= HWBP_TAIL) { hwbp_tail_idx = 0; hwbp_tail_wrapped = 1; }
+	/* 샘플: 65536회당 1회만 printk */
+	if ((hwbp_hits & 0xFFFF) == 1)
+		pr_info("CTXWS #%lu pc=0x%lx x0=0x%lx comm=%s\n", hwbp_hits, pc, a0, current->comm);
+}
+static void hwbp_dump_tail(void)
+{
+	int i, n = hwbp_tail_wrapped ? HWBP_TAIL : hwbp_tail_idx;
+	pr_info("CTXW-TAIL begin n=%d total=%lu\n", n, hwbp_hits);
+	for (i = 0; i < n; i++) {
+		int k = hwbp_tail_wrapped ? (hwbp_tail_idx + i) % HWBP_TAIL : i;
+		pr_info("CTXW-T pc=0x%lx x0=0x%lx\n", hwbp_tail_pc[k], hwbp_tail_x0[k]);
+	}
+	pr_info("CTXW-TAIL end\n");
+	hwbp_tail_idx = 0; hwbp_tail_wrapped = 0;
 }
 
 static int hwbp_go_set(const char *val, const struct kernel_param *kp)
@@ -1509,6 +1525,7 @@ static int hwbp_go_set(const char *val, const struct kernel_param *kp)
 	if (hwbp_ev) {
 		perf_event_release_kernel(hwbp_ev);
 		hwbp_ev = NULL;
+		hwbp_dump_tail();
 	}
 	if (!hwbp_pid || !hwbp_addr) {
 		pr_info("hwbp: cleared\n");
@@ -1519,6 +1536,10 @@ static int hwbp_go_set(const char *val, const struct kernel_param *kp)
 	attr.bp_len   = (hwbp_len == 8) ? HW_BREAKPOINT_LEN_8 : HW_BREAKPOINT_LEN_4;
 	attr.bp_type  = (hwbp_type == 1) ? HW_BREAKPOINT_W : HW_BREAKPOINT_X;
 	attr.disabled = 0;
+	/* v4.23 §165: arm64는 커널모드 워치포인트 미지원 — exclude_kernel 없으면 쓰기감시가
+	 * 조용히 무장실패(selftest 실측: 5000회 쓰기에 0힛). 유저쓰기만 감시. */
+	if (hwbp_type == 1)
+		attr.exclude_kernel = 1;
 
 	rcu_read_lock();
 	p = find_vpid(hwbp_pid);

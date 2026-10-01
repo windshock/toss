@@ -370,3 +370,11 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
 - **관측 필터 법칙**: 버퍼 덤프 사이즈 상한이 정보를 가린다 — 실물 확인까지 상한을 넓혀 재실험하라.
 - libea56 내부 진입점: +0x10953c(/proc/self/status 파서·TracerPid), +0xb6708(/proc/self/maps 파서).
 - boot_recover [6b2]: 부활 에뮬 프로퍼티 4건 재삭제 스텝(§163) — 매부팅 자동.
+
+## §165 성과 요약 (2026-10-02 심야 3차)
+- **★hwbp 쓰기감시(type=1)는 arm64에서 exclude_kernel=1 필수** — 없으면 커널+유저 감시 이벤트가 조용히 무장실패
+  (selftest로 발견; v4.23 수리·검증). **관측기는 사용 전 known-good 자체검증이 의무**.
+- **406만 히트급 워치포인트는 printk 전량 로깅 불가**(링 전멸) — v4.24 패턴: 1/65536 샘플 + 꼬리 512 버퍼(해제시 덤프).
+- **0x183660 = 디스패처 상태 글로벌**(afed8 row/col원) — 킬 체인에서 수백만 회 전이. 실행경로 트레이스용.
+- 작성 스레드는 런마다 상이(스레드 로또) — 스윕으로 특정 필요. 후보 우선순위: dword/internal/Thread-N/RxCached*.
+- hwbp 계열 스크립트의 dmesg 판독에는 su 필수(누락 발견).
