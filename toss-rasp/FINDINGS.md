@@ -7129,3 +7129,12 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **§151 모순 해소**: "서버 무관 사멸" 관측 당시 dword가 유효 캐시였음 — 캐시된 정책으로 오프라인 집행 = 모순 없음.
 - **운영 지식**: uid-한정 iptables REJECT가 앱 전용 네트워크 A/B의 최적 도구(시스템 무영향). dwordStore.xml은
   sed로 조작 가능(백업 필수). 런 간 레이스성(같은 구성에서 exit vs dialog 분기)은 여전 — N런 통계 필수.
+
+[§155 추기13 — dinitialize 응답 저격 2차: 도구 완성·DNS 웨지 발견(본문 회수는 차기)]
+- **타이머 저격 도구 완성**(gdt.sh cs 정밀판): /proc/uptime **1번 필드만** 써야 함(2번 필드 idle 시간 —
+  "88429.66 66592" 파싱 사고로 3회 실패). T+10.65/10.80/10.70s 정지 전부 ±0ms 성공, dalvik-main 48MB 포함 캡처(114MB).
+- **★이 부트 DNS 웨지 발견**: 3런 모두 dns_err=3/2xx=0(IP ping 정상) — iptables 실험 후 netd/DNS 프록시 손상 추정.
+  **응답 본문 회수는 네트워크 건재한 세션에서 gdt 10.65~10.8 저격으로 즉시 재시도 가능**(도구 레시피 완성).
+- UUID 전수 스윕(신규 시크릿 탐지): 전부 광고SDK(pangle/applovin/gaid/bugsnag/unity)·세션 식별자 — dword 신규
+  시크릿은 미검출(응답 부재 런이라 정합). 부수 획득: internal-device-id(f8e26d64…=bugsnag device id), TNK sp_appKey,
+  mbridge UA 등 텔레메트리 식별자 지도.
