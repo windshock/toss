@@ -6905,3 +6905,19 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **방법론 교훈(중요)**: "핸들러 주소를 resolve하자마자 가드 것으로 단정"한 1세트 시간 낭비 —
   **주소→모듈 resolve를 해석 이전 단계로 의무화**(toss_addr_resolve.py 루틴). boot 이미지 매핑대(0x70-0x72xxxxxx,
   고정 주소)는 런 간 동일하므로 "재현된다=진짜다" 오판 위험.
+
+[§154 추기4 — frida 유저측 관측 성공: SafeCopy 백트레이스 최종 확정 + dl_iterate_phdr 채널 발견]
+- **frida attach 성공률 실측**: frida-server 헬스 이슈(settings 앱으로 헬스체크하는 루틴 필수 — 서버가 죽어도
+  attach 에러만으로는 구분 불가) + 토스 주입 성공률 ~1/3-1/5(나머지 "terminated during injection"). 재시도 루프 필수.
+- **SafeCopy 백트레이스(6건 전수, frida Interceptor)**: lr=libartbase+0x314dc(SafeCopy) →
+  libart.so+0x2938dc/0x294264 → +0x292c1c — **libea56 프레임 0**. 읽은 4바이트 = 부트 이미지 내부 포인터
+  (0x71602110→0x70d25b20 자기참조 구조). **art::SafeCopy 체인 = 100% ART 정상 동작 확정(추기3 확정판).**
+- **★신규 실채널: dl_iterate_phdr 라이브러리 열거** — libea56이 dlsym("dl_iterate_phdr") 3회
+  (+0x454d8 성공, +0x9ea54/+0x11c1bc 실패=0 반환). 링커 콜백 기반 라이브러리 스캔 — /proc/self/maps
+  파일 위장·dirent 은닉과 **무관하게 §142 랜덤명 .so 전부 가시**. 대응 난이도 높음(유저랜더 콜백).
+  차후: dl_iterate_phdr 리다이렉트(가드 자체 dlsym 결과를 위조) 또는 랜덤명의 안전화.
+- libtg.so: dlopen(libc)→dlsym("fork")+dlsym("exit") ×2 — fork 자식 검사 기계의 직접 확인.
+- libtoss-jni: 난독화 심볼명("%56&36&…") 자체 dlsym 성공 — 가드 lib의 자기참조 심볼 은닉 패턴.
+- dlsym 4,104건 분포: libEGL 2,064 / libmonochrome 1,176 / libart 834 / hwui 18 / libtg 4 / libea56 3 —
+  가드가 dlsym으로 하는 탐지는 dl_iterate_phdr이 유일. **판정 입력 여전히 비-syscall 메모리 검사**(불변).
+- 도구: tmp-artifacts/tools/hook_safecopy_watch.js(SafeCopy+pvm+dlsym 백트레이스), /tmp/sc_best.log 원문.
