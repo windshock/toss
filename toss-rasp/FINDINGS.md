@@ -6749,3 +6749,18 @@ libea56 16k 루프:
 - 부가 캡처: 서버 403 3건(guest/session/init, version/check, internationalization — 로컬 킬과 별개 채널 재확인),
   텔레메트리 manufacturer=samsung/model=SM-S916N(앱 관점 위장 유지), params.result 원시코드는 이번 창 미관측.
 - 증거: tmp-artifacts/run-logs/logstore_live_s153_최신판정.txt
+
+[§153 추기3 — 사이드로드/Play Store 부재 가설 검증 (사용자 Q: "playstore로 안 깔아서 이 사단?") — 로컬 킬과 무관 확정]
+- **코드 전수 grep**: 가드 숨은 DEX(jadx_hidden 391파일)에 installer/설치경로 API 참조 **0건**.
+  installer를 읽는 유일한 경로 = `o/Cookies_set.onNavigationEvent()`(c13) → 소비처 전부 **텔레메트리**:
+  `TossApplication:10000` `auth.put("USER","installerPackage",…)`, SecuritiesLogV2DeviceContext(증권 트래커 직렬화 필드),
+  웹뷰 컨텍스트. 로컬 판정 게이트로 쓰는 코드 없음. (o/getInstallerPackageName.java는 이름만 같은 UI 팩토리 — 난독화 코스메틱)
+- **런타임 A/B**: `install-multiple -r -i com.android.vending`(원본 base+arm64, uid 10179·데이터 보존,
+  installerPackageName=com.android.vending 확인) → **11s×7 불변** (3런 자동분류 dead<30s + 초단위 4런 11s).
+  첫 런 직후 일시 조기사멸 1회는 재설치 fresh 경로 아티팩트(§39차 패턴) — 이후 안정 11s.
+- **SplitInstallException(-14)의 위치**: T+0-2s Application.onCreate 시점의 에러 텔레메트리("Failed to install dfm modules") —
+  앱은 이후 9초 더 생존하며 RASP 전 검사 수행. 킬(T+11s RASP [EMULATOR])과 무관.
+- **종합**: 사이드로드/설치자/Play-Core 실패는 **서버 403/FDS 채널의 입력**(installerPackage 텔레메트리 송출)이지
+  로컬 11s 킬의 원인 아님. 부가 반증: 17차 7분 생존도 동일 사이드로드 설치였음.
+- **운영 변경 유지**: installer=com.android.vending 상태 유지(실기기 정합성 향상 — 텔레메트리가 vending 보고).
+  원복 필요 시 재설치에서 -i 제거. GKI 런타임 파라미터 아님(재부팅 유지 — PMS 설정).
