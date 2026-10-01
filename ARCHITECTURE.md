@@ -134,7 +134,7 @@
 | LKM hide_kmod(**S154본** — bisectB+pvm_block/sc_log/pvm_log) | 파일경로 위장/차단, fd readlink 세탁, dirent 은닉, kill/segv 개입, **관측기**(pvm 호출자·스택 샘플) | `avd-camouflage/lkm/` |
 | boot_recover/camow3/props | 프롭 신원·위장 파일·패키지 hide·qemu 잔존 | `skills/avd-rasp-camouflage/scripts/` |
 | 호스트 dylib GL 패치 | GL 문자열(Adreno 740) | `avd-camouflage/host-patch/`, `host-patch-root/` |
-| §142 랜덤명 체인·§146 GL 반환필터 | 라이브러리명·GL 반환 | 게스트 dm-33(롤백 레시피 §153 P1) |
+| ~~§142 램덤명~~ → **plausible 수술 완료(§155)**: GfxPerfCollector/glcommon/vulkanqti/renderctrl/glesv1·2qti, hw/ 의존자 재배선 · §146 GL 반환필터 | 라이브러리명·GL 반환 | dm-33 · 도구 `tools/name_surgery.py` |
 | **잔여 미봉쇄** | ① /proc/self/fd readdir 도트파일명 ② .dynstr goldfish_*/emugl*(§151 P3 스크럽 설계) ③ Widevine L3/device_id ④ dmap 미등록 4채널 | — |
 
 **운영 불변식**: `pvm_block=0`(차단=ART 파손), `sc_log=0`(관측기 기본 OFF), frida-server 테스트 후 종료.
@@ -165,10 +165,11 @@
    **전역 0x181758/0x960 테이블** → 차기: hwbp_type=1을 libea56 베이스+0x181758(런 중 maps로 베이스 취득)에 세팅,
    또는 frida Stalker로 fault 스레드의 libea56 구간 추적
 2. **hwbp watchpoint**(hwbp_pid/hwbp_addr 인프라) — T+3~10s 보이지 않는 판정 계산의 상태변수 감시
-3. §151 P3 **dynstr 런타임 스크럽** — 메모리 검사 입력의 정타 대응
-4. **dl_iterate_phdr 채널 대응** — 가드가 링커 콜백으로 랜덤명 .so 열거(파일 위장 무효).
-   후보: LKM으로 dlsym("dl_iterate_phdr") 반환값 위장, 또는 SafeCopy식 유저랜더 콜백 필터 — 설계 필요
-5. dmap 4채널 등록(10분 픽스) / 서버 403 지문(로컬 통과 후)
+3. §151 P3 **dynstr 런타임 스크럽** — 우선권 하향(S153 대조: dynstr 동일한 두 세계가 2s/11s — 파일명이 판별자였고 이름은 §155로 해소)
+4. ~~dl_iterate_phdr 채널 대응~~ → **[R:§155 추기6] 이름 수술(plausible)로 해소 + A/B 비인과 확정**
+5. **★타이밍 채널(§155 추기6 — 사실상 마지막 관측 불가층)**: cntvct_el0 등 카운터/벤치마크 측정 —
+   syscall/파일/메모리 전부 흔적 없는 유일 잔여 클래스. 검증: LKM mrs 트랩 확장(CNTVCT 위조) A/B
+6. dmap 4채널 등록 — §155 추기4 완료(7채널 확장) — 잔여 없음 ~~ / 서버 403 지문(로컬 통과 후)
 5. ~~fault pc=0x71d6f534 모듈 특정~~ → [R] ART 정상 동작으로 닫힘 / ~~SafeCopy 호출자~~ → ART 내부 경로로 닫힘
 
 **REFUTED / 제거**
