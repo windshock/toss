@@ -6921,3 +6921,16 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - dlsym 4,104건 분포: libEGL 2,064 / libmonochrome 1,176 / libart 834 / hwui 18 / libtg 4 / libea56 3 —
   가드가 dlsym으로 하는 탐지는 dl_iterate_phdr이 유일. **판정 입력 여전히 비-syscall 메모리 검사**(불변).
 - 도구: tmp-artifacts/tools/hook_safecopy_watch.js(SafeCopy+pvm+dlsym 백트레이스), /tmp/sc_best.log 원문.
+
+[§154 추기5 — OPEN-1 닫힘: libea56 fault-probing = 엔진 자기 테이블 순회의 경계 도달 (환경 탐지 아님)]
+- **fault 사이트 해석(정확한 vaddr 재계산 — 매핑 시작=vaddr 0x34000 보정)**:
+  fault pc = vaddr **0x9db38: `ldr x12, [x12, x10]`** — 인자는 **0x18 스트라이드 테이블 엔트리**(x1+x21*0x18)의
+  base+delta로 계산, 결과는 가드 ctx(**x19+0x250/0x278** 저장 — §12 구조체 패밀리의 신규 필드)로 귀결.
+  호출부 vaddr 0x9cbb0: **0x960 스트라이드 테이블**(madd #0x960)에서 0x40 작업할당→간접호출, ctx 0x140~0x158 복사.
+  디스패처 상태글로벌 0x181758. 전부 §12-13의 16k 디스패처 구조.
+- **si_addr 패턴(3런)**: 0x723fa9**196c** / 0x72a66d**fb2c** — 페이지 오프셋 0x96c가 2회 = **0x960+0xc** =
+  0x960-스트라이드 테이블 행+0xc. → fault는 **엔진이 자기 0x960 테이블을 끝까지 걸어 자기 가드페이지를
+  밟는 경계 도달**(sentinel/복구 전제) — 환경 탐지 아님. [O]-1의 fault 가설 닫힘.
+- **남는 결론 불변**: 판정 입력 = T+3~10s의 syscall 무흔적 메모리 검사. fault/프로빙/파일/프롭 채널은
+  전부 소진 또는 정상 동작. 다음 관측기는 hwbp watchpoint(상태변수 감시)뿐 — 그러나 대상 주소 미확보
+  (ctx 런타임 주소 필요 — fault 시 x19 값을 로깅하면 확보 가능: LKM fault_dump에 x19 추가 = 차기 마이크로 과제).
