@@ -6956,3 +6956,12 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   차기 관측기 후보: ① hwbp_type=1을 **0x181758 전역(런타임 주소 = libea56 베이스+0x181758)** 에 세팅 —
   libea56 베이스는 maps에서 런 중 취득 가능 ② frida Stalker로 fault 스레드의 libea56 구간만 추적.
 - 운영: hwbp 파라미터는 실험 후 초기화(hwbp_trigger.sh가 자동 원복).
+
+[§155 추기2 — frida attach 상태성 실측 + rw-diff 도구 준비]
+- **주입 성공률은 부트별 상태성**: 이전 부트 1/3~1/5 성공 → 현재 부트 **0/19**(지연 0.5~4.0s 전부).
+  settings attach는 항상 성공(서버 정상) → 토스 가드의 안티-ptrace가 부트/시점별로 당락을 좌우.
+  성공 런의 자산은 이미 확보(SafeCopy 백트레이스 확정). frida 경로 재시도는 **새 부트에서**.
+- **신규 도구 준비 완료**: `tools/hook_rw_diff.js`(libea56 rw 세그먼트 0x174000~0x186210 주기 덤프·diff —
+  변화하는 전역=상태변수 지도), `tools/hwbp_global.sh`(전역 감시 — 단 perf_event는 **스레드 단위**라
+  가드 스레드 tid 지정 필요, 매핑 갭 보정 공식: rw매핑시작+(va-0x174000)).
+- hwbp 인프라 최종 상태: hwbp_type(0=X/1=W), hwbp_len(4/8), 동적 트리거 검증 완료(12.3M 이벤트 무사).

@@ -138,7 +138,9 @@
 | **잔여 미봉쇄** | ① /proc/self/fd readdir 도트파일명 ② .dynstr goldfish_*/emugl*(§151 P3 스크럽 설계) ③ Widevine L3/device_id ④ dmap 미등록 4채널 | — |
 
 **운영 불변식**: `pvm_block=0`(차단=ART 파손), `sc_log=0`(관측기 기본 OFF), frida-server 테스트 후 종료.
-**frida 운영법(§154 추기4)**: 서버 헬스체크는 settings 앱 attach로 먼저(토스 실패가 서버 문제인지 구별), 토스 주입 성공률 ~1/3-1/5 → 재시도 루프 필수. 도구: `tools/hook_safecopy_watch.js`(SafeCopy+pvm+dlsym 백트레이스).
+**frida 운영법(§155 추기2)**: 주입 성공률은 **부트별 상태성**(이전 부트 1/3~1/5, 어떤 부트는 0/19) —
+  0이면 에뮬 재부팅이 최단 해법. 서버 헬스체크(settings attach) 선행 필수. 도구: hook_safecopy_watch.js,
+  hook_rw_diff.js(rw 세그먼트 diff — 판정 상태변수 지도용, 다음 부트에서 실행 대기), hwbp_global.sh.
 **현재 세계**: SM-S916N/egl=adreno/LKM=1/uid=10179(installer=vending) — 기준선 **T+11s [EMULATOR]**.
 
 ---
