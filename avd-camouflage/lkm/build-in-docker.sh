@@ -7,7 +7,7 @@
 # =============================================================================
 set -e
 ACK=/Users/1004276/Downloads/toss/ack-kernel
-MOD=/Users/1004276/Downloads/AppSuit/avd-camouflage/lkm
+MOD=/Users/1004276/Downloads/toss/avd-camouflage/lkm
 UTS='5.15.119-android13-8-00034-gd34029c8258b-ab10871489'
 
 echo "[*] arm64 Ubuntu 컨테이너에서 빌드 환경 구성 + 모듈 빌드"

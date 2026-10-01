@@ -853,6 +853,7 @@ static int rewrite_ret(struct kretprobe_instance *ri, struct pt_regs *regs)
 	 * 무한 프로브로 만든다(19차 실측: cpu38747677+ 82만 distinct, 메인 스레드
 	 * 스핀 → SystemJobService ANR). 17차 normalize_cpu_path와 동일 클래스.
 	 * cpu8+는 실경로 통과 → ENOENT → 프로브 정상 종료. */
+#if 0 /* bisectB off: v4.7 cpuN wildcard 위장 (§152 작업1/Build C — 회귀 범인 후보) */
 	else if (strncmp(name, "/sys/devices/system/cpu/cpu", 27) == 0) {
 		const char *q = name + 27;
 		int core = 0;
@@ -865,6 +866,7 @@ static int rewrite_ret(struct kretprobe_instance *ri, struct pt_regs *regs)
 		    strstr(q, "/regs/identification/midr_el1"))
 			redirect(name, "/dev/.m8c4kd");
 	}
+#endif
 	/* v4.0: 타 프로세스 cmdline/status 리다이렉트(.oq306f 빈파일) 제거 —
 	 * 토스 가드가 /proc/N/cmdline 전수 스윕으로 판정(실측). 전부 빈 문자열은
 	 * 실기기에서 불가능한 상태라 tamper 신호가 된다. 시스템에 노출 프로세스가

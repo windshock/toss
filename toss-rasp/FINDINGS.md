@@ -6696,3 +6696,46 @@ libea56 16k 루프:
 4. **오늘의 17차식 누출 재검(실측)**: dmap 정상 작동(`su 10179 ls /proc/<pid>/fd`에서 /proc/self/maps 복원 확인). readlinkat 단일 훅(최소훅 법칙 준수, 커스텀포트 attach)으로 가드 fd 스윕 34회 관측 — **전부 정상 경로, fake 노출 0건**(이번 윈도우). → 17차형 누출은 현재 봉쇄 중, 회귀 원인은 다른 채널.
    잔존 이질 후보: goldfish 클론 fd명(.wq517h×18/.tr482w×12 — 실기기 fd 테이블에 없는 /dev 도트파일; 단 이번 스윕 윈도우에 미포함이라 판정 기여 미확정), dmap 미등록 4채널(.ns582t/.pl728v/.s2w6za/.t7x3ub).
 5. **차기 세션 프레임 전환(우선순위 재배치)**: dynstr 스크럽보다 먼저 — **회귀 비섹션**: LKM 런타임 파라미터(emu_lib_block/maps_off/dis_cpuinfo/maps_filter)를 17차 시대 값으로 되돌리는 A/B → 7분 생존 재현 시점 탐색 → 범인 파라미터 특정 → 그것이 만드는 "불일치"의 실체 분석. 도구: toss_launch_stats.sh(17차 N런 분류기) + 오늘의 readlinkat 관찰.
+
+## §153 2026-10-01(2) — 회귀 비섹션 2연타 네거티브(bisectB v4.7 + GL축 전체 순정화) + 런타임 파라미터 3종 네거티브 — 관측 전환 권고 (S153)
+
+[P0 — bisectB(Build C): v4.7 cpuN wildcard off = 네거티브]
+- `hide_kmod.c` v4.7 블록(856행부) `#if 0 /* bisectB off */`, bisectA 위에 누적 빌드(515,440B). 백업 `hide_kmod.c.pre_bisectB`.
+- 기능 검증: uid 10179가 `/sys/devices/system/cpu/cpu0/.../midr_el1` 실측 → **0x610f0000(Apple 실값)** 노출 = 리다이렉트 소멸 확인(fake=.m8c4kd 0x411fd4e0).
+- 결과: **3런+1런 전부 11-12s 사멸** → v4.7도 범인 아님. 무한프로브 우려 없음(cpu8+ 실경로 ENOENT 통과 로직은 v4.7과 무관하게 유지).
+- **누적 제외 목록 갱신**: v4.22 모듈/HAL 프로브 차단, v4.24 net/unix, v4.7 — 전부 off에도 불변.
+
+[P1 — GL축: egl 원본 복원 레시피 확정 + 17차 GL 세계 재현(기술적 성공) 그러나 치료 실패(2s로 악화)]
+- **순정 소스 확보**: `~/Library/Android/sdk/.../arm64-v8a/vendor.img`(vdc, GPT+ext4, 2024-09-10 순정) — `7z x` 로 lib64 직출. 순정 md5:
+  EGL_emulation=546abc0b…, GLESv1_CM=19f0d455…, GLESv2=b3943dbc…(=게스트 .bak_*_adreno_orig v1/v2와 동일!)
+  SystemCommon=8e8e4758…, androidemu=22086bcc…, GLESv1_enc=49754a9d…, GLESv2_enc=62ce08f8…,
+  CodecCommon=cf08e8a3…, renderControl_enc=cedc91cb…, vulkan_enc=42797ecf…, GoldfishProfiler=32bd7c38…
+- **§142 램덤명 체인 실상**: dm-33(/vendor/lib64 rw)에 원본명 7종(SystemCommon/androidemu/GLESv1·v2_enc/renderControl/vulkan_enc/GoldfishProfiler)이 **전무** — 이것들이 복원 필요 조건(DT_NEEDED 전수 파악으로 확정).
+- **복원 절차(재현 가능)**: 게스트 현행 4종 → /data/local/tmp/bak_s153/ 백업 → 순정 11종 push(vendor_file/same_process_hal_file 컨텍스트+644 root) → md5 11/11 일치 → `resetprop ro.hardware.egl emulation`(★삭제 금지, 하기 P2) → stop;start.
+- **SF/렌더링 완전 정상**: SF maps = libEGL_emulation+libGLESv2_emulation+libGLESv2_enc(원본명), ES3 컨텍스트 OK(순정 SystemCommon 니들=ANDROID_EMU ↔ 호스트 토큰패치 제외 4종 정합), dumpsys "Qualcomm, Adreno (TM) 740" 유지, 스크린샷 1.35MB.
+- **그러나 토스 = 2s 사멸**(12s보다 빠름!) → goldfish 원본명/원본 dynstr 노출이 조기 트리거. GL 세계 교체만으로는 생존 불가 + 이름 채널 실감 실증.
+- **롤백 완료·검증**: 셀렉터 adreno + bak_s153 복원 + 추가 7종 삭제 + stop;start → 기준선 11s 재현. 현 세계 = §152 인계 상태.
+
+[P2 — 신규 법칙: ro.hardware.egl `--delete` 금지, `=emulation` 명시 설정]
+- `resetprop --delete` 후 stop;start → 로더가 **EGL_adreno + libGLESv2_angle 혼합 스택** 구성 → `SkiaGLRenderEngine::create` 경로 egl::Thread::getContext() 널역참조 SIGSEGV 크래시 루프(§152의 "no ES 3" 크래시와 별개).
+- 셀렉터 해제 실험은 항상 값 교체로: adreno↔emulation 토글. (크래시 시 복구: `resetprop ro.hardware.egl adreno` + stop;start — 이번 실측으로 웨지 없이 1분 내 회복 확인)
+
+[P3 — 런타임 파라미터 A/B 3종 전부 네거티브(리빌드 불필요 실험법 확립)]
+- sysfs 0644 파라미터 그대로 사용: `echo N > /sys/module/hide_kmod/parameters/<p>`
+- ksig_dis=1(kill-spoof off): 12s/11s · maps_filter=0: 11s/12s · segv_recover=0+reboot_block=0: 11s/11s — 전부 불변, 실험 후 원복(0/1/1/1).
+- 현재값 기록: emu_lib_block=0, mrs_spoof=0(디폴트 OFF였음), dp_hits=1019, gd_filtered=5, mapfilt_hits=28.
+
+[P4 — 인프라 발견/수정]
+- `lkm/build-in-docker.sh` MOD 경로가 옛 AppSuit 잔존 → toss 경로로 수정(이관 누락 마지막 한 조각).
+- `boot_recover.sh` [6c] 과도 이스케이프(`\$(`)로 게스트 문법에러 — 수정(패키지 hide는 pm hide 지속성으로 이전 상태 유지되고 있었음을 확인, 오염 없음).
+- macOS bash 3.2에 `declare -A` 없어 toss_launch_stats.sh 실행 불가 → `tmp-artifacts/launch_stats_bash3.sh` 동일분류 이식본 신규.
+- 순정 추출물 보존: `tmp-artifacts/pristine_egl_s153/lib64/`(11종).
+
+[P5 — 프레임 전환 권고: 맹목 비섹션 → 직접 관측]
+- LKM 행동 표면(파라미터+주요 블록)과 GL축 전부 제외됨. 잔여 후보는 좁혀졌으나 각각 실험 비용이 크다:
+  ① fd getdents 채널(/proc/self/fd 열거 시 .wq517h×18/.tr482w×12 도트파일명 — d_path/readlink는 막아도 **readdir은 못 막음**, 실기기 불가능 상태)
+  ② dmap 미등록 4채널(.ns582t/.pl728v/.s2w6za/.t7x3ub) — dmap 4엔트리 추가는 10분 수정
+  ③ §142 램덤명 사본의 존재 자체(wpgwctvx5g 등 — 앱 maps에 랜덤명)
+  ④ §146 adreno 트윈 GL 문자열 필터(현행 세계에 여전히 탑재)
+  ⑤ 비LKM 누적(§151 이미지 수술 등) 또는 앱/서버 측 드리프트
+- **다음 세션 정공**: T+11s 사망 직전 창의 가드 관찰 — channel_trace.sh(파일 채널) + toss_heap_snapshots.sh(복호화 어휘 diff) + 39차식 DetectType 재직독으로 "지금 무엇이 발화했나"를 직접 캡처한 뒤 그 채널만 정타. 부차: dmap 4채널 등록 마이크로 픽스.
