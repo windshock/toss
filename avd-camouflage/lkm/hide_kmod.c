@@ -561,8 +561,26 @@ static int fault_pre(struct kprobe *p, struct pt_regs *kregs)
 	if (IS_ERR_OR_NULL(u))
 		return 0;
 	ec = (esr >> 26) & 0x3f;
-	if (ec != 0x24 || far != 0)   /* EL0 데이터어보트 + far==0 만 */
+	if (ec != 0x24)   /* EL0 데이터어보트 */
 		return 0;
+	/* S154+5: far!=0(보호페이지 프로브)도 덤프 — 가드 ctx(x19) 런타임 주소 확보용 */
+	if (far != 0) {
+		static atomic_t nz_cnt = ATOMIC_INIT(0);
+		if (atomic_read(&nz_cnt) >= 8)
+			return 0;
+		if (atomic_inc_return(&nz_cnt) > 8)
+			return 0;
+		pr_info("faultdumpNZ #%d comm=%s pid=%d — EL0 DA far=0x%lx esr=0x%lx\n",
+			atomic_read(&nz_cnt), current->comm, current->pid, far, esr);
+		for (i = 0; i < 31; i += 3) {
+			pr_info("  x%-2d=0x%016lx x%-2d=0x%016lx x%-2d=0x%016lx\n",
+				i,     u->regs[i],
+				i + 1 < 31 ? i + 1 : 30, u->regs[min(i + 1, 30)],
+				i + 2 < 31 ? i + 2 : 30, u->regs[min(i + 2, 30)]);
+		}
+		pr_info("  sp=0x%016lx pc=0x%016lx pstate=0x%08lx\n", u->sp, u->pc, u->pstate);
+		return 0;
+	}
 	if (atomic_inc_return(&fault_dump_cnt) > 8)
 		return 0;
 	pr_info("faultdump #%d comm=%s pid=%d —— EL0 DA far=0 esr=0x%lx\n",
@@ -757,6 +775,11 @@ static int sfi_pre(struct kprobe *p, struct pt_regs *kregs)
 		*(unsigned long *)(ksig + 0x30),
 		current->comm, current->pid,
 		ur->pc, ur->regs[16], ur->sp, ur->regs[30], ur->regs[0]);
+	/* S154+5: si_code(raise된 시그널 vs 실제 fault 구별) + callee-saved(x19~x23) 추가 —
+	 * 가드 ctx(x19) 런타임 주소 확보. kernel_siginfo: si_signo/errno/code(+0,+4,+8), si_addr(+0x30). */
+	pr_info("  si_code=%d x19=0x%llx x20=0x%llx x21=0x%llx x22=0x%llx x23=0x%llx pstate=0x%llx\n",
+		*(int *)(ksig + 8),
+		ur->regs[19], ur->regs[20], ur->regs[21], ur->regs[22], ur->regs[23], ur->pstate);
 	return 0;
 }
 

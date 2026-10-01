@@ -6934,3 +6934,14 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **남는 결론 불변**: 판정 입력 = T+3~10s의 syscall 무흔적 메모리 검사. fault/프로빙/파일/프롭 채널은
   전부 소진 또는 정상 동작. 다음 관측기는 hwbp watchpoint(상태변수 감시)뿐 — 그러나 대상 주소 미확보
   (ctx 런타임 주소 필요 — fault 시 x19 값을 로깅하면 확보 가능: LKM fault_dump에 x19 추가 = 차기 마이크로 과제).
+
+[§154 추기6 — ★가드 ctx 런타임 좌표 확보: x19 = sp+0x21b0 (스택 상주) + SFI11 확장]
+- **LKM SFI11 확장**(재빌드+재부팅): si_code + callee-saved(x19~x23) 로깅 추가. fault_dumpNZ(far≠0)는 0건 —
+  Rx fault는 **do_mem_abort 미경유 = raise된 SIGSEGV**(의도적 시그널 제어 흐름 확정; si_addr은 송신자 세팅값).
+- **3런 Rx fault 전수**: x19 = **sp+0x21b0** (3런 정확히 동일 오프셋) — **16k 엔진의 ctx는 자식 스레드 스택에
+  상주**(힙 아님). x20/x21 = 테이블 행 인덱스(0x491/0xa43, 0x46b/0x996 — 런마다 상이), x22 = 페이지정렬 매핑 베이스,
+  x23 = tagged 힙 포인터(0xb40000...). si_addr 페이지오프셋 0x96c×2+0xb2c — 0x960-테이블 행+0xc 패턴 유지.
+- **의미**: §14의 "fork 자식이 검사 수행"의 구체 좌표 — **판정 계산 상태는 fork 자식(Rx 스레드 포크)의
+  스택 sp+0x21b0 기반 프레임 안**. hwbp watchpoint 설계 완결: 자식 pid 식별 후 sp+0x21b0 지점 감시 가능
+  (단 sp는 재생성마다 변하므로 런 중 동적 세팅 필요 — SFI11 dmesg 트리거 방식).
+- 부수: fault_dumpNZ(far≠0 전체 레지스터 덤프) 인프라 추가 — 향후 진짜 데이터 어보트 전수 분석에 재사용.
