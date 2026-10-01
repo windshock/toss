@@ -7301,3 +7301,55 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   차기 A/B: 동일 신규 dword로 차단/무차단 1쌍 × N런 (핸드오프 우선순위 2).
 - 운영적 결론은 불변: 동결 포렉식 레시피(T+1.5s 무장)는 2.3s 시대에 맞춘 것 — **11s 시대에는 무장 시점을
   T+9-10s로 올려야** 메인 exit를 잡는다(자식 프로브 T+1.2s 이후·메인 exit 직전이면 충분; 런 타임라인 먼저 확인).
+
+## 157. S157 세션 (2026-10-01 심야) — ★집행 지연 인과 봉인(네트워크 차단 상호작용 [C] — §156 가설 기각) + 타이밍 측정 경로 소거(네이티브 MRS/PLT·Java 전부 네거티브 → vDSO 직접호출/클럭프리 상대타이밍 잔여)
+
+### 157-1. P0 결론
+1. **★§156 "서버 dword 지연정책 에스컬레이션" 가설 기각 → 정정 [C]**: 통제 A/B(동일 21:11발 신선 dword,
+   차단만 토글) — **무차단 11.6/11.5/11.2s vs REJECT 차단 1.9/1.6/1.5s** (각 3런, 전부 exitPlan=EXIT/caller=RASP).
+   - 집행 가속의 원인은 **iptables REJECT(즉시 ECONNREFUSED)와의 상호작용** — 보고(report) 네트워크 체인이
+     즉시 실패하면 판정 직후 바로 exit. 무차단의 ~11s는 보고 체인(재시도 포함) 소요 시간이 지연의 실체.
+   - **§154 "postDelayed(5/10s)" 해석 약화**: T+3-10s 침묵 구간의 상당 부분이 네트워크 보고 체인일 가능성.
+   - §155 오전 "신선+차단=11-12s(4/4)"와의 불일치 → 그들의 '차단'은 DNS 웨지 상태(느린 실패)였고
+     REJECT(즉시 실패)와는 실패 양상이 다름 — **네트워크 실패 양식이 집행 타이밍을 결정**.
+   - 운영: **연구 창을 늘리려면 네트워크를 켜둘 것**(차단은 오히려 사멸 가속). 동결 레시피 무장 시점도
+     런 타임라인(차단 1.5s/무차단 11s)에 맞출 것.
+2. **★타이밍 측정 경로 소거 3연타 [C]** — §155 타이밍 채널의 '가드 측 구현' 탐색:
+   - ① **libea56 네이티브 카운터 직접 판독 0건**: .text 전수 MRS 디코딩 — CRn=14(카운터군: CNTVCT/CNTFRQ/…)
+     해당 명령 없음. (§155 핸드오프의 "Ghidra mrs 검색"을 정적 스캔으로 완료 — 네거티브)
+   - ② **libc PLT 시간 API 호출 0건(live)**: frida로 libc clock_gettime/gettimeofday 후킹(프로세스 전체
+     cg 103,339회/3s, gtod 2,620회) 중 **libea56 범위 returnAddress 0건**.
+   - ③ **Java 시간 API = 오브퓨스케이션 상수**: live 포착된 o.* 콜사이트(jni_YGNodeMarkDirtyJNI:105,
+     DataSourceBitmapLoaderExternalSyntheticLambda0:334, CheckRequestBodyModelGroup:246, setJSExecutor:61 등)를
+     jadx 원문 대조 — 전부 `(elapsedRealtimeNanos() > 0 ? 1 : 0)`·`~((int)uptimeMillis())` 등
+     **DexGuard 상수폴딩 SWAR식에 섞인 판독**(측정 아님). System.nanoTime의 다수 호출처도 okhttp/AQS 등 비가드.
+   - **잔여 경로 2개**: (a) **vDSO 직접 호출** — auxv(AT_SYSINFO_EHDR)로 base를 구해 BLR 간접호출하면
+     임포트·MRS·syscall·libc-PLT 전부 불가시(모든 소거 결과와 정합) (b) **클럭프리 상대 타이밍**(스레드 레이스 —
+     고정 워커로부터의 반복 카운트 비교, 시계 API 자체가 불필요).
+3. **타이밍 측정은 서브초**: 차단 런이 T+1.5s에 판정+집행 완료 → 측정·판창 예산 ~1.2s 이내.
+
+### 157-2. P1 증거
+- A/B: 무차한 A1-A3(=§156-5 기준선 포함 11.6/11.5/11.2s) · 차단 B1-B3(1.9/1.6/1.5s) — logstore exitPlan=EXIT/caller=RASP 동일.
+- MRS 스캔: libea56_live.so PT_LOAD 4세그먼트 .text 0x34000-0x13f000 전수 → CRn=14&MRS 0건.
+- frida live: hook_clockwatch.js(attach 1.2s, 3s 관찰) cg=103339 gtod=2620 lib_cg=0 lib_gtod=0.
+- Java live: hook_javaclock.js(64회당 1회 스택샘플) — 가드 o.* 콜사이트 목록 + jadx 원문 대조(CacheCacheException.java:895-896
+  `iUptimeMillis` SWAR 상수식 등).
+- vDSO: toss 내 [vdso] r-xp @7b84674000(zygote 상속, 부트 내 고정·전 프로세스 동일) — 훅 시도는 부트 상태
+  악화(반복 attach 후 am start timeout/spawn 실패)로 **차기 과제**. 툴 레시피 완성(/tmp/hook_vdso2.js 패턴).
+
+### 157-3. P2 절차/도구
+- 신규: `tools/hook_clockwatch.js`(libc 시간 API + libea56 범위 필터), `tools/hook_javaclock.js`(Java 시간 API
+  스택샘플링), `tools/hook_vdso.js`+커스텀 러너(vDSO base는 maps에서 주입 — frida 모듈 목록에 [vdso] 없음).
+- **attach_run.py는 PATH에 adb가 있어야 동작** — 서브프로세스 'adb …' 실패가 capture_output으로 조용히 묻힘
+  (no pid 오탐). `export PATH=$HOME/.pyenv/versions/3.11.4/bin:$HOME/Library/Android/sdk/platform-tools:$PATH`.
+- **adb 다중 인용 함정**: adb shell su 0 sh -c '…' 이중 인용은 깨짐 — python subprocess는 list 형식 또는
+  `su 0 cat /proc/PID/maps`(sh -c 없이) 직통이 안전.
+- **반복 frida attach 후 am start timeout**(AM 'start timeout' 킬) → 부트 경계에서 회복. 세션당 attach 횟수
+  절제, 이상 시 재부팅.
+
+### 157-4. P3 교훈
+1. 통제 변수 없는 시간 상관([S] 에스컬레이션)은 한 번의 토글 A/B로 기각됨 — **상태 의존 가설은 먼저 토글
+   실험**. §156이 진즉 했어야 할 설계.
+2. "시간을 잰다"는 가정도 API 계층별로 소거해야 한다: MRS → PLT → Java → vDSO 직접 → 클럭프리. 불가시성
+   증가 순서가 곧 탐색 순서.
+3. 오퍼레이터 노이즈(광고 SDK의 시간 호출)는 콜사이트 필터(모듈 범위/스택)로만 분리된다.

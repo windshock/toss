@@ -299,3 +299,15 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
 - **dword 정책 채널(§156 확장)**: 경로(다이얼로그/직접) + **지연(0s~10s)** — 반복 [EMULATOR] 보고 누적 후
   하루 만에 11s→2.3s 즉시킬로 에스컬레이션 실측 [S]. 다이얼로그 재현은 서버 message_present 비트 필수
   (오프라인 dword 조작만으론 불가). "오전 재현이 저녁에 안 되면" 서버 정책 변화를 먼저 의심하라.
+
+## §157 성과 요약 (2026-10-01 심야)
+- **토글 A/B 우선 법칙**: 시간 상관 기반 가설("서버 정책이 변했다")은 한 번의 통제 토글(동일 상태에서 차단만
+  on/off)으로 기각/확정된다 — §156 [S]가 §157에서 즉시 기각. **상태 의존 가설 → 먼저 토글 실험**.
+- **집행 타이밍 = 네트워크 보고 체인**: REJECT 차단(즉시 실패) 1.5-1.9s vs 무차단 ~11.5s (동일 dword 3+3런).
+  **연구 창 확보엔 네트워크 ON**; 차단은 사멸을 가속한다. §155 "신선+차단=11-12s"는 DNS웨지식 느린실패와의 혼동.
+- **시간 측정 경로 소거 순서(불가시성 증가순)**: 네이티브 MRS(정적 스캔) → libc PLT(live 후킹+모듈 범위 필터) →
+  Java(live 스택샘플+jadx 대조 — `elapsedRealtimeNanos()>0?1:0` 류는 DexGuard 상수폴딩 오브퓨스케이션) →
+  **vDSO 직접호출(auxv base+BLR)** → 클럭프리 상대타이밍. frida 모듈 목록엔 [vdso] 없음 — maps에서 base 주입.
+- **attach_run.py 함정**: PATH에 adb 없으면 서브프로세스 실패가 조용히 묻힘("no pid" 오탐) — pyenv+platform-tools
+  PATH 세팅 후 실행. adb shell 중첩 인용은 list 형식 또는 `su 0 cat …` 직통으로.
+- **반복 frida attach 후 am start timeout**(AM 킬) → 부트 경계 회복. 세션당 attach 절제.
