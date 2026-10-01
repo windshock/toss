@@ -6965,3 +6965,16 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   변화하는 전역=상태변수 지도), `tools/hwbp_global.sh`(전역 감시 — 단 perf_event는 **스레드 단위**라
   가드 스레드 tid 지정 필요, 매핑 갭 보정 공식: rw매핑시작+(va-0x174000)).
 - hwbp 인프라 최종 상태: hwbp_type(0=X/1=W), hwbp_len(4/8), 동적 트리거 검증 완료(12.3M 이벤트 무사).
+
+[§155 추기3 — ★가드 런타임 문자열 테이블 포착(rw-diff) + native.bridge 비인과 확정]
+- **frida rw-diff 신규 성공**: 새 부트에서 1차 시도 성공. libea56 rw 세그먼트(0x174000~0x186210, 74KB)의
+  500ms 주기 diff에서 **검사 대상 문자열의 런타임 물질화**를 포착(T+2-3s, 338워드 변화):
+  `/proc/self/cmdline`, `/sys/fs/selinux/load`(SELinux policy 로드 — Magisk 흔적 채널),
+  `()[Ljava/lang/reflect/Field;`+`java/lang/Class...getDeclaredFields`(**리플렉션 기반 훅 스캔**),
+  `ro.dalvik.vm.native.bridge`, 페이로드 포맷 **`%lld;%s;%s;%s;%s;%x;%x;%x;%x;%d`**(문자열4+hex4+int1 지문 구조).
+- **§2411대 채널 재점화 확인**: native.bridge는 예전에 resetprop -d로 처리됐으나 **재부팅 미유지로 "0" 복원**.
+  실기기(삼성)=빈 값과 불일치 — 그러나 **A/B(삭제 후 4런): 12/11/11/12s 불변 = 판정 비인과**.
+  그래도 실기기 정합을 위해 props-apply.sh에 매 부트 삭제 추가(영구).
+- **의미**: 가드의 검사 대상 문자열은 **정적 바이너리에 없고 실행 중 rw에 조립**된다(§149-5 정적 어휘는
+  DEX 측). rw-diff는 이 "살아있는 체크리스트"를 보는 유일한 창 — 차기 런에서 전체 수집(150+ 문자열).
+  리플렉션 훅 스캔의 존재가 §149-7 "HOOK=null 고정"과 별개의 **네이티브 자체 훅 스캔**을 시사.

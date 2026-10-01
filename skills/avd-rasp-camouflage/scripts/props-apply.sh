@@ -121,3 +121,8 @@ RES=$(getprop | grep -iE "qemu|goldfish|ranchu|emu64a|gphone|emulator|generic" \
 [ -n "$RES" ] && echo "[props-apply][warn] 잔여 에뮬 프롭:" && echo "$RES"
 
 echo "[props-apply] applied"
+
+# §155: ro.dalvik.vm.native.bridge — 실기기(삼성)=빈 값. AVD 이미지 기본 "0"은 매 부트 복원되므로 매번 삭제.
+# (가드가 런타임에 이 프롭을 읽어 %lld;%s;... 포맷 페이로드에 조입 — §155 문자열 테이블 실측. 단 A/B상 판정 비인과)
+$M -d ro.dalvik.vm.native.bridge 2>/dev/null
+echo "[props-apply] native.bridge deleted (empty=real-device fidelity)"
