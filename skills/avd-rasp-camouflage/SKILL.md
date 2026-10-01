@@ -400,3 +400,9 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   force_sig_fault/arm64_notify_die kprobe 0발화, get_signal/prepare_signal만 발화) — 폴트 훅 설계 필독.
 - tracefs 메인 인스턴스 버퍼는 웨지 가능(§139 법칙 재확인) — 컨트롤 프로브 정상성 확인 후 실험.
 - do_page_fault/handle_mm_fault/__send_sig_info는 kprobe 블랙리스트(NOKPROBE).
+
+## §170 성과 요약 (2026-10-02 오전 2차)
+- **트리프와이어 재현성 검증법**: 런 간 pc 집합이 상수 델타(ASLR 시프트)로 평행이동하면 같은 코드 집합 —
+  절대 주소 비교 금지, 쌍별 델타로 검증.
+- **hits 카운터는 누적** — 실험 판정은 반드시 델타.
+- 작성기 정체: 0x93aa0=복호화 루프(테이블 0x2747ba), 0x157200=128B 복사기, 0x101920/0xd1d30=상태·디스패치.
