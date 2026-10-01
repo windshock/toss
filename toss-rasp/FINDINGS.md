@@ -7066,3 +7066,15 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   **차기**: 동결 시점 toss-uid 전 프로세스(pidof -s 모든 자식) 열거→각각 덤프 → 자식 힙에서 페이로드/191 검색.
 - 판정후 신규 물질화 문자열 6,921건 중 가드 관련 직접 신호는 logstore 항목뿐 — 판정 결과의 메인-프로세스
   발자국은 텔레메트리 조립이 전부(판정 계산 흔적은 자식에).
+
+[§155 추기9 — 자식 포렌식 가동: 위장 커뮤 자식 7종 포획 + 도구 함정 2종 수정]
+- **도구**: `tools/child_forensics.sh` — 동결 시점 toss-uid 전 프로세스 열거(ps -A -o UID,PID,NAME — 게스트 ps -U 미지원,
+  /proc 순회도 Uid awk 인용 함정으로 불가 → ps 방식 확정) → pid별 rw 리전 덤핑.
+- **★가드 위장 자식 정체 확보(동결 시점 7종)**: `.republica.toss`(메인) + **`which`(T) `pm` `cmd`(T) `process`
+  `linker64`(T, [anon:partition_alloc]!) `Thread-41`(T)** — 가드 fork 자식들이 **시스템 유틸리티 커뮸명으로 위장**
+  (which/cmd/linker64 — /proc 스캔 대응 위장). T(동결)=우리 자식 관문 적중 실증.
+- 1차 캡처 분석: 리전당 1MB 캡 → 대부분 boot.art COW 공유분, 페이로드 미검출. **차기: 자식별 사유 힙
+  (scudo/partition_alloc) 우선 대상화 + 캡 상향.**
+- **도구 함정 2종(재사용 필독)**: ① while-read 루프 내 adb shell이 파이프 stdin을 먹음 → `dsh(){ adb shell "$1" </dev/null; }`
+  ② 사망 경로 부트 분산 — 동결(EXITSTOP) 미발생 부트 존재(이번 부트: exit_block=1인데 게이트 전 사망) →
+  도구는 진단 출력(동결플래그/alive) 포함, 재시도로 운용.
