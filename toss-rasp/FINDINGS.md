@@ -6885,3 +6885,23 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   boot 이미지 매핑대와 겹칠 가능성) ② 이 널 DA가 **의도적 fault-probe**인가 우연인가
   ③ 복귀 pc=0x73a4c57920의 모듈(크래프트 복귀 대상 — §23 sigchain 이력과 대조)
   ④ 11s 판정과 이 fault 체인의 시간상관(T+2-3s fault → 9.7s → exit).
+
+[§154 추기3 — ★★대반전: fault/SafeCopy 체인은 ART 정상 동작 — 가드 개입 증거 없음 (maps 동시 캡처 확정)]
+- **질문의 완결**: "boot.art를 왜 읽나" → **가드가 읽은 게 아니라 ART 런타임이 읽었다.**
+- **resolve(같은 런 maps)**:
+  ① fault pc=0x71d6f534 = **boot-framework.oat r-xp +0x19d534**(AOT Java 코드) — 런 간 동일 주소(부트 이미지 고정 매핑, ASLR 없음)
+  ② 복귀 pc=0x73a4c57920 = **libart.so+0x257920 = art::interpreter::ExecuteSwitchImplCpp**(인터프리터)
+  ③ SFI11 핸들러=0x764cf6908c = **libsigchain.so+0x8c**(시스템 시그널 체인 — 가드 핸들러 아님)
+  ④ x0=0x71137248 = boot-framework.art rw 내부(널체크 대상 객체)
+- **정정된 시나리오**: T+2-3s의 fault = **ART 인터프리터의 암묵적 널체크 트랩**(implicit null check —
+  ART 표준 기법: null 객체 접근을 fault로 받아 NPE 처리) → libsigchain → ART fault 핸들러 →
+  **SafeCopy로 컨텍스트/이미지 안전 읽기** → 인터프리터 복귀. **전부 Android 정상 동작.**
+- **§154 추기/추기2 정정**:
+  - "가드의 SIGSEGV 복구 체인/크래프트 복귀" 해석 폐기 — 복귀는 인터프리터 복귀(정상 예외 처리).
+  - "pvm 차단=가드 복구 실패" → **pvm 차단=ART NPE 처리 파손**(우리가 런타임 자체를 망가뜨린 실험 결함) —
+    어느 쪽이든 pvm 차단 금지 결론은 유지하나 근거 수정.
+- **유일한 진짜 가드 신호(이번 런)**: **libea56+0x69b38에서의 fault 2건**(Rx 스레드, si_addr=익명 보호페이지 ---p
+  0x72e985096c) — 가드 네이티브의 의도적 프로빙 가능성(§150 예측과 부합). 빈도 낮음, 복구됨. 차기 추적 대상.
+- **방법론 교훈(중요)**: "핸들러 주소를 resolve하자마자 가드 것으로 단정"한 1세트 시간 낭비 —
+  **주소→모듈 resolve를 해석 이전 단계로 의무화**(toss_addr_resolve.py 루틴). boot 이미지 매핑대(0x70-0x72xxxxxx,
+  고정 주소)는 런 간 동일하므로 "재현된다=진짜다" 오판 위험.
