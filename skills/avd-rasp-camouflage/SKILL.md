@@ -354,3 +354,12 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
 - **판정 스캔 = 프로퍼티 체계 원시 메모리 순회** [C] — §139의 직접 mmap 채널이 판정의 실체였을 가능성 최유력.
   발화 체크는 '값' 아님(API 전건 클론+토큰 잔재 0) → 트라이/톰스톤/미복호화 패턴 후보 [O].
 - 0x5C000000(스캔 상한)은 코드 리터럴 아님 — ART 구조 체인에서 획득(§154 pvm 관찰과 정합).
+
+## §163 성과 요상 (2026-10-02 심야)
+- **스크럽 유효기간 법칙**: init이 다시 쓰는 프로퍼티(init.svc.*/init.svc_debug_pid.*/ro.boottime.* — 서비스 상태·
+  부팅기록)는 부팅 후반 재기입으로 §141 스크럽을 무력화한다 — 카모 체크리스트에 "부트 완료 후 재검증" 필요.
+  발견된 부활분: init.svc.ranchu-setup, ro.boottime.ranchu-setup, vendor.qemu.dev.bootcomplete 등 4건.
+- **원시 영역 진단 표준**: /dev/__properties__ 통덤프 → 토큰 grep(대소문자 무관, property_info 포함 — 컨텍스트
+  등록명 qemu_hw_prop 등도 실기기 불존재 증거).
+- **컨텍스트 파일 삭제는 부트 경계에서만** — 운용 중 삭제+토큰 치환은 가드 fail-closed 급사(~1.2s) 유발 관찰.
+- **급사 시 라벨 해석 주의**: 후속 라벨(handleExitPlan)이 못 씌므로 마지막 라벨≠발화 체크.

@@ -7545,3 +7545,41 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 1. 관측 도구가 입력 데이터 자체를 보게 만들면(진입 시 버퍼 덤프) 지도가 아닌 '실물'이 나온다 — §160의
    인자→§162의 내용물로 2단 만에 판정 스캔의 실체가 드러남.
 2. "타이밍" 프레임(§155-161)에서 "프로퍼티 원시 체계"로 후보가 재전환 — 소거 실험의 누적이 프레임 전환을 만든다.
+
+## 163. S163 세션 (2026-10-02 심야) — E6 인과실험 2라운드: live qemu/ranchu 프로퍼티 발견·삭제 + 원시 영역 전체 정화 — 판정 불변으로 프로퍼티 영역 단독입력 기각 [C] + 정화 자체가 급사 유도(fail-closed 의심)
+
+### 163-1. P0 결론
+1. **★live 에뮬 프로퍼티 잔존 발견 [C]** — 카모가 놓친 4건(실기기 불가능):
+   - `init.svc.ranchu-setup`=stopped · `init.svc_debug_pid.ranchu-setup` · `ro.boottime.ranchu-setup`(서비스 부팅기록)
+   - `vendor.qemu.dev.bootcomplete`=1
+   - **부활 메커니즘**: §141 스푸럽(부팅직후 1회) 후 init이 서비스 상태를 다시 기록 — ranchu-setup은 부트 후반
+     서비스라 스크럽 이후 재기입. props-apply 목록에도 없음.
+2. **E6-1 [C]**: live 4건 삭제(+API 0건 확인+재스크럽) → 판정 **불변**(11.9/11.4/11.4s EXIT/RASP) — live 프로퍼티는
+   단독 입력 아님.
+3. **★원시 영역 전체 정화 [C]**: qemu 컨텍스트 파일 4개(qemu_hw/qemu_sf_lcd_density/vendor_qemu/vendor_qemu_adb —
+   §148 [6d]의 rm 패턴이 잡지 못한 잔여) 삭제 + `property_info` 내 qemu 컨텍스트 등록명(qemu_hw_prop 등 — 실기기
+   등록부에 없음, 오프셋 0x21f17~0x227c2) 토큰 스크럽 → **전 영역(모든 컨텍스트+property_info+properties_serial)
+   qemu/ranchu/goldfish 대소문자 무관 0건** (all2.bin 검증).
+4. **★E6-2 [C]**: 전체 정화 상태에서 판정 런 — **사망 양상 격변: ~1.2s 급사 + 최종 라벨 `raspEmulatorCallback
+   detected`만**(exitPlan/handleExitPlan 미발화). 해석: ① 정화된 영역(xxxx 치환+파일 삭제)을 변조로 간주하는
+   **fail-closed 조기사멸**(§154 pvm_block 전례와 동형) ② 또는 체인 변화. 어느 쪽이든 **EMULATOR 콜백은 여전히
+   발화** → 프로퍼티 영역(전부 정화해도)은 판정을 뒤집지 못함 = **단독 입력 기각 [C]**.
+5. **종합**: 판정 입력은 프로퍼티 영역도 아님 — §162의 스캔 관찰은 "조회 활동"이지 "발화 입력"이 아니었을 가능성.
+   미지 입력 후보 잔여: 프로퍼티 외의 원시 매핑(/proc 자기구조·ART 메타·maps) 또는 명령어 동작. **Ghidra 스캔
+   핸들러 디컴파일(루트①)이 발화 비교논리 직독의 유일 남은 정공**.
+
+### 163-2. P1 증거
+- E6 런: 1차 3런(11.9/11.4/11.4s EXIT/RASP) · 2차 3런(1163/1313/1303ms, raspEmulatorCallback detected 단독).
+- all.bin(정화 전 35.7MB)/all2.bin(정화 후) 원시 덤프 — session163 아카이브.
+- qemu 컨텍스트 파일 4건 ls 확인·삭제, property_info 잔여 1토큰(53872:qemu) 2차 스크럽 후 residual=0.
+
+### 163-3. P2 절차/도구
+- **프로퍼티 영역 진단 표준**: `su 0 sh -c 'cd /dev/__properties__ && for f in *; do cat $f; done'` 통덤프 →
+  대소문자 무관 토큰 grep. 스크럽은 동일 길이 'x' 치환(구조 보존).
+- **컨텍스트 파일 삭제는 부트 경계에서만** — 운용 중 삭제는 가드 fail-closed 유발 가능(E6-2 양상) + init 재생성.
+- 라벨 해석 주의: 급사 시 handleExitPlan 등 후속 라벨이 못 씸히므로 "마지막 라벨=발화 체크"로 읽지 말 것.
+
+### 163-4. P3 교훈
+1. "스크럽 했다"의 유효기간을 검증하라 — init이 다시 쓰는 프로퍼티(svc/boottime 계열)는 부활한다.
+2. 인과실험에서 '변함 없음'과 '양상 변화'를 분리 기록 — E6-2의 양상 변화는 입력 기각의 증거가 아니라 부작용
+   신호였을 수 있음(해석 보류가 정직).
