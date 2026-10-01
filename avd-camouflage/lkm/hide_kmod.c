@@ -1483,7 +1483,10 @@ static int hwbp_len = 4;   /* 4 또는 8 */
 module_param(hwbp_len, int, 0644);
 static ulong hwbp_hits;
 module_param(hwbp_hits, ulong, 0444);
-static struct perf_event *hwbp_ev;
+static struct perf_event *hwbp_ev;              /* tid 무장(기존) */
+#define HWBP_NCPU 16
+static struct perf_event *hwbp_cpu_ev[HWBP_NCPU]; /* v4.25: 전-CPU 무장(pid=0 시) */
+static int hwbp_ncpu_armed;
 
 /* v4.24 §165: 406만 히트/런급 워치포인트는 printk 홍수로 링이 뭉개짐 — 샘플+꼬리버퍼 */
 #define HWBP_TAIL 512
@@ -1527,7 +1530,37 @@ static int hwbp_go_set(const char *val, const struct kernel_param *kp)
 		hwbp_ev = NULL;
 		hwbp_dump_tail();
 	}
-	if (!hwbp_pid || !hwbp_addr) {
+	{
+		int k;
+		for (k = 0; k < hwbp_ncpu_armed; k++)
+			if (hwbp_cpu_ev[k])
+				perf_event_release_kernel(hwbp_cpu_ev[k]);
+		memset(hwbp_cpu_ev, 0, sizeof(hwbp_cpu_ev));
+		hwbp_ncpu_armed = 0;
+	}
+	if (!hwbp_pid) {
+		/* v4.25 §166: pid=0 → 전-CPU 무장(스레드 로또 제거) — addr만 유효하면 */
+		int cpu;
+		if (!hwbp_addr) {
+			pr_info("hwbp: cleared\n");
+			return 0;
+		}
+		for_each_possible_cpu(cpu) {
+			if (hwbp_ncpu_armed >= HWBP_NCPU) break;
+			hwbp_cpu_ev[hwbp_ncpu_armed] =
+				perf_event_create_kernel_counter(&attr, cpu, NULL, hwbp_handler, NULL);
+			if (IS_ERR_OR_NULL(hwbp_cpu_ev[hwbp_ncpu_armed])) {
+				pr_err("hwbp: cpu%d create failed\n", cpu);
+				hwbp_cpu_ev[hwbp_ncpu_armed] = NULL;
+			} else {
+				perf_event_enable(hwbp_cpu_ev[hwbp_ncpu_armed]);
+				hwbp_ncpu_armed++;
+			}
+		}
+		pr_info("hwbp: ALLCPU armed at 0x%lx on %d cpus\n", hwbp_addr, hwbp_ncpu_armed);
+		return 0;
+	}
+	if (!hwbp_addr) {
 		pr_info("hwbp: cleared\n");
 		return 0;
 	}
