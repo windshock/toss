@@ -107,8 +107,9 @@
 
 ## 6. 기록 의무 (모든 실험 후 — 사용자가 안 물어도)
 
-1. FINDINGS.md 해당 § 추기 (양식: [P0 결론/P1 증거/P2 절차/P3 교훈])
-2. ARCHITECTURE.md 해당 행/증거수준 갱신 ([O]→[C] 등)
+1. FINDINGS.md 해당 § 추기 (양식: [P0 결론/P1 증거/P2 절차/P3 교훈]) — **증거 아카이브일 뿐**
+2. **ARCHITECTURE.md에 "현재 이해"로 반영(필수)** — 다이어그램·증거 원장·[O] 목록 갱신.
+   사용자는 FINDINGS 전문을 안 읽는다 — 구조는 항상 ARCHITECTURE만으로 완결 유지. (§5 계약)
 3. **스킬 갱신** — 새 법칙·함정·레시피가 생겼으면 `skills/`에도 반영 (§2 "살아있는 문서" 규칙: SKILL.md·references·scripts)
 4. 세션 종료 시: 루트에 새 `HANDOFF_S<n+1>_<날짜>.md` 작성, 구 핸드오프는 `toss-rasp/handoffs/`로
 5. git 커밋 — 정책: **텍스트(md/sh/py/js/java/c/h/json)만 추적**, 바이너리(apk/dex/so/dump/img/zip)는 .gitignore로 로컬 보존
