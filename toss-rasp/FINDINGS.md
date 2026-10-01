@@ -7138,3 +7138,16 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - UUID 전수 스윕(신규 시크릿 탐지): 전부 광고SDK(pangle/applovin/gaid/bugsnag/unity)·세션 식별자 — dword 신규
   시크릿은 미검출(응답 부재 런이라 정합). 부수 획득: internal-device-id(f8e26d64…=bugsnag device id), TNK sp_appKey,
   mbridge UA 등 텔레메트리 식별자 지도.
+
+[§155 추기14 — dinitialize 응답 저격 3차(DNS 복구 후): T+11.0s에서 dword 체인 실시간 관측]
+- **DNS 복구**: 에뮬 재부팅으로 해결(iptables 실험 잔여 락업). DNS 웨지는 부트 경계 이벤트 — 세션 중
+  네트워크 차단 실험 시에는 **부트 후반에 실행+재부팅으로 마무리**하는 운영 규칙 추가.
+- **T+10.7s(114MB)·T+11.0s 캡처(833파일 780MB)**: T+11.0s dalvik-main에서 **dword 체인 실시간 포착**:
+  `prepareSecret` → `resultType:"message_present"` — **이 시점에 dword 결과가 이미 확정**(logstore 조립 직전).
+  acquireNewSecretSuccess는 이 창에 미관측 → 시크릿 획득이 더 이르거나(T+10.6 네트워크 이전 캐시 사용).
+- **★#4 RAW 객체**: `getDwordResult` Java String이 `CueGroupExternalSyntheticLambda2.onExtraCallback` 바로 옆에
+  상주 — **dword 결과가 CueGroup 람다 콜백 체인(오케스트레이터)을 경유**하는 실증(§148 체인의 onExtraCallback = 이것).
+- **메시지 본문**: T+11.0s에도 별도 문자열로 존재하지 않음 — **dword "메시지"는 resultType 열거형(message_present)
+  자체가 전부이고, 별도 본문 문자열은 존재하지 않을 가능성**이 높아짐. 서버가 주는 것 = "메시지 있음/없음" 비트 +
+  dwordStore.xml의 유효창(정책 파라미터). 본문이 실재한다면 okio/TLS 계층에서만 존재(차기: TLS 언피닝 or
+  okio 버퍼 후킹).
