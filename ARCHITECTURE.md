@@ -90,6 +90,7 @@
 |---|---|
 | 구조 | 핸들러 1,969(COMPUTE 1,401/GOT 557/raw SVC 22) · 8.7KB JNI 시그니처 테이블 · dlopen/dlsym/dladdr 임포트 |
 | **관측된 동작(§154)** | ① .text 316페이지 raw-svc 무결성 스캔(+자기스택 교대 프로빙) ② **libea56 내부 fault-probing**(+0x69b38, 보호페이지 2건 — 1-2b) ③ T+3~10s **syscall 무흔적 메모리 검사** — 판정 입력의 실체 |
+| **★dl_iterate_phdr 채널 [C:§154 추기4]** | dlsym("dl_iterate_phdr") 3회로 **링커 콜백 기반 라이브러리 열거** — /proc 위장·dirent 은닉 무관하게 **§142 랜덤명 .so 전부 가시**. dlsym으로 하는 유일한 탐지 행위(4,104건 분석). 대응: dlsym 결과 위장 또는 랜덤명 안전화 [O] |
 | 입력면 전수 | 파일/프롭 어휘 100% 복호 완료 — 그러나 **그 체널 전부 클린화에도 판정 불변**(21채널 소거) → 판정 입력은 메모리 거주 채널 |
 | **바이너리/지도** | `tmp-artifacts/native-engine/` — libea56_live.so, gproj/(Ghidra toss5), dispatch_resolved.json, final_vocabulary.json |
 | 근거 | FINDINGS §149-1~5, §150, §154 |
@@ -136,7 +137,8 @@
 | §142 랜덤명 체인·§146 GL 반환필터 | 라이브러리명·GL 반환 | 게스트 dm-33(롤백 레시피 §153 P1) |
 | **잔여 미봉쇄** | ① /proc/self/fd readdir 도트파일명 ② .dynstr goldfish_*/emugl*(§151 P3 스크럽 설계) ③ Widevine L3/device_id ④ dmap 미등록 4채널 | — |
 
-**운영 불변식**: `pvm_block=0`(차단=복구 파괴·조기 자폭), `sc_log=0`(관측기 기본 OFF), frida-server 테스트 후 종료.
+**운영 불변식**: `pvm_block=0`(차단=ART 파손), `sc_log=0`(관측기 기본 OFF), frida-server 테스트 후 종료.
+**frida 운영법(§154 추기4)**: 서버 헬스체크는 settings 앱 attach로 먼저(토스 실패가 서버 문제인지 구별), 토스 주입 성공률 ~1/3-1/5 → 재시도 루프 필수. 도구: `tools/hook_safecopy_watch.js`(SafeCopy+pvm+dlsym 백트레이스).
 **현재 세계**: SM-S916N/egl=adreno/LKM=1/uid=10179(installer=vending) — 기준선 **T+11s [EMULATOR]**.
 
 ---
@@ -160,7 +162,9 @@
    (Ghidra toss5에서 +0x69b38 주변 디스어셈 + fault 시 x0/x16 덤프 강화)
 2. **hwbp watchpoint**(hwbp_pid/hwbp_addr 인프라) — T+3~10s 보이지 않는 판정 계산의 상태변수 감시
 3. §151 P3 **dynstr 런타임 스크럽** — 메모리 검사 입력의 정타 대응
-4. dmap 4채널 등록(10분 픽스) / 서버 403 지문(로컬 통과 후)
+4. **dl_iterate_phdr 채널 대응** — 가드가 링커 콜백으로 랜덤명 .so 열거(파일 위장 무효).
+   후보: LKM으로 dlsym("dl_iterate_phdr") 반환값 위장, 또는 SafeCopy식 유저랜더 콜백 필터 — 설계 필요
+5. dmap 4채널 등록(10분 픽스) / 서버 403 지문(로컬 통과 후)
 5. ~~fault pc=0x71d6f534 모듈 특정~~ → [R] ART 정상 동작으로 닫힘 / ~~SafeCopy 호출자~~ → ART 내부 경로로 닫힘
 
 **REFUTED / 제거**
