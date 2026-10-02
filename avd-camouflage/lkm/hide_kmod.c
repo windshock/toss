@@ -1662,6 +1662,8 @@ module_param(pagewatch_addr, ulong, 0644);
 static ulong pagewatch_hits;
 module_param(pagewatch_hits, ulong, 0444);
 static ulong pwtail_pc[256];
+/* v4.29 §173: 복호기 문맥 포획 — pc + 키 레지스터(x9,x10,x11,x12,x13,x16,x19) */
+static ulong pwtail_r[256][8];
 static int pwtail_idx, pwtail_wrapped;
 
 static struct mm_struct *pw_mm;
@@ -1734,7 +1736,9 @@ static int pagewatch_arm(void)
 			pr_info("PW-TAIL begin n=%d total=%lu\n", n, pagewatch_hits);
 			for (i = 0; i < n; i++) {
 				int k = pwtail_wrapped ? (pwtail_idx + i) % 256 : i;
-				pr_info("PW-T pc=0x%lx\n", pwtail_pc[k]);
+				pr_info("PW-T pc=0x%lx x9=0x%lx x10=0x%lx x11=0x%lx x12=0x%lx x13=0x%lx x16=0x%lx x19=0x%lx x8=0x%lx\n",
+					pwtail_pc[k], pwtail_r[k][0], pwtail_r[k][1], pwtail_r[k][2],
+					pwtail_r[k][3], pwtail_r[k][4], pwtail_r[k][5], pwtail_r[k][6], pwtail_r[k][7]);
 			}
 			pr_info("PW-TAIL end\n");
 			pwtail_idx = 0; pwtail_wrapped = 0;
@@ -1802,7 +1806,39 @@ static int wpp_pre(struct kprobe *p, struct pt_regs *kregs)
 		return 0;
 	u = task_pt_regs(current);
 	pagewatch_hits++;
-	pwtail_pc[pwtail_idx] = u ? u->pc : 0;
+	if (u) {
+		pwtail_pc[pwtail_idx] = u->pc;
+		/* v4.29c §175: K2 표 내용 캡처 — 첫 폴트에서 x8/x19 유저메모리 64B (probe_user_read,
+		 * kprobe 안전 유저 읽기 — 페이지는 복호기가 방금 읽어 present 상태) */
+		if (pagewatch_hits == 1 && u->regs[8]) {
+			unsigned char kb[64];
+			if (!copy_from_user_nofault(kb, (const void __user *)u->regs[8], 64)) {
+				int q;
+				pr_info("PW-K2 x8=0x%llx:", (unsigned long long)u->regs[8]);
+				for (q = 0; q < 64; q++) pr_cont(" %02x", kb[q]);
+				pr_cont("\n");
+			} else pr_info("PW-K2 x8 read FAILED\n");
+			if (u->regs[19]) {
+				unsigned char pb[64];
+				if (!copy_from_user_nofault(pb, (const void __user *)u->regs[19], 64)) {
+					int q;
+					pr_info("PW-K2 x19=0x%llx:", (unsigned long long)u->regs[19]);
+					for (q = 0; q < 64; q++) pr_cont(" %02x", pb[q]);
+					pr_cont("\n");
+				} else pr_info("PW-K2 x19 read FAILED\n");
+			}
+		}
+		pwtail_r[pwtail_idx][0] = u->regs[9];
+		pwtail_r[pwtail_idx][1] = u->regs[10];
+		pwtail_r[pwtail_idx][2] = u->regs[11];
+		pwtail_r[pwtail_idx][3] = u->regs[12];
+		pwtail_r[pwtail_idx][4] = u->regs[13];
+		pwtail_r[pwtail_idx][5] = u->regs[16];
+		pwtail_r[pwtail_idx][6] = u->regs[19];
+		pwtail_r[pwtail_idx][7] = u->regs[8];   /* v4.29b: x8(키2 테이블 베이스) */
+	} else {
+		pwtail_pc[pwtail_idx] = 0;
+	}
 	if (++pwtail_idx >= 256) { pwtail_idx = 0; pwtail_wrapped = 1; }
 	if ((pagewatch_hits & 0x3F) == 1)
 		pr_info("PW #%lu pc=0x%lx comm=%s tid=%d\n", pagewatch_hits,
