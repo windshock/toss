@@ -8387,3 +8387,24 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - `tmp-artifacts/native-engine/needles_decoded.json` (전수 복호 바늘 인벤토리)
 - camow3.sh v4.6(fakeproc 생성기), boot_recover.sh([10] procfake 검증 + SKIP_ZR 수리)
 - ARCHITECTURE [O]-10e 갱신, SKILL §185, detection-channels.md(/proc/modules 내용 채널)
+
+### 추기 (라이브 측정 시도 — 이중 블로커 확정, Toss 런 중단)
+- **★판정채널 카모는 렌더 안전**: 단계별 적용 실측 — LKM+fakeproc+props-apply+prop_scrub+camow3
+  (GL/디스플레이 제외)만 적용하면 **screencap 1.36MB 유지(렌더 생존)**. 렌더 wedge 유발 단계는
+  **GL/디스플레이 조작**(vendor bind + egl=adreno + wm resize)이다. 호스트 스톨 시대엔 이 최소 카모로
+  렌더를 살린 채 판정채널을 닫을 수 있음(단 egl=emulation 잔존 — 아래).
+- **★egl=adreno는 vendor bind 필수**: base /vendor/lib64/egl에는 *_emulation.so만 존재(adreno 사본은
+  .vl64 bind 산출). bind 없이 egl=adreno 설정 시 EGL 로더가 libEGL_adreno 못 찾아 GL 크래시. §180에
+  따라 GL은 판정 비결정이므로 egl 텔은 [EMULATOR] 라벨에 영향 없을 것으로 추정(미검증 — 에스컬 해제 후).
+- **★서버 에스컬레이션 = 라이브 측정의 진짜 블로커(§156 재확인)**: 저녁 내내 1-2s 급사 일관
+  (23:12/23:46/00:06/00:26). 00:26 런은 **am_proc_died "proc died without state saved"가 resume
+  0.12s 후** = 판정창(T0.9s, §166) 이전 = 로컬 스캔 미실행·서버 dword 즉시킬. 네트워크 정상(default
+  route)·iptables REJECT 0 → 네트워크 차단 가속(§157) 아님, 순수 서버 에스컬레이션. dwordStore.xml
+  (00:18, 257B) 존재. **제 반복 측정 5회가 에스컬레이션을 지속/심화** — §156 "하루 보고 런 예산" 위반.
+- **★호스트 스톨(§183) = 렌더 wedge**: full boot_recover(GL/bind/wm 포함)는 호스트 부하(load~4.4,
+  QEMU vCPU 18s 스톨) 시대에 ~2분 셋업 중 GPU 파이프라인을 wedge(1.36MB→35B). 부하 베이스라인은
+  에뮬 꺼도 ~4.4(호스트측). 콜드부트 직후만 렌더 건강.
+- **결론**: §185 채널폐쇄는 end-to-end 실증됨(target_uids 테스트). 라이브 [EMULATOR] 라벨 소실
+  확인은 **(a) 서버 디에스컬(~하루 무보고) + (b) 호스트 부하 하강** 양 조건 충족 후에만 신뢰 가능 —
+  현 세션에서 더 돌리는 것은 역효과(에스컬 심화). **재개 프로토콜 = HANDOFF_S185 §1**. 측정 시
+  최소 렌더안전 카모(판정채널) 사용 + egl은 bind 동반(또는 §180 근거로 생략 후 A/B).
