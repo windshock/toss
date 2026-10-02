@@ -499,3 +499,9 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   바이너리(dynscrub 패턴).
 - **법칙: qemu 호스트 스레드 스톨 부트에서 wlan0 디폴트 루트(10.0.2.2)가 유실된다** — 이상 급사 시
   `ip route` 점검 먼저(§157 가속 위장). eth0 DOWN은 이 AVD 정상(wifi 세계).
+
+## §184 성과 요약 (2026-10-02 심야5) + 신규 법칙
+- **★법칙: 이 환경의 magisk은 스텁 su — /data/adb/service.d 스크립트는 미실행** — 부트 영속화는
+  boot_recover 스텝으로만([6b3]: virtio_snd rmmod + wlan0 디폴트 루트 복구 통합).
+- **법칙: 백그라운드 자율 실험에 넣기 전 스크립트 재열람** — 직접 테스트한 경로와 스크립트 경로의
+  결함 차이(v1 heredoc-stdin)가 오케스트레이터 입력을 오염시킬 뻔함.
