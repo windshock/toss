@@ -5,8 +5,9 @@ export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 ADB=adb
 LOG=/tmp/decisive_s184.log
 echo "=== orchestrator start $(date) ===" >> $LOG
-# 자정까지 대기 (최대 70분)
-while [ $(date +%H%M) -lt 5 ]; do sleep 60; done
+# 다음 자정 00:05까지 대기 (에포크 계산 — %H%M 문자열 비교는 23xx에서 오동작)
+TARGET=$(python3 -c "import datetime,sys; n=datetime.datetime.now(); t=n.replace(hour=0,minute=5,second=0); t+= datetime.timedelta(days=1); print(int(t.timestamp()))")
+while [ $(date +%s) -lt $TARGET ]; do sleep 60; done
 echo "=== midnight passed, probing era $(date) ===" >> $LOG
 ATTEMPT=0
 while [ $ATTEMPT -lt 4 ]; do
