@@ -75,6 +75,9 @@ dsh "su 0 sh /data/local/tmp/.prop_scrub.sh"
 echo "[6b2] 부활 에뮬 프로퍼티 재삭제 (§163: init이 부트 후반에 svc/boottime 재기입 — 1회 스크럽 무력화. E6-1 실측: 이 4건 삭제는 fail-closed 유발 안함)"
 dsh "su 0 sh -c '/data/local/tmp/magisk resetprop --delete init.svc.ranchu-setup; /data/local/tmp/magisk resetprop --delete init.svc_debug_pid.ranchu-setup; /data/local/tmp/magisk resetprop --delete ro.boottime.ranchu-setup; /data/local/tmp/magisk resetprop --delete vendor.qemu.dev.bootcomplete; echo resurrected=\$(getprop | grep -ci qemu)'"
 
+echo "[6b3] virtio-snd 제거 + 네트워크 라우트 자동복구 (§183: asound 텔 폐쇄 — magisk service.d는 스텁이라 미실행, 여기서 처리. qemu 호스트 스톨 부트 시 wlan0 디폴트 루트 유실 → §157 가속 초급사 위장)"
+dsh "su 0 sh -c 'rmmod virtio_snd 2>/dev/null; echo asound=\$(cat /proc/asound/cards 2>/dev/null | head -1); ip route | grep -q default || ip route add default via 10.0.2.2 dev wlan0 2>/dev/null; ip route | grep -c default'"
+
 echo "[6c] 에뮬 전용 패키지 은닉 (§147: 패키지 레지스트리의 goldfish/EmulationPixel/EmulatorTalkBack — 실기기 부재 = 즉시 폭로)"
 dsh 'for p in $(pm list packages | sed s/package:// | grep -iE "emulation|goldfish|talkbackoverlay"); do pm hide $p >/dev/null 2>&1; done; echo hidden=$(pm list packages | grep -ciE "emulation|goldfish|talkbackoverlay")'
 
