@@ -1,4 +1,4 @@
-# tmp-artifacts 인덱스 — 아키텍처 정렬판 (2026-10-01 §153)
+# tmp-artifacts 인덱스 — 아키텍처 정렬판 (2026-10-02 §179)
 
 > **최상위 지도는 저장소 루트 `ARCHITECTURE.md`** — 이곳은 그 박스별 실물 자산 배치.
 > 같은 날 2차 재구성(유형별→아키텍처별). 대응: `jadx/`→`target-app/jadx-app/`·`guard-orchestrator/`,
@@ -22,3 +22,11 @@
 | `tools/launch_stats_bash3.sh` | 검증 도구 | N런 사망 분류 러너 (macOS bash3 호환) |
 | `countermeasures/gl/pristine_egl_s153/lib64/` | 대응 스택 | 순정 GL 11종(vendor.img 직출, md5: FINDINGS §153 P1) — 17차 GL 세계 재현 레시피 재료 |
 | `countermeasures/guest/` | 대응 스택 | §151 system.img 수술 관련 게스트 오버레이 |
+| `native-engine/decode_static2.py` | 〃 | ★§178 확정 레코드 정적 디코더 (14패스, 바이트 100% 검증) |
+| `native-engine/emu_jol_decrypt.py` | 〃 | ★§178 JNI blob 재현기 (SKIP_AFED8=1, 5,552B 100%) |
+| `native-engine/emu_run_fn.py` | 〃 | 임의 함수 Unicorn 실행기+rw 검증 (once-함수 0x441a4 검증용) |
+| `native-engine/emu_decrypt·decode_static(구)·emu_afed8.py` | 〃 | §172-176 역사 도구 (afed8 스캔기·재생 하네스) |
+| `tools/dynstr_surgery.py` | 대응 스택 | ★§179 GL dynstr 개명 수술 (버킷보존+gnu_hash 재계산 — 법칙 스킬 §179) |
+| `tools/pw_blob2.sh·blobpoll2.sh·pw_blob.sh` | 검증 도구 | §179 blob 트리프와이어(rw-p tail -1 함정 수정)·고주소 폴링 |
+| `tools/guard_capture·guard_probe_dump·gdt_*·child_forensics·hwbp_*` | 검증 도구 | §154-166 관측 도구군 |
+| `tools/hook_*.js` (vdso/clock/rw_diff/afed8_peek/dynstr_scrub 등) | 검증 도구 | §157-172 frida 관찰 스크립트군 |
