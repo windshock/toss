@@ -327,5 +327,10 @@ AbsAppGuard (hidden DEX "o.createFromParcel") — abstract base
   도구: `tmp-artifacts/native-engine/decode_static2.py`, `emu_run_fn.py`(임의 함수 Unicorn 실행기).
 - **포획 상태 해석법**: 트리프와이어로 잡은 복호기 문맥(x9/x10/x12/x11)은 **1패스 직후** 상태 —
   최종 평문과 비교하면 불일치가 정상. 캡처값 재현으로 알고리즘을 확증하는 용법이 정석(§178).
-- **JNI blob(0x184110+ 5.6KB)은 별도 패밀리**: family-1 알고리즘 아님, 매핑 후 ≤2ms 로드타임 복호
-  (afed8·JNI_OnLoad 타임아웃 경로 밖 — Unicorn 29.2M블록으로 소거). 공략 설계는 FINDINGS §178-6.
+- **★JNI blob(0x184110..0x1856c0, 5.6KB)도 완전 해독 [§178-추가]**: JNI_OnLoad **대기-타임아웃
+  이후 경로**가 복호기 — 기존 에뮬의 "done"은 카운트 소진이었고 해당 경로 미실행이었음(블라인드).
+  모킹 보강(VM 이중포인터/GetEnv→JNICTX/스텁슬롯=CBRET포인터) + 대기 60회차 강제탈출로
+  **파일만으로 5,552B 라이브 100% 재현**. 도구 `tmp-artifacts/native-engine/emu_jol_decrypt.py`.
+  → 네이티브 데이터층(레코드+blob) 난독화 전면 완결.
+- **법칙: emu_start 반환 원인 구분** — 정상복귀/타임아웃/카운트소진을 확인하고, 소진 시 트레이스
+  꼬리로 미실행 경로 잔존 여부 확인("done"은 완주 증거 아님).
