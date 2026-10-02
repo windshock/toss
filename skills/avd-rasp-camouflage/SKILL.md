@@ -442,3 +442,23 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   돌렸으면 익일 디에스컬레이션 확인 후 실험할 것.
 - **법칙**: boot_recover [0b]이 *.tar 백업을 지움(수정됨) · stop;start 재시작 크래시≠첫부팅(검증은 풀리부트) ·
   vendor_bind build는 마운트 없는 부트에서만 · [11]은 SKIP_ZR=1로 스킵 가능.
+
+## §180 성과 요약 (2026-10-02 심야) + 신규 법칙
+- **★GL 무결성 핀 = 매핑 lib의 dynstr 영역**: 5종 통제실험 — 심볼명 개명(해시 보존 포함)만으로 2s
+  fail-closed 급사, .rodata/build-id/미매핑 파일은 자유. 가드는 /proc/self/maps(34회)+디렉터리 열거로
+  자기 GL 스택 심볼명을 기대값 대조(§154 법칙의 GL판 — 검사 실패 자체가 변조 신호). GL 텔 중립화로는
+  판정 불변(판정 결정 입력 아님) — GL 채널 우회는 런타임 타이밍(LKM copy_to_user 창)만 남음.
+- **★ELF 수술 도구 필수 구조(dynstr_surgery.py v2)**: (1) bionic bloom = 단일 워드 `bloom[(h>>6)%size]`에
+  `(h%64)|((h>>shift)%64)` 두 비트 모두(워드를 고해시로 나누면 로더가 존재 심볼 거부 → EGL Loader 어보트
+  → 시스템 크래시); (2) 다중정의 심볼은 전 정의 lib 버킷 동시 보존(조인트 탐색) — 이 스택은 qemu_pipe*
+  등을 lib별 중복 내장; (3) 수술 후 전 정의심볼 bionic 룩업 시뮬레이션 게이트(1건 실패 시 출력 거부).
+  독립 검증기 tmp-artifacts/tools/check_gnu_hash.py. NOREHASH=1 모드(이름만·gnu.hash 원본) 지원.
+- **★법칙: "부팅 안정"은 마운트 이후 로드 검증이 아니다** — bind 마운트 이후 최초 EGL 초기화 프로세스가
+  진짜 로드 시험(SF는 프리마운트 로드로 결함을 숨김).
+- **★법칙: /proc/mounts의 bind는 소스 경로가 아니라 장치명 표시**(dm-33=/data) — bind 판정은 grep이
+  아니라 뷰 내용(impl-qti 등 뷰 전용 파일 가시)으로.
+- **★법칙: .vl64 수술·복원은 마운트 비활성(클린부트) 경계에서만** — 마운트 활성 상태 build는 자기복사
+  0바이트화(디렉터리 bind = 소스·타깃 동일 inode). 3중 가드(vendor_bind build inode 동일성 거부·마운트
+  전 센티넬 크기·boot_recover [3] 바이트 검증)로 상시 방지.
+- **법칙: 크래시 캐스케이드는 첫 사망 타임라인으로 분리** — 앱 급사 → HAL 재시작 폭풍(gralloc-mapper
+  missing 등)의 2차 어보트를 원인으로 오독 금지.

@@ -41,8 +41,12 @@ echo "[3] vendor bind mount (+검증 재시도)"
 for AT in 1 2 3; do
   bash "$SKILL_DIR/scripts/vendor_bind_setup.sh" mount 2>&1 | tail -1
   Q=$(dsh "ls /vendor/lib64/hw/ 2>/dev/null | grep -c impl-qti" | tr -d '\r')
-  [ "$Q" = "1" ] && break
-  echo "  bind 미가시(attempt $AT) — 8s 후 재시도"; sleep 8
+  # §180 가드: 이름 카운트만으론 0바이트 트리를 못 잡음 — 바이트 크기로 뷰 무결성 확인
+  Z=$(dsh "stat -c %s /vendor/lib64/egl/libEGL_adreno.so 2>/dev/null" | tr -d '\r')
+  if [ "$Q" = "1" ] && [ "${Z:-0}" -gt 50000 ]; then
+    echo "  bind 검증 OK (impl-qti 가시 + libEGL_adreno ${Z}B)"; break
+  fi
+  echo "  bind 미가시/무결성 실패(attempt $AT, Q=$Q Z=${Z:-x}B) — 8s 후 재시도"; sleep 8
 done
 
 echo "[4] hide_kmod insmod (uids=$UIDS)"
@@ -69,7 +73,7 @@ adb push "$SKILL_DIR/scripts/prop_area_scrub.sh" /data/local/tmp/.prop_scrub.sh 
 dsh "su 0 sh /data/local/tmp/.prop_scrub.sh"
 
 echo "[6b2] 부활 에뮬 프로퍼티 재삭제 (§163: init이 부트 후반에 svc/boottime 재기입 — 1회 스크럽 무력화. E6-1 실측: 이 4건 삭제는 fail-closed 유발 안함)"
-dsh "su 0 sh -c '/data/local/tmp/magisk resetprop --delete init.svc.ranchu-setup; /data/local/tmp/magisk resetprop --delete init.svc_debug_pid.ranchu-setup; /data/local/tmp/magisk resetprop --delete ro.boottime.ranchu-setup; /data/local/tmp/magisk resetprop --delete vendor.qemu.dev.bootcomplete; echo resurrected=\$(getprop | grep -ciE "qemu|ranchu")'"
+dsh "su 0 sh -c '/data/local/tmp/magisk resetprop --delete init.svc.ranchu-setup; /data/local/tmp/magisk resetprop --delete init.svc_debug_pid.ranchu-setup; /data/local/tmp/magisk resetprop --delete ro.boottime.ranchu-setup; /data/local/tmp/magisk resetprop --delete vendor.qemu.dev.bootcomplete; echo resurrected=\$(getprop | grep -ci qemu)'"
 
 echo "[6c] 에뮬 전용 패키지 은닉 (§147: 패키지 레지스트리의 goldfish/EmulationPixel/EmulatorTalkBack — 실기기 부재 = 즉시 폭로)"
 dsh 'for p in $(pm list packages | sed s/package:// | grep -iE "emulation|goldfish|talkbackoverlay"); do pm hide $p >/dev/null 2>&1; done; echo hidden=$(pm list packages | grep -ciE "emulation|goldfish|talkbackoverlay")'

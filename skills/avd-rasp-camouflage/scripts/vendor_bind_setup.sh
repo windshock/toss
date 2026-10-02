@@ -40,11 +40,24 @@ ensure_root() {
 
 do_build() {
   ensure_root
+  # §180 가드: bind 마운트 활성 상태의 build 금지 — /proc/mounts grep은 LKM 은닉으로
+  # 거짓음성 나므로 inode 동일성으로 판정 (마운트 중이면 /vendor/lib64 == $VDIR inode)
+  VI=$($ADB shell "stat -c %d:%i $VDIR 2>/dev/null" | tr -d '\r')
+  MI=$($ADB shell "stat -c %d:%i /vendor/lib64 2>/dev/null" | tr -d '\r')
+  if [ -n "$VI" ] && [ "$VI" = "$MI" ]; then
+    die "build 금지: bind 마운트 활성($VI) — §179 함정(자기복사 0바이트화). 클린 부트에서 실행"
+  fi
   say "사본 생성 ($VDIR)"
   $ADB shell "rm -rf $VDIR; mkdir -p $VDIR; cp -R /vendor/lib64/. $VDIR/ 2>/dev/null"
   # 불완전 복사 방어 (Enforcing 상태 cp가 조용히 실패하는 함정 — 실측)
   N=$($ADB shell "ls $VDIR/*.so | wc -l" | tr -d '\r')
   [ "${N:-0}" -ge 150 ] || die "사본 .so가 ${N}개뿐 — cp 불완전(Permissive 확인)"
+  # §180 가드: 0바이트 사본 방어 — 파일"수" 검사는 0바이트 트리를 통과시킴(이름만 세므로).
+  # 대표 파일 바이트수로 무결성 확인 (2026-10-02 실측: 0바이트 트리 mount → 오디오HAL 크래시루프)
+  S1=$($ADB shell "stat -c %s $VDIR/hw/audio.primary.default.so 2>/dev/null" | tr -d '\r')
+  S2=$($ADB shell "stat -c %s $VDIR/egl/libEGL_emulation.so 2>/dev/null" | tr -d '\r')
+  [ "${S1:-0}" -gt 10000 ] && [ "${S2:-0}" -gt 50000 ] || \
+    die "사본이 0바이트(S1=${S1:-x} S2=${S2:-x}) — cp 실패. 마운트/SELinux 상태 재확인 후 재build"
   $ADB shell "cd $VDIR
     mv hw/android.hardware.graphics.mapper@3.0-impl-ranchu.so hw/android.hardware.graphics.mapper@3.0-impl-qti.so
     mv hw/vulkan.ranchu.so hw/vulkan.qcom.so
@@ -81,6 +94,9 @@ do_mount() {
   [ -d /tmp/x ] 2>/dev/null || true
   sh_retry "test -f $VDIR/egl/libEGL_adreno.so && test -f $VDIR/hw/vulkan.qcom.so" \
     || die "사본 없음 — 먼저 build"
+  # §180 가드: 0바이트 트리 mount 금지 — vendor 뷰 전체 파탄(오디오HAL 크래시루프)의 증폭 방지
+  SZ=$($ADB shell "stat -c %s $VDIR/hw/audio.primary.default.so 2>/dev/null" | tr -d '\r')
+  [ "${SZ:-0}" -gt 10000 ] || die ".vl64 무결성 실패(0바이트 트리) — mount 중단, 클린부트에서 build 재실행"
   sh_retry "mount -o bind $VDIR /vendor/lib64 && echo BIND_OK"
 }
 

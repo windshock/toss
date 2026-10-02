@@ -8067,3 +8067,76 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
    (마운트된 상태 rm -rf .vl64 = 소스 자체 삭제). ④ [11] zygote 리프레시에 SKIP_ZR=1 가드 추가.
 10. 자산: dynstr_surgery.py(도구), /tmp/vl64_new2(수술판 26파일 — .vl64에 GL웹 9종 배포 레시피
     FINDINGS 본문), system.img.pre_s178_backup, session179 캡처본(판정창 힙 분석 원본 /tmp/vw).
+
+## §180 (2026-10-02 심야) — GL 채널 결정실험 완료: dynstr 핀·fail-closed 확정 + dynstr_surgery 3결함 수리 + .vl64 0바이트 사고
+
+### P0 결론
+1. **디에스컬레이션 확인**: 세션 재개 직후 클린 1런 = 12s [EMULATOR] — §156 에스컬레이션(2s 시대) 해제.
+   결정실험 수행 조건 성립.
+2. **dynstr_surgery.py v1의 3결함 발견·수리**(v2):
+   - (a) **bionic bloom 워드 인덱싱 위반**: GNU hash bloom 검사는 단일 워드 `bloom[(h>>6)%size]`에
+     `(h%64)|((h>>shift)%64)` 두 비트가 모두 있어야 한다. v1은 두번째 비트를 고해시 기준 워드에 기입 →
+     로더가 존재하는 심볼을 bloom 거부 → `cannot locate symbol "_ZN13egl_surface_tD2Ev"` →
+     `couldn't find an OpenGL ES implementation` EGL Loader 어보트 → **시스템 전역 크래시 캐스케이드**
+     (settings/systemui RenderThread → system_server 사망). v1의 "부팅 안정" 검증은 마운트 이후
+     EGL 초기화가 없어 이 결함을 못 본 것(SF는 프리마운트 로드).
+   - (b) **전역 이름표가 다중정의 심볼의 버킷 파괴**: 같은 심볼이 서로 다른 nb(31/59/113…)의 여러 lib에
+     정의되면(이 GL 스택은 qemu_pipe* 등을 정적으로 중복 내장) 한 lib에만 맞춘 이름이 다른 lib에서
+     버킷 이탈 → chain 도달 불능. v2 = 모든 정의 lib 버킷 동시 보존(조인트 탐색), 실패 시 원명 유지.
+   - (c) **검증게이트 부재** → v2는 수술 후 전 정의심볼 bionic 룩업 시뮬레이션(bloom+chain+이름)으로
+     1건 실패 시 출력 거부. 독립 검증기 `tmp-artifacts/tools/check_gnu_hash.py`(bloom 단일워드 모드).
+   - v2 산출: 11종 전부 룩업 0실패(≈3.5만 심볼), 게이트 통과. NOREHASH 모드(이름만·해시 원본) 추가.
+3. **★GL 무결성 검사의 정체 = 매핑 GL lib의 dynstr(심볼명) 핀 [C]** — 5종 통제실험(전부 동일 시대, 클린
+   대조 13s 라벨):
+   | 배포 | 변형 | 결과 |
+   |---|---|---|
+   | 11종 dynstr 수술 | 이름+해시 | **2s 무라벨 급사** |
+   | 11종 이름만 | 해시 원본 | **2s 급사(라벨 [EMULATOR] 관측 — 판정은 계산됨, 죽음이 빨라 경합)** |
+   | 미매핑 3종 수술 | 전체 | **완전 무해 12s [EMULATOR]** |
+   | libEGL_adreno build-id 2B 반전 | note 영역 | **13s 정상** |
+   | .rodata 스크럽 4종(adreno/CodecCommon/glcommon/vulkanqti, 16토큰) | .rodata만 | **11s 정상·판정 불변** |
+   해석: 가드는 /proc/self/maps(런당 34회)로 자기 GL 스택을 식별하고 **심볼명을 기대값과 대조** —
+   불일치(개명) = 변조 = fail-closed 급사(§154 "검사 실패 자체가 변조 신호"의 GL판). .rodata·build-id·
+   미매핑 파일은 감지 대상 밖. 크래시 캐스케이드(audioserver SIGKILL·"gralloc-mapper is missing")는
+   급사 후 재시작 폭풍의 2차 현상 — 앱 사망(21:30:17.5)이 audioserver 킬(19.15)·렌더 어보트(31)보다 선행.
+4. **★GL 텔레텔은 판정 결정적이지 않음 [C]**: .rodata 스크럽 생존 런도 [EMULATOR] 불변, 이름만 런도
+   [EMULATOR] 라벨 — **판정의 결정 입력은 GL 메모리 텔 외부**(§162 프로퍼티 원시영역 순회 최유력,
+   §171 asound/powerclip 잔여). GL 채널은 "중립화해도 소용없고, 하려면 핀 우회가 필요"한 채널로 재분류.
+5. **부수 사고·복구**: 세션 재개 시 .vl64 전 파일 0바이트(20:29, 마운트 활성 상태 build 자기복사 추정 —
+   cp src→dst 동일 inode truncate) + 오디오HAL 크래시루프 + am start 불가. 실제 vendor 파티션 무결 확인,
+   /tmp/vl64_all 정본 230파일 md5 100% 복원, build-리터럴-패치 재적용, 3중 가드 스크립트 수리로 마무리.
+
+### P1 증거
+- 실험 매트릭스 5런 + 클린 대조 2런(12/13s [EMULATOR]) — 전부 run_measure 동일 조건.
+- tombstone_27/28(v1 수술 EGL 어보트 전문), logcat `cannot locate symbol`/`load_driver ... unknown`
+  라인, faultdumpNZ 8-폴트가 수술·클린 양쪽 동일(가드 정상 안티분석 점프 — 사망 원인 아님).
+- ftrace(getname:ustring): 앱이 /proc/self/maps ×34, /vendor/lib64(+egl+hw+vndk-sp) 디렉터리 열거
+  (26/24/24회) — .so 파일 개별 open 없음 = 검사 입력은 매핑/디렉터리, 파일 해시 아님(build-id 반전
+  생존과 정합).
+- 가드 심볼 임포터 분석: 수술 대상 토큰심볼의 외부(배포집 밖) 임포터 **0건** — 중복 내장 구조라
+  라이브러리별 독립 개명이 안전(조인트 제약의 전제).
+- .vl64 사고: 전 파일 d41d8cd9(빈 md5), mtime 20:29:28-29(당시 인스턴스 마운트 활성), 실 vendor
+  dm-4 무결(재부팅 후 libEGL_emulation 89,408B 등).
+
+### P2 절차
+1. 사고 수습: emu kill → 콜드부트 → 프리마운트 실 vendor 무결 확인 → build(가드판) → patch_bind_
+   egl_literals 재적용 → boot_recover → 오디오/GL 건강 확인(크래시 0, GLES=Adreno 740).
+2. .vl64 정본 복원: /tmp/vl64_all 푸시 → md5 230/230 일치 확인 → 11종 수술 파일 배포(md5 대조).
+3. 결정실험 순서: (i) 수술 11종 재부트+부트리커버 → 1런(2s 무라벨) (ii) 인과 분리를 위한 클린 복원
+   대조 13s (iii) EGL 크래시 원인 규명(check_gnu_hash로 v1 bloom/버킷 결함 실증) → v2 재생성·게이트
+   통과 → 재배포 → 여전히 2s(=로더 문제 아님, 가드 감지) (iv) 미매핑 3종 판별 → 무해 (v) build-id
+   반전 → 무해 (vi) rodata 스크럽 → 생존·판정 불변 (vii) NOREHASH(이름만) → 급사(라벨 관측).
+4. 세션말: 정본 복원 + 기준선 11s [EMULATOR] 확인(환드오프용).
+
+### P3 교훈
+- **/proc/mounts의 bind 마운트는 소스 경로가 아니라 장치명을 표시한다**(dm-33=/data) — "grep vl64
+  /proc/mounts"로 bind 여부 판정하면 거짓음성. 감식은 mountinfo 또는 뷰 내용(impl-qti 가시)으로.
+- **검증게이트 없는 이진 수술 도구 금지**: 게이트(bionic 룩업 시뮬레이션)가 v1의 결함을 즉시 잡았다.
+  "부팅된다"는 검증이 아니다 — 마운트 이후 로드 경로(EGL 초기화 앱)까지 가봐야 한다.
+- **크래시 캐스케이드는 첫 사망 타임라인으로 분리**: 앱 급사(17.5s) → audioserver 킬(19.1s) → 렌더
+  어보트(31s) — 2차 현상(gralloc-mapper missing 등)을 원인으로 오독하지 말 것.
+- **zygote 상속 매핑 주의**: 프리마운트 로드된 lib(enc 4종)는 앱 maps에 남지만 .vl64 뷰 밖 파일 —
+  파일 수술로 못 고침. 매핑 실험 설계 시 "뷰 내 파일인가" 확인 필수.
+- **fail-closed 검사의 우회는 '검사 통과 후 변경'(타이밍) 아니면 '검사면 교체'(관측 개입)뿐** —
+  검사 입력 자체를 지우는 접근(파일 수술)은 사망. 다음 설계는 LKM copy_to_user 타이밍 창.
+- macOS `md5 -q -r`은 -q가 파일명을 지운다(해시만 출력) — 비교 스크립트는 `md5 -r` 단독 사용.
