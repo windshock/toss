@@ -15,7 +15,7 @@ export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 dsh() { adb shell "$@"; }
 
 echo "[0b] 디스크 여유 점검 (§175: ENOSPC가 가짜 '드리프트' 조기사멸을 냄 — 덤프 누적 방지)"
-dsh "su 0 sh -c 'df -h /data | tail -1; U=\$(df /data | tail -1 | awk \"{print \\\\$5}\" | tr -d %); [ \"\$U\" -gt 90 ] && { rm -rf /data/local/tmp/hd /data/local/tmp/dmp2 /data/local/tmp/heap* /data/local/tmp/rf_* /data/local/tmp/*.tar 2>/dev/null; sync; echo \"  [!] 디스크 정리 완료\"; } || echo \"  OK(\${U}%)\"" 2>/dev/null || echo "  (root 전 — [1] 후 재확인)"
+dsh "su 0 sh -c 'df -h /data | tail -1; rm -rf /data/local/tmp/hd /data/local/tmp/dmp2 /data/local/tmp/heap* /data/local/tmp/rf_* /data/local/tmp/nh_*.bin /data/local/tmp/vw_*.bin /data/local/tmp/vr_*.bin /data/local/tmp/bp 2>/dev/null; sync; df -h /data | tail -1'" 2>/dev/null || echo "  (root 전 — [1] 후 재확인)"
 
 echo "[1] 부팅 완료 대기 + adb root"
 for i in $(seq 1 90); do
@@ -124,6 +124,7 @@ printf "  model=%s egl=%s qemu누수=%s density=%s enforce=%s LKM=%s bind(qti)=%
   "$(dsh "strings /vendor/lib64/egl/libEGL_adreno.so 2>/dev/null | grep -c emulation")"
 echo "[완료] 기대값: model=SM-S916N egl=adreno qemu누수=0 450 Permissive LKM=1 bind=1 lit=0"
 
+if [ -z "$SKIP_ZR" ]; then
 echo "[11] zygote 리프레시 (§151: 부팅직후 zygote가 Google/sdk_gphone64_arm64로 Build.*를 동결 — [2c] 조기 props가 끝났어도 bind의 stop;start 타이밍에 따라 재동결 가능. 모든 props/bind 완료 후 프레임워크 재시작으로 Build 갱신 + GL 셀렉터 재적용)"
 dsh "stop; start"
 for i in $(seq 1 40); do sleep 3; B=$(dsh getprop sys.boot_completed 2>/dev/null | tr -d '\r'); [ "$B" = "1" ] && break; done
@@ -132,3 +133,4 @@ dsh "/data/local/tmp/magisk resetprop ro.hardware.egl adreno" >/dev/null 2>&1
 dsh "/data/local/tmp/magisk resetprop ro.hardware.vulkan default" >/dev/null 2>&1
 dsh "wm density 450; wm size 1080x2340" >/dev/null 2>&1
 echo "  post-zygote: model=$(dsh getprop ro.product.model) egl=$(dsh getprop ro.hardware.egl) boot=$B"
+fi

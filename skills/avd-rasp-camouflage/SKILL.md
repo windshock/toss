@@ -427,3 +427,18 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   트리프와이어 정상 무장 후 0힛 = 복호가 무장 이전(로드타임)이라는 뜻. 관측하려면 RELRO-mprotect
   kprobe 시점 자동무장(단, 미폴트인 페이지는 PTE-RO 불가 → VM_WRITE 클리어 희생런+prepare_signal
   회수 설계, FINDINGS §178-6) 또는 에뮬레이터 실경로 진입이 필요.
+
+## §179 성과 요약 (2026-10-02 저녁) + 신규 법칙
+- **★판정창 힙 교차검증법**: 런 중 T+4.5s에 dalvik(+라벨 영역!)·anon rw 전역 캡처 → 바늘 213종 부분매칭.
+  라벨 없는 anon만 잡는 종래 필터는 [anon:dalvik-*] 누락(§151 오판의 원인) — 라벨 포함 정규식 필수.
+- **★법칙: 가드는 자기 GL 스택을 변조감지한다** — /proc/pid/mem 쓰기는 내용 무관(동일바이트 재기입=COW만)
+  로 fail-closed 사망. 파일 수술(로드 전 개명)도 2s 무라벨 사망(§156 에스컬레이션과의 구별은 디에스컬
+  후 재측정 필수). GL 채널 개입은 이 감지를 먼저 우회해야 함.
+- **★법칙: ELF dynstr 개명 수술**: dynsym 순서 불변 필수 → 버킷 보존 개명(새 이름이 원 gnu_hash 버킷에
+  해시되도록 변형)+chain/bloom만 재계산. DT_NEEDED 소네임(.so 문자열) 토큰치환 금지(로더 파열).
+  DT_SYMTAB=태그6(11=DT_DEBUG), gnu_hash 32비트, chain값=자기해시, hw/ 재귀 포함, 웹밖 임포터
+  (audioserver/SF) 보유 lib(codec2/RIL/HAL)는 수술 불가. 도구 tmp-artifacts/tools/dynstr_surgery.py.
+- **법칙: 2s 무라벨 사망 시대 = §156 보고예산 에스컬레이션** — 월드 롤백과 무관. 측정 실험 전날 25+런을
+  돌렸으면 익일 디에스컬레이션 확인 후 실험할 것.
+- **법칙**: boot_recover [0b]이 *.tar 백업을 지움(수정됨) · stop;start 재시작 크래시≠첫부팅(검증은 풀리부트) ·
+  vendor_bind build는 마운트 없는 부트에서만 · [11]은 SKIP_ZR=1로 스킵 가능.

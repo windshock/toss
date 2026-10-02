@@ -8023,3 +8023,47 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
    별도 스토어 형태(쿼드 사이트 0개 실행).
 4. **[P3 교훈]**: "에뮬 done"의 증거 가치 — emu_start 반환 원인(정상복귀/타임아웃/카운트소진)을
    반드시 구분하고, 카운트 소진 시 **미실행 경로가 남아있는지 트레이스 꼬리로 확인**할 것.
+
+## 179. S179 세션 (2026-10-02 저녁) — ★판정입력 관측 체계 수립(바늘×메모리 교차검증) + 미커버 채널 2건 폐쇄 + GL dynstr 수술 도구 + 변조감지·에스컬레이션 발견
+1. **★[C] 판정창 메모리 전수 관측법 확립**: 런 중 T+4.5s(판정창)에 [anon:dalvik*]+anon rw 전역 캡처
+   (memread 고주소·호스트 주소계산) → §171 바늘 213종 × 메모리 부분문자열 교차검증.
+   **정규식 함정 교정**: 라벨 없는 순수 anon만 잡던 종래 필터는 [anon:dalvik-*] 라벨 영역 누락 —
+   §151의 "EmulatorTalkBackOverlay 힙 미출현" 판정은 이 버그였음(실제로는 존재).
+2. **★[C] 바늘×힙 매칭 결과 — 유일 비정상 항목 = 오버레이 파셀**: dalvik-zygote 공간에
+   OverlayManager RRO 파셀(6개 vendor 오버레이 경로+타깃패키지) — 그중
+   `/vendor/overlay/EmulatorTalkBackOverlay/EmulatorTalkBackOverlay.apk`만 §171 바늘 목록과
+   일치 + 실기기 불존재. 나머지 매칭(/proc/uid_*, /system/framework/*.jar, ro.* 등) = 실기기에도
+   있는 프레임워크 정상 문자열(텔레텔 불가). /product/overlay의 DisplayCutoutEmulation*·
+   EmulationPixel*은 파셀 미출현(비활성) + 가드 어휘에도 없음 — 무해 확정.
+3. **★[C] 오버레이 파셀 채널 영구 폐쇄(이미지 수술)**: system.img dirent에서
+   `EmulatorTalkBackOverlay.apk` → `.bin`(동일길이, §151 확정해법) — 백업 system.img.pre_s178_backup
+   (APFS clone). 수술후 OMS 0건·**앱 힙에서 문자열 완전 소멸(110 dalvik 영역 0매치)**.
+   판정 불변(12-13s [EMULATOR] 유지) — 이 채널은 (단독) 범인 아님. /data/system/overlays.xml의
+   stale entry들은 DisplayCutoutEmulation 계열(프레임워크 표준) — 무해.
+4. **[C] E7a 네거티브**: ro.test_harness 1→0 (magisk resetprop direct modification) — 판정 불변.
+   qemu 프로퍼티 컨텍스트 파일 4종(qemu_hw/qemu_sf_lcd_density/vendor_qemu×2) 수동 삭제에도
+   불변(파일 존재 자체도 범인 아님; ftrace로 가드의 직접 open 확인된 채널이었음).
+5. **★[C] §151 잔채널 가설 실증 — 매핑 GL 스택 dynstr에 텔레텔 상주**: .vl64 사본 그레프 =
+   goldfish 심볼 앱 매핑 6개 lib에 6,256건(vulkanqti 단독 6,196)+qemu 18+emugl 2+Emulator 1.
+   가드의 syscall 없는 자기주소공간 스캔(§154)이 보는 관측면과 정확히 일치.
+6. **★[C] 변조 감지(fail-closed) 2종 발견 — GL 채널은 자체 방어됨**:
+   (a) 런타임 /proc/pid/mem 쓰기(내용 무관 — **동일바이트 재기입 포함** COW만으로) → 9s 무라벨 사망
+   (가드가 페이지 수정 상태 감지 — smaps Private_Clean→Dirty 등 추정).
+   (b) 파일 수술(로드 전부터 개명 — COW 없음) → 2s 무라벨 사망. **단 이 2s는 §156 에스컬레이션과
+   구별 불가**(아래 8) — 파일수술의 진짜 판정 효과는 미측정.
+7. **★[C] ELF dynstr 수술 도구 완성(tmp-artifacts/tools/dynstr_surgery.py)**: 버킷 보존 개명
+   (새 이름이 원래 gnu_hash 버킷에 해시되도록 끝문자 변형 탐색) + chain값/bloom만 재계산
+   (bucket·종료비트 원본 유지 — dynsym 순서 불변 필수 구조 존중) + 소네임(.so 문자열) 토큰치환
+   제외 + DT_NEEDED 정합. 26파일 6,525심볼 개명, 자기정합 14,527/14,527 검증. 학습된 함정:
+   DT_SYMTAB=태그6(11=DT_DEBUG 아님), gnu_hash 32비트(ELF64도), chain값=자기 해시(bionic 필터),
+   치환 순서(변형명 확정 후 dynstr 기입), hw/ 서브디렉터리 재귀 필수, 임포터 폐쇄(웹 밖 소비자
+   = audioserver·SF 재시작 크래시 — codec2/RIL/HAL은 수술 불가).
+8. **★[C] 일말 타이밍 2s 시대 = §156/§158 보고 예산 에스컬레이션 재래**: 오늘 25+런 반복 보고 후
+   기준선 복구(클린 .vl64+수술 롤백) 후에도 2s 무라벨 지속 — 월드 무관. §156의 "하루 만에
+   11s→2.3s" 패턴 재현. **디에스컬레이션(익일) 후 GL 수술 재측정이 남은 결정 실험**.
+9. **[P3 법칙 신규]**: ① boot_recover [0b] 정리목록의 `*.tar`이 백업을 삭제함(자업자듍 실측) —
+   제거. ② stop;start 재시작 경로의 크래시(SF "Btaa Module" 오디오 타이밍 abort)는 첫 부팅과
+   다름 — 수술 검증은 항상 풀리부트로. ③ vendor_bind build는 마운트 없는 클린 부트에서만
+   (마운트된 상태 rm -rf .vl64 = 소스 자체 삭제). ④ [11] zygote 리프레시에 SKIP_ZR=1 가드 추가.
+10. 자산: dynstr_surgery.py(도구), /tmp/vl64_new2(수술판 26파일 — .vl64에 GL웹 9종 배포 레시피
+    FINDINGS 본문), system.img.pre_s178_backup, session179 캡처본(판정창 힙 분석 원본 /tmp/vw).
