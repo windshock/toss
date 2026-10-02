@@ -300,3 +300,11 @@ AbsAppGuard (hidden DEX "o.createFromParcel") — abstract base
 - Guest identity changes after reboot → always verify getprop+model
 - frida long marshaling loses >2^53 precision → NativeFunction('int64')
 - Per-boot dex name randomization is FALSE — stub dexes are deterministic
+
+## 10. Native data-layer decode — §170/§171 (Toss libea56)
+- **Ghidra image base = 0x100000** (FUN_0020xxxx ↔ vaddr 0x10xxxx) — DAT_002747ba = vaddr **0x1747ba(rw!)**, .text 아님. 배치 디컴파일 결과의 DAT_ 주소는 항상 -0x100000 변환.
+- **8.7KB 블롭(rw+0x10000) = JNI 문자열 풀**: [포인터 테이블 8B×N][헤더][메서드\0시그\0난독클래스 o/*]. 코드가 blob+0x110+고정오프셋으로 직접 참조 — 제자리 복호 전제.
+- **복호기 패밀리 9종**(0x93aa0/0x90f38/0x90bbc/0x91ed8/0x9124c/0x919ac/0x9213c/0x928a8/0x92914): TEA족(델타 0x61C88647), 키 배열 rw 0x1747ba(4B 엔트리, 자기수정), 0x185758 글로벌 + 상수 0x940710612d39c15d SWAR 가산으로 계산주소 인출. 레코드 형식: [06][len][암호문] — 라이브에서 "/proc/self/cmdline" 등 확인.
+- **needle은 네이티브 평문 미보유** — 복호 풀/JNI 공급, 힙 스크래치 통과(판정 시점 힙 strings = 바늘 인벤토리의 최종 관측면).
+- **배치 디컴파일**: decomp_batch.java — dispatch_resolved.json 타깃 1,969개를 Ghidra 1회 실행으로 전량 디컴파일(1,317 실체+652 트램폴린). 발화 게이트 = afed8 내 0xaffb8(핸들러 반환 x23 → cmp #0).
+- **파일↔라이브 rw diff**가 암호문/평문 쌍을 통째로 준다 — XOR 분포로 변환 종류 즉별(단일키 XOR이면 키값 분포 집중).
