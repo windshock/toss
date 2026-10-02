@@ -85,6 +85,12 @@ PY
     cp libGLESv2_emulation.so libGLESv2_adreno.so"
   L=$($ADB shell "ls -Z /vendor/lib64/libvulkan_enc.so" | awk '{print $1}' | tr -d '\r')
   $ADB shell "chcon -R $L $VDIR; chcon $L $VDIR/egl/*.so"
+  # §186: 19차 리터럴 패치는 build에 자동 포함 — 클린 재빌드가 이 패치를 잃으면
+  # 앱(uid 10179)의 libEGL_adreno 내부 dlopen 키 "emulation"이 hide_kmod path_blocked로
+  # ENOENT → eglInitialize SEGV/SIGABRT (2026-10-03 Toss 부트리시버 크래시로 실증).
+  SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+  say "EGL 리터럴 패치 (19차 사전조건 — emulation→adreno)"
+  python3 "$SKILL_DIR/scripts/patch_bind_egl_literals.py" "$VDIR/egl"
   say "build 완료 — mount → stop;start → props 순으로 적용"
 }
 

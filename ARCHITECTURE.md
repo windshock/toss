@@ -1,8 +1,8 @@
 # TOSS RASP 기술 아키텍처 — 확정 모델 · 증거 원장 · 검증 지도
 
-> **최상위 탐색 출입구이자 "현재 이해"의 유일한 완결판.** FINDINGS.md는 증거 아카이브(§1~§154)이고,
+> **최상위 탐색 출입구이자 "현재 이해"의 유일한 완결판.** FINDINGS.md는 증거 아카이브(§1~§186)이고,
 > **읽기 쉬운 현재 구조는 항상 이 문서에 반영된다** — 새 실험/해독이 나오면 이 문서를 먼저 갱신한다(§5).
-> 최종 갱신: 2026-10-02 §179 종료 시점.
+> 최종 갱신: 2026-10-03 §186 종료 시점.
 > 증거수준 태그: **[C]** CONFIRMED · **[S]** SUPPORTED · **[O]** OPEN · **[R]** REFUTED
 
 ---
@@ -159,6 +159,12 @@
   hook_rw_diff.js(rw 세그먼트 diff — 판정 상태변수 지도용, 다음 부트에서 실행 대기), hwbp_global.sh.
 **현재 세계**: SM-S916N/egl=adreno/LKM=v4.29d(트리프와이어·K2/레코드 덤프 내장)/uid=10179 —
    기준선 **[EMULATOR] EXIT ~11.5s(디스크 여유 시)** · 디스크 풀 시 1-3s 가짜 드리프트(ENOSPC — [0b] 방지).
+**★§186 세계 수리**: "렌더 웨지"(§183/§185 블로커 B)의 진짜 원인 = **.vl64 오염 매퍼**(§180 dynstr
+   수술본이 10/2 20:14 재빌드에서 재유입 → passthrough 스캔이 로드하다 abort → gralloc-mapper
+   missing → 그래픽 스택 전체 사망). 클린 재빌드(md5 스톡 일치 확인)+리터럴 패치(build에 영구
+   통합)로 해소 — 마운트 후 렌더 1.36MB 유지·mapper abort 0건. **bind-less 부분카모는 앱 EGL
+   자체가 LKM deny로 사망**(uid 10179 open 실증) — GL 생략 A/B는 성립하지 않음. 표준 세계 =
+   클린 bind+egl=adreno+[11] 포함 boot_recover.
 
 ---
 
@@ -177,6 +183,14 @@
 - **에뮬 부트 경계 .vl64 0바이트 사고[§180]**: 마운트 활성 상태 build의 자기복사(cp src→dst 동일 inode
   truncate) — 실제 vendor 파티션은 무결(사고는 .vl64 사본 영역 한정). 3중 가드(build inode동일성·마운트 전
   크기센티넬·boot_recover [3] 바이트검증)로 재발 방지.
+- **★정적 해독 완결성 = 파일 레벨 증명 완료[§186]**: rw 세그먼트 전역 [06] 레코드 스윕(§178 알고리즘) →
+  복호 성공 레코드 1건(/proc/self/cmdline)뿐 + 미계정 고엔트로피 영역 6곳 전부 OLLVM 테이블/글로벌 귀속
+  (adrp+add 참조·XOR 브루트 음성) → **정적 난독화 해제 누락 0건**. 확정 탐지 로직 = 네이티브 바늘 55종
+  (needles_decoded.json) + DEX 어휘(§149) + DetectFactor 5종 논리 + 킬플래그 경로.
+- **★"렌더 웨지" = .vl64 오염 매퍼[§186]**: §183/§185 "호스트 스톨→GPU wedge" 프레임 정정. bind mount
+  단독 T1 통제실험 + tombstone(HIDL_FETCH_IMapper abort) + md5 대조(구 bc2868cc ≠ 스톡 58f7c442)로
+  확정. 클린 리빌드로 소멸. **bind-less 세계는 LKM path_blocked("emulation")이 앱 uid의
+  libEGL_emulation.so open을 차단 → Toss EGL 사망**(uid 10179 open 매트릭스 실증).
 
 **SUPPORTED**
 - 판정 입력 = T+3~10s의 **프로세스 내 메모리 직접 검사**(syscall 흔적 0 — 관측면 소진)
@@ -242,8 +256,11 @@
     ioports}+태그 "goldfish"가 있고 라이브 /proc/modules에 goldfish_sync·virtio_* 노출. LKM v4.22는
     이 3종 redirect를 넣었으나 **fake 파일 생성기 누락으로 ENOENT(반쪽구현)** — camow3 포괄 텔테일
     필터 fake 생성(.fakemod/.fakefs/.fakeio)으로 폐쇄. **end-to-end 실증**: target_uids에 테스트 uid
-    추가 시 가드 시점 /proc/modules goldfish 0건(Toss 불요 검증). 라이브 [EMULATOR] 라벨 확인은
-    호스트 QEMU 스레드 스톨(§183)로 보류 — 채널 폐쇄는 실증됨, 라벨은 호스트 안정 시 재측정.
+    추가 시 가드 시점 /proc/modules goldfish 0건(Toss 불요 검증).
+    **라이브 라벨 측정 재개 [§186]**: 이중 블로커가 모두 수리 — (A) 서버 에스컬레이션 = 12h+ 무런
+    대기 후 프로브(오케스트레이터 v2 가동 중) (B) "호스트 스톨 렌더 웨지" = **.vl64 오염 매퍼로
+    규명·수리**(클린 재빌드+리터럴 패치 — 위 CONFIRMED). 표준 세계 복구 완료. 기대: 라벨 0/5 →
+    §185 채널폐쇄 인과 확정 / 잔존 → GL/미지입력 재탐색.
 10d. ~~GL dynstr 핀 우회(LKM copy_to_user 타이밍 창)~~ → **★userspace 경로로 전환 확정 [C:§183]**:
     /proc/pid/mem의 FOLL_FORCE 쓰기가 r-- 파일매핑 dynstr 페이지에 COW로 성공(ptrace 계열 — LKM
     불필요, "r-- 불가"는 오해였음) → 기기 바이너리 `dynscrub`(매핑 GL 웹 10종 6,343토큰 스크럽,

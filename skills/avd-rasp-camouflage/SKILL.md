@@ -526,3 +526,27 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   → Toss 1s 급사(판정 아님). **측정 전 `screencap|wc -c`>10KB 건강검진 필수**. 스톨 부팅은 kill→재기동.
 - boot_recover [11] `SKIP_ZR` 미설정 변수(set -u) 버그 수리: `[ -z "${SKIP_ZR:-}" ]`. [10] 체크리스트에
   `procfake=OK/OK/OK goldfish잔존=0` 감사 추가.
+
+## §186 성과 요약 (2026-10-03) + 신규 법칙 — "렌더 웨지" 정정·수리 + bind-less 카모 금지
+- **★법칙: screencap 0/35B "웨지"의 1순위 감별 = bind 뷰 오염**: `logcat | grep 'gralloc-mapper is
+  missing'`와 `HIDL_FETCH_IMapper` abort 톰브스톤을 먼저 본다. HIDL passthrough 스캔은 hw/의
+  impl-*.so를 **전부 dlopen**하므로 .vl64 사본의 impl 파일 하나만 abort해도 매퍼 부재 → 그래픽
+  스택 전체 사망(SF 살아있음·GL 신원 정상이어도). 호스트 스톨은 공존 노이즈일 수 있다.
+- **★법칙: .vl64 무결성 검증 = 스톡 md5 대조**: 리네임(impl-ranchu→impl-qti 등) 제외하고 바이트가
+  스톡과 동일해야 한다(§180 수술본이 재빌드에 재유입된 실측 — md5 bc2868cc≠58f7c442 사고).
+  클린 재빌드는 반드시 **클린부트(마운트 없음)+스톡 소스**에서.
+- **★법칙: bind-less 부분카모에서 앱은 EGL 로딩 자체가 사망** — hide_kmod path_blocked("emulation")
+  (uid 10179 게이트)가 앱의 libEGL_emulation.so open을 ENOENT. "GL/디스플레이 제외 카모는 렌더
+  안전"은 SF screencap까지만 참. 검증 원커맨더:
+  `su 10179 cat /vendor/lib64/egl/libEGL_emulation.so` → FAIL이 정상(차단 확인).
+- **★법칙: egl=adreno 세계에는 리터럴 패치가 생명** — 클린 재빌드가 patch_bind_egl_literals를
+  잃으면 앱의 libEGL_adreno 내부 dlopen 키("emulation")가 LKM deny로 ENOENT → eglInitialize
+  SEGV/SIGABRT(부트리시버 자동시작 크래시로 조기 발견 가능). **build에 패치 단계 영구 통합됨
+  (§186)** — 재빌드 후 `strings libEGL_adreno.so | grep -c emulation` = 0 확인.
+- **법칙 정정: [11] zygote 리프레시는 표준** — "SKIP_ZR=1 권장"(§185)은 오염 bind 시대의 임시
+  수칙. 클린 bind에서 [11]은 렌더 무사(실측)이며 S114 Build.* 누수 방지에 필수.
+- **법칙: 고엔트로피 rw 데이터 ≠ 암호** — OLLVM 테이블/글로벌 감별 3단: 확정 포맷 전역 스윕 →
+  XOR 브루트 → adrp+add 코드 참조 귀속. 도구 `tmp-artifacts/native-engine/audit_static_complete.py`
+  (정적 해독 완결성 감사 — 누락 0건 증명용).
+- **부수**: 호스트 부하 절감 위해 미사용 redroid qemu를 monitor quit로 정상 종료 가능(198% CPU
+  점유가 측정 창을 오염). Toss 부트 리시버 자동시작은 런 전 force-stop으로 방어(run_measure 내장).

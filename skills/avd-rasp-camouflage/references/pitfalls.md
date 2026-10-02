@@ -345,3 +345,13 @@ crash는 catch에서 reg_read(PC/레지스터) 덤프로 즉시 해부.
 - OLLVM 바이너리에서 "간접분기 많은 함수" Top은 대부분 **Hikari 디스패처**(인덱스→
   함수포인터테이블→간접호출 + MBA/런타임 키) — 의미론은 타깃 쪽(relocation 기반
   edge DB의 target)에서 찾을 것.
+
+## §186 신규 함정/교훈 (2026-10-03 — "렌더 웨지" 오진 정정)
+
+| 증상 | 진짜 원인 | 진단/해법 |
+|---|---|---|
+| screencap 0B/35B·멈춤("렌더 웨지") — SF dumpsys는 응답, dumpsys GL="Adreno (TM) 740" 정상 | **bind 뷰(.vl64)의 오염된 mapper impl** — passthrough 스캔(openLibs)이 hw/의 impl-*.so를 전부 dlopen → 오염 사본의 HIDL_FETCH_IMapper가 abort → "gralloc-mapper is missing" → 버퍼 사용 프로세스 전체 사망 | logcat에서 `gralloc-mapper is missing`/`FATAL ... mapper@3.0-impl-qti` 확인 → 클린부트에서 `vendor_bind_setup.sh build`(스톡 소스) → md5 스톡 대조(impl-qti == impl-ranchu 바이트) → mount |
+| bind mount 직후만 웨지, 재부팅 직후엔 건강 | 마운트 전 로드된 SF/HAL은 스톡 라이브러리, **마운트 후 첫 새 로드**(컴포저 클라이언트 재생성·앱 EGL)가 오염 사본을 만난다 | 마운트 "직후" 실패든 지연 실패든 동일 원인 — .vl64 파일 md5부터 |
+| egl=adreno 세계에서 앱만 `eglInitialize` SEGV/SIGABRT(SF는 정상) | 클린 재빌드가 **patch_bind_egl_literals를 잃음** — libEGL_adreno 내부 dlopen 키 "emulation"이 LKM path_blocked로 ENOENT(앱 uid 게이트) | `strings libEGL_adreno.so \| grep -c emulation` = 0 확인 → `patch_bind_egl_literals.py /data/local/tmp/.vl64/egl` (build에 영구 통합됨) |
+| bind 없는 "부분카모" 세계에서 Toss가 EGL 초기화 전 급사 | **앱 uid의 libEGL_emulation.so open 자체가 LKM deny** — `su 10179 cat ...` FAIL로 확인 | 부분카모는 Toss 렌더 불가 — 표준 세계(클린 bind+egl=adreno+[11])만 유효 |
+| 부팅 중 스톨 8건("hanging thread QEMU2 CPUn")이 있어도 렌더 건강한 경우 | 스톨은 렌더 웨지와 **필요조건 아님** — 공존 노이즈였음(§183 프레임 정정) | 웨지 시 원인 분리: 클린부트+단계 적용 T1 통제실험(스톨 없는 창에서도 재현되면 스톨 무관) |
