@@ -126,6 +126,27 @@ def _realloc(mu, lr):
 @impl('free')
 def _free(mu, lr):
     mu.reg_write(UC_ARM64_REG_X0, 0); return lr
+THREADS=[]  # (start_routine, arg)
+@impl('pthread_create')
+def _pthread_create(mu, lr):
+    fn = mu.reg_read(UC_ARM64_REG_X2); arg = mu.reg_read(UC_ARM64_REG_X3)
+    THREADS.append((fn,arg))
+    mu.reg_write(UC_ARM64_REG_X0, 0); return lr
+@impl('sem_wait')
+def _sem_wait(mu, lr):
+    mu.reg_write(UC_ARM64_REG_X0, 0); return lr
+@impl('sem_post')
+def _sem_post(mu, lr):
+    mu.reg_write(UC_ARM64_REG_X0, 0); return lr
+@impl('usleep')
+def _usleep(mu, lr):
+    mu.reg_write(UC_ARM64_REG_X0, 0); return lr
+@impl('syscall')
+def _syscall(mu, lr):
+    mu.reg_write(UC_ARM64_REG_X0, 0); return lr
+@impl('prctl')
+def _prctl(mu, lr):
+    mu.reg_write(UC_ARM64_REG_X0, 0); return lr
 
 
 # ── 프로퍼티 세계 (camo33 실측값) ──
@@ -286,6 +307,48 @@ def _fopen2(mu, lr):
     return r
 IMPL['fopen'] = _fopen2
 
+
+# ── JNI mock: JavaVM/JNIEnv vtable ──
+VM_TABLE = 0x32000000; ENV_TABLE = 0x32100000
+mu.mem_map(VM_TABLE, 0x10000); mu.mem_map(ENV_TABLE, 0x10000)
+JNI_NAMES = ["reserved0","reserved1","reserved2","DestroyJavaVM","AttachCurrentThread","DetachCurrentThread","GetEnv","AttachCurrentThreadAsDaemon"]
+jni_log=[]
+STUB2 = 0x33000000
+mu.mem_map(STUB2, 0x10000)
+mu.mem_write(STUB2, b'\xc0\x03\x5f\xd6'*0x4000)
+OBJCounter=[0x34000000]
+mu.mem_map(0x34000000, 0x100000)
+def jni_stub(idx):
+    a = STUB2 + idx*8
+    def h(uc, address, size, ud):
+        lr = uc.reg_read(UC_ARM64_REG_LR)
+        nm = JNI_NAMES[idx] if idx < len(JNI_NAMES) else f"jni{idx}"
+        jni_log.append(nm)
+        # 기본 구현: 유효한 포인터 반환 (객체/ID류)
+        if nm == "GetEnv":
+            envpp = uc.reg_read(UC_ARM64_REG_X1)
+            uc.mem_write(envpp, struct.pack('<Q', ENV_TABLE))
+            uc.reg_write(UC_ARM64_REG_X0, 0)  # JNI_OK
+        elif nm in ("FindClass","GetObjectClass","NewGlobalRef","NewStringUTF","CallObjectMethod","CallStaticObjectMethod","GetObjectField","GetStaticObjectField","CallObjectMethodV"):
+            OBJCounter[0]+=0x10
+            uc.reg_write(UC_ARM64_REG_X0, OBJCounter[0])
+        else:
+            uc.reg_write(UC_ARM64_REG_X0, 0)
+        uc.reg_write(UC_ARM64_REG_PC, lr)
+    mu.hook_add(UC_HOOK_CODE, h, begin=a, end=a)
+    return a
+for i in range(8):
+    mu.mem_write(VM_TABLE+i*8, struct.pack('<Q', jni_stub(i)))
+for i in range(250):
+    mu.mem_write(ENV_TABLE+i*8, struct.pack('<Q', jni_stub(8+i)))
+JNICTX = 0x32200000
+mu.mem_map(JNICTX, 0x1000)
+mu.mem_write(JNICTX, struct.pack('<Q', ENV_TABLE))
+@impl('JNI_OnLoad')
+def _jnionload(mu, lr):
+    mu.reg_write(UC_ARM64_REG_X0, VM_TABLE); mu.reg_write(UC_ARM64_REG_X1, 0)
+    return lr  # 호출자가 bl JNI_OnLoad → 스텁에서 진짜 본문은 어디? → GOT 심볼 JNI_OnLoad는 내보내기용
+
 def hook_plt(mu, addr, size, ud):
     # PLT 스텁: LR로 복귀하며 파이썬 구현
     lr = mu.reg_read(UC_ARM64_REG_LR)
@@ -395,7 +458,8 @@ AFED8 = 0xafed8
 NEEDLE = __import__('os').environ.get('NEEDLE', '')
 if NEEDLE:
     mu.mem_write(SCRATCH+0x1000, NEEDLE.encode()+b'\x00\x00\x00\x00')
-mu.reg_write(UC_ARM64_REG_X0, 0)
+MODE = int(__import__('os').environ.get('MODE','0'))
+mu.reg_write(UC_ARM64_REG_X0, MODE)
 mu.reg_write(UC_ARM64_REG_X1, 0x5c000000)
 mu.reg_write(UC_ARM64_REG_X2, SCRATCH + 0x1000)
 LR_RET = STACK + 0x1000   # 종료 감지용 마법 주소
@@ -406,7 +470,42 @@ try:
 except UcError as e:
     print(f"[emu] stop: {e} pc=0x{mu.reg_read(UC_ARM64_REG_PC)-BASE:x}")
 x0=mu.reg_read(UC_ARM64_REG_X0)
-print(f"NEEDLE={NEEDLE!r} WORLD={'emu' if __import__('os').environ.get('EMU_WORLD') else 'clean'} => x0={hex(x0)} blocks={len(trace)} gate={len(GATE_HITS)}")
+# JNI_OnLoad 본문 실행 (JavaVM mock 전달)
+JOL = None
+for i,nm in enumerate(sym_names):
+    if nm=='JNI_OnLoad':
+        JOL = struct.unpack_from('<Q', data, sym_off+i*24+8)[0]
+if JOL:
+    print(f"[emu] JNI_OnLoad body @0x{JOL:x} — 실행")
+    jni_log.clear()
+    _pre_count=[len(trace)]
+    try:
+        mu.reg_write(UC_ARM64_REG_X0, JNICTX); mu.reg_write(UC_ARM64_REG_X1, 0)
+        mu.reg_write(UC_ARM64_REG_LR, LR_RET)
+        mu.emu_start(BASE+JOL, LR_RET, timeout=120_000_000, count=100_000_000)
+        print(f"[emu] JNI_OnLoad done. blocks so far={len(trace)} jni calls={len(jni_log)}")
+        from collections import Counter as _C2
+        jol=[hex(b) for b in trace if True]
+        _pre = _pre_count[0]
+        hist=_C2(hex(b) for b in trace[_pre:])
+        print("  JNI_OnLoad block histogram top12:", hist.most_common(12))
+        import collections as _c2
+        print("  JNI surface:", _c2.Counter(jni_log).most_common(15))
+    except UcError as e:
+        print(f"[emu] JNI_OnLoad stop: {e} pc=0x{mu.reg_read(UC_ARM64_REG_PC)-BASE:x}")
+    # 복호 확인
+    snap2 = bytes(mu.mem_read(BASE+0x174000, 0x12210))
+    print("  '/proc/self/cmdline' in rw after JNI_OnLoad:", b'/proc/self/cmdline' in snap2)
+
+# 캡처된 스레드 루틴 동기 실행 (복호 스레드 등)
+for i,(fn,arg) in enumerate(THREADS):
+    print(f"[emu] running thread#{i} start=0x{fn-BASE:x}")
+    try:
+        mu.reg_write(UC_ARM64_REG_X0, arg)
+        mu.emu_start(fn, LR_RET, timeout=60_000_000, count=50_000_000)
+    except UcError as e:
+        print(f"[emu] thread#{i} stop: {e} pc=0x{mu.reg_read(UC_ARM64_REG_PC)-BASE:x}")
+print(f"MODE={MODE} NEEDLE={NEEDLE!r} WORLD={'emu' if __import__('os').environ.get('EMU_WORLD') else 'clean'} => x0={hex(x0)} blocks={len(trace)} gate={len(GATE_HITS)}")
 if x0:
     try:
         blob = mu.mem_read(x0, 96)
@@ -420,11 +519,26 @@ if x0:
                 s2 = mu.mem_read(v, 64).split(b'\0')[0]
                 print(f"  [{off}] -> {bytes(s2)!r}")
     except Exception as e: print("  read err", e)
+# 전체 메모리 스냅샷 (rw 0x174000..0x186210 + heap)
+snap_r = bytes(mu.mem_read(BASE+0x174000, 0x12210))
+snap_h = bytes(mu.mem_read(HEAP, HEAP_CUR[0]-HEAP))
+open('/tmp/emu_mem_r.bin','wb').write(snap_r)
+open('/tmp/emu_mem_h.bin','wb').write(snap_h)
+TAGW = __import__('os').environ.get('NEEDLE','').replace('/','_')
+open('/tmp/emu_r_%s.bin'%TAGW.replace('.','_'),'wb').write(snap_r)
 # 스크래치/힙에 기록된 결과 문자열
-sc = mu.mem_read(SCRATCH+0x1000, 256)
-print("  buf after:", sc[:96])
+sc = mu.mem_read(SCRATCH+0x1000, 4096)
+open('/tmp/emu_scratch_mode.bin','wb').write(bytes(sc))
+nz = sum(1 for b in sc if b)
+print(f"  scratch nonzero: {nz}")
+# 문자열 추출
+import re
+for m in re.findall(rb'[\x20-\x7e]{4,}', bytes(sc))[:10]:
+    print("  str:", m)
 import collections as _cc
 print("stub call surface:", _cc.Counter(CALL_LOG).most_common(25))
+_ha = bytes(mu.mem_read(HEAP, HEAP_CUR[0]-HEAP))
+open('/tmp/emu_h_%s.bin' % __import__('os').environ.get('NEEDLE','').replace('/','_').replace('.','_'),'wb').write(_ha)
 print(f"gate hits: {len(GATE_HITS)}, nonzero: {sum(1 for g in GATE_HITS if g)}")
 import collections as _c
 for g,c in _c.Counter(hex(g) for g in GATE_HITS).most_common(10): print(f"  x23={g} x{c}")
