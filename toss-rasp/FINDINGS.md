@@ -8236,3 +8236,46 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **shell-uid am start는 type-3로 거짓실패** — 기동 검증은 su 0 am start로만.
 - **이상 급사는 먼저 네트워크**(§157 가속)와 에스컬레이션(2s 시그니처)부터 배제할 것.
 - **계열 측정 직전 세계 상태를 기록에 남길 것** — 이번 나이드 오염은 기록 대조로만 발견됨.
+
+## §183 (2026-10-02 심야4) — ★dynstr 런타임 스크럽 전체 도구 완성(LKM 불필요 실증) + asound 채널 폐쇄·영속화 + 네트워크 부트 함정
+
+### P0 결론
+1. **★/proc/pid/mem의 FOLL_FORCE 쓰기는 r-- 파일매핑 페이지에 COW로 성공한다 [C]** — ptrace
+   브레이크포인트와 동일 경로(VM_MAYWRITE 보유 MAP_PRIVATE). §179 "내용무관 COW 감지"와 별개로
+   **r-- 쓰기 불가라는 내 가정은 오류였다** → dynstr 타이밍 재작성에 **LKM이 전혀 필요 없다**.
+   실측: dynstr 4KB memwrite → 리드백 q3mu_p1pe=3 잔존, 즉사 없음.
+2. **★전체 스크럽 도구 완성 [C]**: `tmp-artifacts/tools/dynscrub`(디바이스 정적 바이너리 — 페이지
+   단위 pread→7토큰 동일길이 치환→pwrite+리드백검증) + `gl_dynstr_scrub.sh`(오케스트레이션) +
+   gl_ranges.txt(10종 dynstr 범위 — 정본 ELF에서 산출). 실측: **매핑 GL 웹 10종 6,343 토큰
+   스크럽, 리드백 불일치 0, 281ms**(adb 오버헤드 포함) — GL 매핑 완료(~T+0.6s) 직후 발사 시
+   판정 스캔(T+3-10s) 전 여유. 사망은 가드 EXIT(신규 톰스톤 0) — 조작 자체 무해.
+3. **② asound 채널 폐쇄·영속화 [C]**: virtio_snd=로드가능 모듈(사용자 0) → `rmmod virtio_snd` →
+   /proc/asound/cards = "--- no soundcards ---" + 오디오 HAL 무영향(0 크래시) → magisk
+   service.d(/data/adb/service.d/rm_virtio_snd.sh)로 부트 영속화. 잔여: "no soundcards"는 실기기
+   (항시 카드 존재)와 상이한 약한 이상치 — 필요시 LKM 가짜 카드 콘텐츠로 승격.
+4. **네트워크 부트 함정**: qemu 호스트 스레드 스톨(boot 로그 "hanging thread" ×8) 시 wlan0의
+   **디폴트 라트(10.0.2.2)가 등록 안 됨**(eth0 DOWN은 이 AVD 정상 — wifi 세계) → §157 가속으로
+   1-2s 급사 위장. 복구: `ip route add default via 10.0.2.2 dev wlan0`. 측정 전 네트워크 점검 의무화.
+5. 디에스컬레이션 미복귀(2s 무라벨) — 결정 실험(스크럽 타이밍+5런 계열)은 차기 세션.
+
+### P1 증거
+- dynscrub 출력 전문(6,343=§179 금 어휘량과 정합: vulkanqti 6,227·glcommon 64·CodecCommon 32·
+  EGL_adreno 11·glesv2qti 8·GfxPerf 1), READBACK_MISMATCH 0라인.
+- 동일바이트 재기입 런: 사망 ~T+2s(에스컬 기저와 동일 — 가속 증거 없음, 마스킹 시대 한계).
+- rmmod 후: audioserver+audio.service 생존, logcat 크래시 0. service.d 스크립트 374B 적용.
+
+### P2 절차(차기 결정 실험 — 원커맨드)
+1. 클린부트 → boot_recover(virtio_snd 자동 rmmod됨) → 60s 안정 → 네트워크·세계감사 → run_measure
+   1런으로 디에스컬 확인(11-13s).
+2. `gl_dynstr_scrub.sh` 실행(기동→웹매핑 대기→dynscrub→생존/라벨 관찰 자동) ×5런.
+   - 라벨 0/5 + 생존 → **목표 달성 경로 확정**
+   - fail-closed 급사 → 변조(COW/내용) 감지 확정 → soft-dirty 클리어(LKM pagemap 경로) 설계.
+
+### P3 교훈
+- **"/proc/pid/mem은 r--에 못 쓴다"는 오해** — FOLL_FORCE(ptrace 계열)는 COW로 쓴다. 커널 개입
+  결정 전에 userspace 경로를 먼저 실측할 것.
+- **페이지 단위 adb 왕복은 타이밍 도구가 못 한다**(300페이지≈분 단위) — 시간 제약 조작은 디바이스
+  내 1프로세스 바이너리로.
+- bash while-read 루프 안의 heredoc는 stdin을 삼킨다(첫 라인만 처리되는 함정) — 루프 내 python은
+  -c 또는 별도 fd.
+- qemu 호스트 스톨은 게스트 네트워크(wlan0 루트)를 유실시킨다 — 이상 급사 시 라트 점검 먼저.

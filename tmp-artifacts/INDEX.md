@@ -32,3 +32,5 @@
 | `tools/hook_*.js` (vdso/clock/rw_diff/afed8_peek/dynstr_scrub 등) | 검증 도구 | §157-172 frida 관찰 스크립트군 |
 | `tools/dynstr_surgery.py` (v2) | 검증 도구 | GL dynstr 심볼 개명 수술 — 조인트 버킷 보존+bionic룩업 게이트+NOREHASH 모드 (§180) |
 | `tools/check_gnu_hash.py` | 검증 도구 | ELF gnu_hash bionic 룩업 시뮬레이터(bloom 단일워드) — 수술 파일 로더 정합 검증 (§180) |
+| `tools/dynscrub.c`→기기 `dynscrub` | 검증 도구 | §183 GL dynstr 런타임 스크럽 바이너리(10종 6,343토큰·281ms·리드백) |
+| `tools/gl_dynstr_scrub.sh` | 검증 도구 | 스크럽 오케스트레이션(기동→웹매핑 대기→스크럽→관찰) |

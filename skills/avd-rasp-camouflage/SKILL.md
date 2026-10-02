@@ -486,3 +486,16 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   (2s 라벨 서명) ③세계 오염(boot_recover 누락) — 그 다음 실험 변수.
 - **데이텀: 이미지 수술(프로퍼티 메타데이터)만 있는 나이드 세계에서도 라벨 간헐(2/5)** — 잔여 채널들은
   약한 입력(핫 런에서만 발화).
+
+## §183 성과 요약 (2026-10-02 심야4) + 신규 법칙
+- **★법칙: /proc/pid/mem(FOLL_FORCE)은 r-- 파일매핑에도 COW로 쓰기를 한다** — ptrace 브레이크포인트와
+  동일 경로. "읽기전용이라 못 쓴다"는 오해 금지 — 커널(LKM) 개입을 결정하기 전 userspace 실측 먼저.
+  §180 GL dynstr 핀의 우회 = 순수 userspace 타이밍 스크럭으로 충분: 도구 tmp-artifacts/tools/dynscrub
+  (10종 6,343토큰, 281ms, 리드백 검증) + gl_dynstr_scrub.sh 오케스트레이션.
+- **★레시피: /proc/asound virtio-snd 텔 제거** — virtio_snd는 로드가능 모듈(사용자 0) → rmmod →
+  "no soundcards" + 오디오 HAL 무영향 → /data/adb/service.d/ 부트 영속화. (hw.audio* 플래그는
+  에뮬 36.x에서 무효.)
+- **법칙: 페이지 단위 adb 왕복은 타이밍 도구가 못 한다** — 시간 제약 조작은 디바이스 내 1프로세스
+  바이너리(dynscrub 패턴).
+- **법칙: qemu 호스트 스레드 스톨 부트에서 wlan0 디폴트 루트(10.0.2.2)가 유실된다** — 이상 급사 시
+  `ip route` 점검 먼저(§157 가속 위장). eth0 DOWN은 이 AVD 정상(wifi 세계).
