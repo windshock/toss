@@ -414,3 +414,16 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
 - **진단 순서 법칙**: 조기 사멸 시 logcat am_crash에서 ENOSPC/Realm부터 확인 → `df -h /data` →
   `/data/local/tmp` 대형 덤프 정리. "드리프트 재부팅 대기"는 디스크가 원인이 아닐 때만 유효.
 - boot_recover [0b]: 부팅 직후 디스크 사용률 점검 스텝(상시화).
+
+## §178 성과 요약 (2026-10-02 오후) + 신규 법칙
+- **★libea56 바늘 레코드 난독화 완전 정적 해독**: 14패스 TEA족(시드=−14δ, K2표 상수, K1=인접 암호문
+  워드) — 파일만으로 평문 복원, 라이브와 바이트 100% 3중 검증. 상세는 dexguard-reVERSE §12.
+- **★법칙: /proc/pid/maps rw-p 라인 선택 함정** — libea56의 RELRO(0x170000) 라인은 로드 중 rw-p였다가
+  RELRO 적용 후 r--p로 바뀐다. `grep rw-p | head -1`은 시점에 따라 0x170000/0x174000이 달라져
+  무장/덤프 주소가 틀린다 → **반드시 `tail -1`(최대주소 rw 라인)**. 0힛 캡처가 나오면 먼저 이 함정 의심.
+- **★법칙: toybox 32비트 절단** — printf '%x'와 $((16진)) 산술이 36비트 주소(0x7xxx_xxxx_xxxx)에서
+  상위 절단. 고주소 계산은 `printf '%x%08x' $((A>>32)) $((A&0xffffffff))` 또는 상/하위 분할+awk.
+- **법칙: 로드타임(≤2ms) 복호기는 userspace 경쟁으로 못 잡는다** — maps 등장→첫 관측 사이에 완료.
+  트리프와이어 정상 무장 후 0힛 = 복호가 무장 이전(로드타임)이라는 뜻. 관측하려면 RELRO-mprotect
+  kprobe 시점 자동무장(단, 미폴트인 페이지는 PTE-RO 불가 → VM_WRITE 클리어 희생런+prepare_signal
+  회수 설계, FINDINGS §178-6) 또는 에뮬레이터 실경로 진입이 필요.
