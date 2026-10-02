@@ -236,11 +236,13 @@
     (b) asound = LKM read 가로채기 또는 virtio-snd 장치 제거(에뮬 CLI 옵션 탐색) (c) ro.boot.
     boot_devices=…virtio_mmio·ro.boot.hardware.gltransport=pipe 2건 props-apply 부트경계 추가.
     (d) gralloc-mapper missing(screencap) 원인 — pre_s181 이미지 A/B.
-10d. **★신규 [O]: GL dynstr 핀 우회(§180)** — 핀이 dynstr에 한정된 이상, 런타임 타이밍 우회 가능성: 무결성 검사
-    (T+0.6-1s 급사 시점) 통과 후·판정 스캔(T+3-10s) 전에 커널(LKM copy_to_user)로 dynstr 페이지 치환 →
-    검사는 원본·스캔은 스크럽본. 과제: 검사 단발성 확인(2회 이상 검사면 사망). + zygote 상속 매핑 4종
-    (libGLESv1/2_enc, libOpenglSystemCommon, libvulkan_enc — .vl64 뷰 밖 파일, 프리마운트 로드분)은 파일 수술
-    불가 — 뷰 진입(풀리부트 전 실제 vendor에서 .vl64로 추가+스크럽) 필요.
+10d. ~~GL dynstr 핀 우회(LKM copy_to_user 타이밍 창)~~ → **★userspace 경로로 전환 확정 [C:§183]**:
+    /proc/pid/mem의 FOLL_FORCE 쓰기가 r-- 파일매핑 dynstr 페이지에 COW로 성공(ptrace 계열 — LKM
+    불필요, "r-- 불가"는 오해였음) → 기기 바이너리 `dynscrub`(매핑 GL 웹 10종 6,343토큰 스크럽,
+    281ms, 리드백 검증) + `tmp-artifacts/tools/gl_dynstr_scrub.sh` 완성. 프로토콜: GL 웹 매핑 직후
+    (~T+0.6s) 발사 → 핀 검사는 원본 통과·판정 스캔(T+3-10s)은 스크럽본 관찰. **효과 측정은
+    에스컬레이션 해제 후**(FINDINGS §183 P2 원커맨드). zygote 상속 매핑 4종(enc 계열)은 뷰 밖 —
+    필요시 .vl64 진입 후 동일 도구로 커버.
 11. **★드리프트 근원 해결 [C:§175]**: "드리프트"=디스크 풀(ENOSPC·Realm 크래시). 청소 즉시 정상 복귀 —
     boot_recover [0b] 디스크 점검으로 상시화.
 9. **§161 다음 후보**: ① 미지 입력 탐색의 새 관측면(자식 프로세스 ftrace 패밀리 와이드·instruction behavior) —
