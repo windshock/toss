@@ -1810,20 +1810,29 @@ static int wpp_pre(struct kprobe *p, struct pt_regs *kregs)
 		pwtail_pc[pwtail_idx] = u->pc;
 		/* v4.29c §175: K2 표 내용 캡처 — 첫 폴트에서 x8/x19 유저메모리 64B (probe_user_read,
 		 * kprobe 안전 유저 읽기 — 페이지는 복호기가 방금 읽어 present 상태) */
-		if (pagewatch_hits == 1 && u->regs[8]) {
-			unsigned char kb[64];
-			if (!copy_from_user_nofault(kb, (const void __user *)u->regs[8], 64)) {
+		if (pagewatch_hits <= 2 && u->regs[8]) {
+			unsigned char kb[512];
+			if (!copy_from_user_nofault(kb, (const void __user *)u->regs[8], 512)) {
 				int q;
 				pr_info("PW-K2 x8=0x%llx:", (unsigned long long)u->regs[8]);
-				for (q = 0; q < 64; q++) pr_cont(" %02x", kb[q]);
+				for (q = 0; q < 512; q++) pr_cont(" %02x", kb[q]);
 				pr_cont("\n");
 			} else pr_info("PW-K2 x8 read FAILED\n");
+			{   /* 레코드 영역 중간 상태 (rw+0x7b0..0x830) */
+				unsigned char rb[128];
+				if (!copy_from_user_nofault(rb, (const void __user *)(pw_page + 0x7b0), 128)) {
+					int q;
+					pr_info("PW-REC hit=%lu:", pagewatch_hits);
+					for (q = 0; q < 128; q++) pr_cont(" %02x", rb[q]);
+					pr_cont("\n");
+				}
+			}
 			if (u->regs[19]) {
-				unsigned char pb[64];
-				if (!copy_from_user_nofault(pb, (const void __user *)u->regs[19], 64)) {
+				unsigned char pb[512];
+				if (!copy_from_user_nofault(pb, (const void __user *)u->regs[19], 512)) {
 					int q;
 					pr_info("PW-K2 x19=0x%llx:", (unsigned long long)u->regs[19]);
-					for (q = 0; q < 64; q++) pr_cont(" %02x", pb[q]);
+					for (q = 0; q < 512; q++) pr_cont(" %02x", pb[q]);
 					pr_cont("\n");
 				} else pr_info("PW-K2 x19 read FAILED\n");
 			}
