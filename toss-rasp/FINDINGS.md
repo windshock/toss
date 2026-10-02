@@ -7784,3 +7784,44 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 ### 170-3. 증거
 - decomp_s165/w_{101920,93aa0,919c0,157200,d1d30}.c · session170/state_hot.txt(빈 꼬리 — 콜드 증거)
 - 재현성: 세션169 5pc vs 세션170 5pc 전쌍 델타 0x21000 일치.
+
+## 171. S171 세션 (2026-10-02) — ★★미해독 난독화 전량 해독: 8.7KB JNI 블롭 정체 + rw 전체 라이브 덤프 + 네이티브 바늘 인벤토리 213건(신규 채널 다수) + 1,969 핸들러 전량 디컴파일 + 발화 게이트 특정
+
+### 171-1. P0 결론
+1. **★8.7KB 블롭(0x184000..0x186210) 정체 확정 [C]**: **JNI 문자열 풀** — [포인터 테이블 8B×N][소형 헤더][문자열 풀:
+   메서드명\0시그니처\0난독클래스명 o/*]. 네이티브가 JNI 등록/호출에 쓰는 Java 브릿지 어휘. 라이브 동결/직덤프로
+   복호본 확보(blob_live.bin, 224 유니크 문자열). GL 패턴은 여기 없음(§149 기록 정정 필요).
+2. **★rw 세그먼트 전체 라이브 덤프(74KB) [C]**: 파일(암호문) vs 라이브(평문) 비교 — 46,400바이트 변화
+   (제자리 복호+포인터 갱신). 0x93aa0류 복호기 8종이 0x747ba 자기수정 키 공유(TEA족, 델타 0x61C88647 확인).
+   .text는 무변화(0x747ba 포함) — 복호는 rw에서만.
+3. **★네이티브 바늘 인벤토리 213건 확보 [C]**(판정 시점 힙 1.5GB 덤프 strings): 이것이 가드가 실제로 검사하는
+   목록. **신규 미커버 채널 발견**:
+   - `ro.test_harness`(camo33=**1** — 실기기 0/무. props-apply 미커버!) · persist.sys.test_harness/virtual_disk/emulate_fbe
+   - `/proc/asound/cards`(내용 **virtio-snd - VirtIO SoundCard** — 실기기는 HW 사운드) — 무커버
+   - `/sys/qemu_trace/state`(absent — 무해) · `/system/fake-libs`(absent — 무해)
+   - `/vendor/overlay/EmulatorTalkBackOverlay...apk`(파일 존재하나 path_blocked 이미 ENOENT — 커버 확인)
+   - `/sys/module/intel_powerclamp` 등 virtio/kvm 계열 — **바늘에 있는데 path_blocked가 bisectA로 #if 0**(차단 꺼짐!)
+   - Nox 계열 6경로(absent — 무해) · /proc/uid_* / time_in_state 통계 채널
+4. **★1,969 핸들러 전량 디컴파일 [C]**: 배치 Ghidra(1회 실행, 1,317 실체+652 트램폴린, 실패 0) —
+   decomp_all/h_*.c. **발화 게이트 특정 [C]**: 0xaffb8(afed8 내부) — `blr 핸들러 → x23=x0 → cmp x23,#0 →
+   cset` = **핸들러 반환값이 곧 판정**(§149-9 관찰의 확정). 탐지 바늘은 네이티브 평문 미보유 — 복호 풀/JNI에서
+   공급(힙 스크래치에서 포획된 이유).
+5. **[O] E7(신규 채널 무장 시험) 미완**: ro.test_harness=0 무장 → 판정 시험 시도했으나 **즉사 드리프트 시대와
+   교락**(0.6-3.7s 사망, 라벨 없음 — 클린 부트에서도 지속, §168 부트 간 지속형). 무장 자체는 성공(resetprop 0 확인).
+   차기 클린 환경에서 asound/virtio 차단(LKM)과 함께 재시험 필수 — **판정 반전 후보로 최우선**.
+
+### 171-2. 자산
+- session171/: blob_live.bin(복호 JNI 풀), rw_live.bin(74KB 평문), hd/(1.5GB 힙), needles.txt(213),
+  blob_strings.txt · text_live.bin(무변화 증명)
+- decomp_all/(1,969 c파일) · decomp_batch.java · blob_dump/rw_dump/heap_dump 스크립트
+- 복호기 패밀리 지도: 0x93aa0 외 8종(0x90f38/0x90bbc/0x91ed8/0x9124c/0x919ac/0x9213c/0x928a8/0x92914)
+
+### 171-3. 운영 법칙
+1. toybox awk는 0x 리터럴 미지원, mksh 산술은 32비트 — 64비트 주소 계산은 호스트에서.
+2. frida 관찰자 효과(2.3s 네이티브 사멸)는 데이터 캡처에도 방해 — 대용량 메모리 캡처는 exit_block 동결+memread.
+3. 힙 전체 strings는 바늘 인벤토리의 최종 관측면(정적 복호 역추적보다 빠르고 완전).
+
+### 171-4. 다음
+1. **E7 재시험(클린 환경)**: test_harness=0 + LKM v4.28(/proc/asound ENOENT + virtio/powerclamp 차단 재가동)
+   → 판정 반전 여부. 이것이 현재 유일한 미시험 가시 채널 집합.
+2. (해독 보완) 0x93aa0 TEA 역산 완전 문서화 — 이미 데이터는 전부 확보됨(라이브 덤프)이라 우선순위 하락.
