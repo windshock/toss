@@ -7,8 +7,8 @@
 
 | 경로 | 내용 |
 |---|---|
-| `FINDINGS.md` | **단일 진실 소스** — §1~§181 전체 기록 (8,250줄) |
-| `handoffs/` (9건) | 세션별 핸드오프 아카이브 (S125~S152, 통합, NEXT_LLM, CAMO33) — 최신은 저장소 루트 |
+| `FINDINGS.md` | **단일 진실 소스** — §1~§182 전체 기록 (8,400줄) |
+| `handoffs/` (10건) | 세션별 핸드오프 아카이브 (S125~S152, 통합, NEXT_LLM, CAMO33) — 최신은 저장소 루트 |
 | `analysis-lab/` (11GB) | 스크립트·프로브·증거 아카이브: `android/`(e1_syscalls, hidden dex/jar, fm_toss_full.bin 등 — .gitignore에 대형 명시), `scripts/`, `probes/`, `docs/`, `guests/`, `qemu-plugins/`, `toy/`, `build/` |
 | `session17/` (1.7GB) | 17차 대형 트레이스(7분 생존 레시피 원증거) |
 | `session19~session44` (각 10-60MB) | 차수별 산출물 — FINDINGS 해당 절 참조 |
@@ -20,4 +20,4 @@
 | `heap5/`, `heap6/`, `dump4*`, `runs/`, `loop_trace_14.gz`, `toss_trace*.txt` | 힙 스냅샷·ftrace 원증거 (§14x계) |
 
 **탐색 요령**: 궁금한 주제 → FINDINGS.md에서 `## §N` 헤더 grep → 해당 절의 "산출" 문단 → 이 표에서 위치 확인.
-최신 상태는 저장소 루트 `HANDOFF_S181_2026-10-02.md` (구핸드오프는 `handoffs/`), 작업 자산은 `../tmp-artifacts/INDEX.md`.
+최신 상태는 저장소 루트 `HANDOFF_S182_2026-10-02.md` (구핸드오프는 `handoffs/`), 작업 자산은 `../tmp-artifacts/INDEX.md`.

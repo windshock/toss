@@ -67,6 +67,9 @@ done
 # 키 이름에 qemu/goldfish/ranchu가 들어가면 foreach 패턴스캔에 걸린다 → 삭제.
 # (ro.boot.qemu.gltransport.name 등은 goldfish-opengl이 default "pipe"로 폴백하므로
 #  런타임 삭제해도 GL 초기화 무영향. egl/vulkan 셀렉터만 절대 건드리지 말 것.)
+# §181: 부트 디바이스 경로·GL 전송로 텔 — 부트 경계에서만 변경(운용중 resetprop=판정 트리거 법칙)
+$M ro.boot.boot_devices 1d84000.ufshc 2>/dev/null
+$M --delete ro.boot.hardware.gltransport 2>/dev/null
 for p in \
   qemu.hw.mainkeys \
   qemu.sf.lcd_density \

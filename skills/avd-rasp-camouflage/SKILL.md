@@ -475,3 +475,14 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   procfs 콘텐츠 위조는 LKM read 가로채기 없이 불가.
 - **법칙: hw.audioInput/Output=no(에뮬 36.x)는 virtio-snd 장치를 못 지움** — asound 폐쇄는 별도 과제.
 - 프로퍼티 계통 스크럽 검증은 getprop이 아니라 /dev/__properties__ 통덤프 스캔으로.
+
+## §182 성과 요약 (2026-10-02 심야3) + 신규 법칙
+- **★법칙: 재부팅마다 boot_recover 스킵 금지** — 부트를 수반하는 실험 워크플로에는 복구 단계 필수.
+  측정 직전 세계 감사 1줄 의무: `lsmod|grep -c hide_kmod; getprop ro.product.model ro.hardware.egl`
+  (이번 오염: LKM=0·model=sdk_gphone·egl=emulation 나이드 세계에서 계열 측정 — §181 rodata 결론 무효화).
+- **★법칙: shell-uid am start는 type-3 거짓실패** — ActivityNotFoundException가 나도 su 0 am start는
+  정상 동작. 기동 검증/측정 스크립트는 root로.
+- **★법칙: 이상 급사 진단 순서** — ①네트워크(§157 가속: DNS 단선이면 1-2s급사 위장) ②에스컬레이션
+  (2s 라벨 서명) ③세계 오염(boot_recover 누락) — 그 다음 실험 변수.
+- **데이텀: 이미지 수술(프로퍼티 메타데이터)만 있는 나이드 세계에서도 라벨 간헐(2/5)** — 잔여 채널들은
+  약한 입력(핫 런에서만 발화).

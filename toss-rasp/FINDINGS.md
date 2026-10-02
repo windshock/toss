@@ -8195,3 +8195,44 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   들킨다 — /proc 하위 위조는 커널 개입 없이 불가.
 - vendor 파티션의 실체 확인(§144 재확인): AVD의 /vendor는 system.img 내장 — vendor.img 파일
   패치는 무효, system.img 내부 사본(라인 시작 앵커)을 패치할 것.
+
+## §182 (2026-10-02 심야3) — [O]-10d/10e 착수: ③ 부트경계 2건 구현·적용 + 나이드 세계 2/5 데이텀 + 측정 인프라 함정 3종 + 에스컬레이션 재래
+
+### P0 결론
+1. **③ props-apply 부트경계 2건 구현·적용 [S]**: ro.boot.boot_devices=1d84000.ufshc ·
+   ro.boot.hardware.gltransport 삭제 — 부트 시점 적용 실증 확인. 단 효과 측정 불가(아래 5):
+   **차기 세션 A/B 필수**(적용 세계 vs 미적용 세계 라벨율 — 1s급사가 네트워크 단선(§157 가속)과
+   겹쳐 혼재, ③ 부작용 미배제).
+2. **★나이드 세계 데이텀**: [O]-10d 실험 중 세계 오염 발각 — 오디오 테스트 재부팅 후 boot_recover
+   누락(LKM=0·model=sdk_gphone64·egl=emulation·qemu 28·bind 0) 상태에서 측정한 계열이 2/5 라벨.
+   **이미지 수술(프로퍼티 메타데이터)만 있는 완전 나이드 세계에서도 라벨은 간헐적** — 나머지 채널
+   (GL 에뮬 스택 노출·모델 문자열·qemu 프롭 28개!)은 핫 런에서만 발화하는 약한 입력들. §181의
+   "rodata 스크럽 통계 불변(2/5)" 계열은 이 나이드 세계 데이터로 **무효**(rodata A/B 재필요).
+3. **① 핀 단발성 실험 미완**: 준비 도중 함정 연쇄(아래 P3) — GL 매핑 폴링 스크립트 인용버그 수정
+   완료·세계 정상임을 확인한 뒤 에스컬레이션으로 마스킹. 차기 최우선 재실행.
+4. **측정 인프라 사고 3종**(P3 상세): 부트 혼돈기 개입·네트워크 DNS 단선(eth0 DOWN, §157 가속으로
+   1s급사 위장)·AM type-3=shell-uid 한정 현상.
+5. **에스컬레이션 재래 [S]**: 3연속 2s 라벨 — 금일 15+ 측정런으로 §156 보고예산 소진 추정.
+   **측정 재개는 디에스컬레이션 확인 후**(§181 법칙 재확인).
+
+### P1 증거
+- 세계 감사 출력: LKM=0 model=sdk_gphone64_arm64 egl=emulation qemu=28 bind=0 (22:3x).
+- 회복 후: egl=adreno qemu=0 bd=1d84000.ufshc gt=(빈) LKM=1 (③ 적용 실증).
+- DNS: net.dns1 공백 + android.googleapis.com 해석 실패(GMS VerdictProvider UnknownHostException)
+  → 회복 후 2s 라벨 3연속(에스컬레이션 서명).
+- 앱 GL 정상 관측(나이드 세계): T+1~10s gl_lines=4·topResumed 유지·eglCreateContext maj3 성공.
+
+### P2 절차(차기 재개 프로토콜)
+1. 클린부트 → boot_recover(③ 포함 자동) → 60s 안정 → run_measure 1런: 11-13s면 디에스컬 확인.
+2. **③ A/B**: props-apply의 2줄 주석 on/off로 부트×2 세계 비교, 각 5런.
+3. **① 핀 단발성**: 수정된 스크립트(디바이스 $PID 전개 주의)로 GL 매핑 등장 직후 4KB 동일재기입
+   → 생존=단발성 → LKM 지연워커 착수. 사망=반복 검사 → soft-dirty 클리어 병행 설계.
+4. **② virtio-snd**: 에뮬에 -qemu -append "module_blacklist=virtio_snd" 전달 시도(모듈이면 소멸,
+   빌트인이면 불가 → LKM read 가로채기). 부작용: 오디오 HAL 크래시 여부 반드시 관찰.
+
+### P3 교훈
+- **재부팅마다 boot_recover 스킵 금지** — 어떤 실험이든 "재부팅 후" 단계에는 복구 포함. 세계 감사
+  1줄(lsmod/getprop/model/egl)을 측정 전 의무화.
+- **shell-uid am start는 type-3로 거짓실패** — 기동 검증은 su 0 am start로만.
+- **이상 급사는 먼저 네트워크**(§157 가속)와 에스컬레이션(2s 시그니처)부터 배제할 것.
+- **계열 측정 직전 세계 상태를 기록에 남길 것** — 이번 나이드 오염은 기록 대조로만 발견됨.
