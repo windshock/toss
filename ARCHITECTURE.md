@@ -150,7 +150,8 @@
 | boot_recover/camow3/props | 프롭 신원·위장 파일·패키지 hide·qemu 잔존 | `skills/avd-rasp-camouflage/scripts/` |
 | 호스트 dylib GL 패치 | GL 문자열(Adreno 740) | `avd-camouflage/host-patch/`, `host-patch-root/` |
 | ~~§142 램덤명~~ → **plausible 수술 완료(§155)**: GfxPerfCollector/glcommon/vulkanqti/renderctrl/glesv1·2qti, hw/ 의존자 재배선 · §146 GL 반환필터 | 라이브러리명·GL 반환 | dm-33 · 도구 `tools/name_surgery.py` |
-| **잔여 미봉쇄** | ① /proc/self/fd readdir 도트파일명 ② .dynstr goldfish_*/emugl*(§151 P3 스크럽 설계) ③ Widevine L3/device_id ④ dmap 미등록 4채널 | — |
+| **procfs 내용 redirect(§185 완성)** | /proc/modules(goldfish_sync·virtio_*)·/proc/filesystems(virtiofs)·/proc/ioports(virtio-pci) — 디코드 바늘 경로+태그 "goldfish" 매치. LKM v4.22 redirect는 fake 파일 생성기 누락(ENOENT 반쪽구현)이었음 → camow3 포괄필터 fake 생성+boot_recover 검증 | `camow3.sh`(.fakemod/.fakefs/.fakeio), `hide_kmod.c` 998-1003 |
+| **잔여 미봉쇄** | ① /proc/self/fd readdir 도트파일명 ② .dynstr goldfish_*/emugl*(§180 — 판정 비결정, 변조감지 핀) ③ Widevine L3/device_id ④ /proc/{devices,iomem} virtio(바늘 미포함) | — |
 
 **운영 불변식**: `pvm_block=0`(차단=ART 파손), `sc_log=0`(관측기 기본 OFF), frida-server 테스트 후 종료.
 **frida 운영법(§155 추기2)**: 주입 성공률은 **부트별 상태성**(이전 부트 1/3~1/5, 어떤 부트는 0/19) —
@@ -236,6 +237,13 @@
     (b) asound = LKM read 가로채기 또는 virtio-snd 장치 제거(에뮬 CLI 옵션 탐색) (c) ro.boot.
     boot_devices=…virtio_mmio·ro.boot.hardware.gltransport=pipe 2건 props-apply 부트경계 추가.
     (d) gralloc-mapper missing(screencap) 원인 — pre_s181 이미지 A/B.
+10f. ~~잔여 간헐 입력 중 procfs 내용 채널~~ → **★폐쇄 [C:§185]**: 정적 해독 완결(final_vocabulary
+    XOR 바늘 13종 전수 복호 → needles_decoded.json) 결과 바늘에 경로 /proc/{modules,filesystems,
+    ioports}+태그 "goldfish"가 있고 라이브 /proc/modules에 goldfish_sync·virtio_* 노출. LKM v4.22는
+    이 3종 redirect를 넣었으나 **fake 파일 생성기 누락으로 ENOENT(반쪽구현)** — camow3 포괄 텔테일
+    필터 fake 생성(.fakemod/.fakefs/.fakeio)으로 폐쇄. **end-to-end 실증**: target_uids에 테스트 uid
+    추가 시 가드 시점 /proc/modules goldfish 0건(Toss 불요 검증). 라이브 [EMULATOR] 라벨 확인은
+    호스트 QEMU 스레드 스톨(§183)로 보류 — 채널 폐쇄는 실증됨, 라벨은 호스트 안정 시 재측정.
 10d. ~~GL dynstr 핀 우회(LKM copy_to_user 타이밍 창)~~ → **★userspace 경로로 전환 확정 [C:§183]**:
     /proc/pid/mem의 FOLL_FORCE 쓰기가 r-- 파일매핑 dynstr 페이지에 COW로 성공(ptrace 계열 — LKM
     불필요, "r-- 불가"는 오해였음) → 기기 바이너리 `dynscrub`(매핑 GL 웹 10종 6,343토큰 스크럽,

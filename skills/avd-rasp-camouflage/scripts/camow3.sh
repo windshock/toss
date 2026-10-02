@@ -61,6 +61,23 @@ cp /dev/.s2w6za /dev/.t7x3ub
 echo '.android.smcard' > /dev/$F_COMM; echo 0-7 > /dev/$F_ONLN
 : > /dev/$F_E
 
+# v4.6 (2026-10-02 §185): /proc/{modules,filesystems,ioports} fake 생성.
+#   LKM v4.22가 이 3종을 /dev/.fakemod/.fakefs/.fakeio로 redirect하지만 타깃 파일
+#   생성기가 없어 ENOENT였다(반쪽 구현). 정적 해독(final_vocabulary) 결과 가드 바늘에
+#   경로 /proc/modules·/proc/filesystems·/proc/ioports + 태그 "goldfish"가 있고,
+#   실측 /proc/modules에 goldfish_sync·virtio_* 노출 → 미봉쇄 채널. 포괄 텔테일 필터로
+#   fake 생성(디코드 바늘 0건 검증). 모듈/파일시스템/ioports는 부팅 후 정적이라 1회 생성.
+#   주의: hide_kmod(우리 LKM) 라인도 반드시 제거(변조 텔테일).
+PROC_TELL='goldfish|virtio|vbox|qemu|vmw_vsock|failover|nd_virtio|vexpress|pl111|virt_wifi|vcan|slcan|vhci|usbip|hide_kmod|sw_sync|rtc_test|pulse8|gs_usb|can_dev|9pnet|redroid|genyd|nox|memu|bluestacks|9p'
+grep -viE "$PROC_TELL" /proc/modules     > /dev/.fakemod 2>/dev/null
+grep -viE 'virtiofs|9p'  /proc/filesystems > /dev/.fakefs 2>/dev/null
+grep -viE 'virtio'       /proc/ioports     > /dev/.fakeio 2>/dev/null
+[ -s /dev/.fakemod ] || echo 'binder 258048 48 - Live 0x0000000000000000 (O)' > /dev/.fakemod
+[ -s /dev/.fakefs ]  || printf 'nodev\tsysfs\nnodev\ttmpfs\n\text4\n\tf2fs\n' > /dev/.fakefs
+[ -s /dev/.fakeio ]  || echo '00000000-0000ffff : PCI mem' > /dev/.fakeio
+chmod 644 /dev/.fakemod /dev/.fakefs /dev/.fakeio 2>/dev/null
+chcon u:object_r:qemu_device:s0 /dev/.fakemod /dev/.fakefs /dev/.fakeio 2>/dev/null
+
 # goldfish GL 디바이스 클론 노드 (fd readlink 세탁) — minor는 /proc/misc에서 동적 판독
 make_clone() { # NEWNAME MISCDEVNAME
   MN=$(grep -E " $2\$" /proc/misc | awk '{print $1}')

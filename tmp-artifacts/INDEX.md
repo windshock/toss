@@ -13,7 +13,8 @@
 | `native-engine/libea56_live.so` | **박스 2: libea56 엔진** | 라이브 덤프 바이너리 (Ghidra 재임포트용) |
 | `native-engine/gproj/` | 〃 | Ghidra 프로젝트 toss5 |
 | `native-engine/dispatch_resolved.json` | 〃 | 1980 reloc 해석·핸들러 1,969 분류 |
-| `native-engine/final_vocabulary.json` | 〃 | 확정 탐지 어휘 |
+| `native-engine/final_vocabulary.json` | 〃 | 확정 탐지 어휘 (★주의: 태그 13종이 단일바이트 XOR 미해독 — §185) |
+| `native-engine/needles_decoded.json` | 〃 | ★§185 전수 복호 바늘 인벤토리 (XOR 태그 복호: generic/emulator/goldfish/bignox/nease.net/nemu/vbox86p… + 경로 39) |
 | `native-engine/c13_dump.txt` (44MB) | 〃 | 디스패처 원시 덤프 |
 | `run-logs/logstore_live_s153_최신판정.txt` | **집행 A + 서버 평면** | 현재 판정 [EMULATOR] 실측 원문 + 403 3건 |
 | `run-logs/logstore_run5~9·toss_run2/3·toss_cert_run` | 집행 A/B 증거 | §151 4련 logstore/logcat |

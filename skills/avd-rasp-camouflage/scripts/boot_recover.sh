@@ -129,9 +129,15 @@ printf "  model=%s egl=%s qemu누수=%s density=%s enforce=%s LKM=%s bind(qti)=%
   "$(dsh "lsmod | grep -c hide_kmod")" \
   "$(dsh "ls /vendor/lib64/hw/ 2>/dev/null | grep -c impl-qti")" \
   "$(dsh "strings /vendor/lib64/egl/libEGL_adreno.so 2>/dev/null | grep -c emulation")"
-echo "[완료] 기대값: model=SM-S916N egl=adreno qemu누수=0 450 Permissive LKM=1 bind=1 lit=0"
+# §185: /proc/{modules,filesystems,ioports} fake redirect 타깃 감사 (LKM v4.22 반쪽구현 보완)
+printf "  procfake=.fakemod%s/.fakefs%s/.fakeio%s goldfish잔존=%s\n" \
+  "$(dsh "[ -s /dev/.fakemod ] && echo OK || echo MISSING")" \
+  "$(dsh "[ -s /dev/.fakefs ] && echo OK || echo MISSING")" \
+  "$(dsh "[ -s /dev/.fakeio ] && echo OK || echo MISSING")" \
+  "$(dsh "grep -ciE 'goldfish|virtio' /dev/.fakemod 2>/dev/null")"
+echo "[완료] 기대값: model=SM-S916N egl=adreno qemu누수=0 450 Permissive LKM=1 bind=1 lit=0 procfake=OK/OK/OK goldfish잔존=0"
 
-if [ -z "$SKIP_ZR" ]; then
+if [ -z "${SKIP_ZR:-}" ]; then
 echo "[11] zygote 리프레시 (§151: 부팅직후 zygote가 Google/sdk_gphone64_arm64로 Build.*를 동결 — [2c] 조기 props가 끝났어도 bind의 stop;start 타이밍에 따라 재동결 가능. 모든 props/bind 완료 후 프레임워크 재시작으로 Build 갱신 + GL 셀렉터 재적용)"
 dsh "stop; start"
 for i in $(seq 1 40); do sleep 3; B=$(dsh getprop sys.boot_completed 2>/dev/null | tr -d '\r'); [ "$B" = "1" ] && break; done

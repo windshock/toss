@@ -505,3 +505,24 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   boot_recover 스텝으로만([6b3]: virtio_snd rmmod + wlan0 디폴트 루트 복구 통합).
 - **법칙: 백그라운드 자율 실험에 넣기 전 스크립트 재열람** — 직접 테스트한 경로와 스크립트 경로의
   결함 차이(v1 heredoc-stdin)가 오케스트레이터 입력을 오염시킬 뻔함.
+
+## §185 성과 요약 (2026-10-03) + 신규 법칙 — ★정적 해독 완결 + /proc 내용 채널 폐쇄
+- **★정적 어휘는 "반쪽 해독"일 수 있다**: final_vocabulary.json(확정 탐지 어휘)의 경로는 평문이나
+  **에뮬 태그 13종은 단일바이트 XOR 미해독**이었음. 키 규칙: **col2≤0xff=XOR키, 아니면 해시(0x50~5f
+  브루트)**. 복호: generic/emulator/goldfish/chromium/bluestacks/bignox(Nox)/nease.net(MuMu)/nemu(MEmu)/
+  generic·vbox86p·google/sdk 핑거프린트/init.svc.qemu-props. 산출 `native-engine/needles_decoded.json`.
+  **"확정 어휘"라는 이름을 믿지 말고 비평문 바이트는 전수 재복호하라.**
+- **★redirect 추가 ≠ 채널 폐쇄**: 가드 바늘에 /proc/{modules,filesystems,ioports}(경로)+goldfish(태그)가
+  있고 라이브 /proc/modules에 goldfish_sync·virtio_* 노출. LKM v4.22가 이 3종 redirect(/dev/.fakemod/
+  .fakefs/.fakeio)를 넣었지만 **fake 생성기 누락→ENOENT(반쪽구현)**. **redirect 추가 시 반드시 (a)
+  생성기(camow3) + (b) boot_recover 검증 스텝을 같은 커밋에.** camow3 v4.6에 포괄 텔테일 필터 fake
+  생성 추가(hide_kmod 자기라인 제거 필수·디코드바늘 0건 검증·§125 0바이트 회피).
+- **★가드 커버리지 검증법(앱 실행 불요)**: `target_uids`에 테스트 uid 임시 추가 → 가드 시점의 redirect
+  결과를 직접 read. 에스컬레이션/런 예산 0으로 end-to-end 확인(/proc/modules goldfish 0건 실증).
+- **★호스트 adb TMPDIR 함정**: 샌드박스 기본 $TMPDIR 쓰기불가 → adb 서버 기동 실패("ADB server
+  didn't ACK", 로그파일 open 거부). `export TMPDIR=/tmp`. 출력 거짓/공백 증상은 adbd 웨지(§161)와 유사.
+- **★호스트 QEMU 스레드 스톨 = 렌더 크래시 캐스케이드**: "detected a hanging thread 'QEMU2 CPUn'.
+  No response for 18s"(호스트 부하 기인) → GPU wedge → 전 앱 RenderThread SIGABRT → screencap 35B/멈춤
+  → Toss 1s 급사(판정 아님). **측정 전 `screencap|wc -c`>10KB 건강검진 필수**. 스톨 부팅은 kill→재기동.
+- boot_recover [11] `SKIP_ZR` 미설정 변수(set -u) 버그 수리: `[ -z "${SKIP_ZR:-}" ]`. [10] 체크리스트에
+  `procfake=OK/OK/OK goldfish잔존=0` 감사 추가.

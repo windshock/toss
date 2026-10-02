@@ -8311,3 +8311,79 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   부트 훅은 boot_recover뿐(수동이지만 매 부트 관례화됨).
 - **백그라운드 자율 실험 직전에는 스크립트를 재열람하라** — v1 결함이 오케스트레이터 입력으로
   들어가는 것을 실행 30분 전에 발견(§182 세계감사 법칙의 스크립트 판).
+
+## §185 (2026-10-03) — ★정적 해독 완결(final_vocabulary XOR 바늘 전수 복호) + /proc/{modules,filesystems,ioports} 미봉쇄 채널 발견·폐쇄 (LKM v4.22 반쪽구현 보완)
+
+목표(사용자): "에뮬 탐지 로직을 **정적 난독화 해제** 기반으로 확정하고, 누락된 정적 해독을 모두
+완료해서 그에 맞춰 camo33을 카모플라주." → 정적 어휘 전수 복호 → 미봉쇄 채널 1종 발견·폐쇄.
+
+### P0 결론
+1. **★final_vocabulary.json 정적 해독 완결**: 이 아티팩트(확정 탐지 어휘 55엔트리)의 경로 39종은
+   평문이었으나 **짧은 에뮬 태그 13종이 단일바이트 XOR로 미해독** 상태였다(정적 해독 누락 지점).
+   키 규칙 확정: **col2≤0xff이면 그 값이 XOR 키, 아니면 해시(키는 0x50~0x5f 범위 브루트)**. 전수 복호:
+   `generic`(0x57)·`emulator`(0x55)·`goldfish`(0x57)·`chromium`(0x51)·`bluestacks`(0x54)·
+   `bignox`(0x50,NoxPlayer)·`nease.net`(0x5c,NetEase MuMu)·`nemu*`(0x5c,MEmu)·빌드핑거프린트
+   `generic/sdk/generic`·`generic/google`·`generic/vbox86p/vbox86p`(Genymotion)·`google/sdk`·
+   프롭 `init.svc.qemu-props`. 산출물 `tmp-artifacts/native-engine/needles_decoded.json`.
+2. **바늘 정적 원천 지형 확정**: type-06 레코드 풀은 **사실상 `/proc/self/cmdline` 1건뿐**(0x1747b8,
+   decode_static2 14패스) — 나머지 44개 [06] 헤더는 JNI blob 내 위양성(§178 decode_all_178.txt 재확인).
+   JNI blob(235문자열)은 **메서드/시그/난독클래스**(에뮬 바늘 아님). §171 법칙 재확정: **바늘은
+   네이티브 평문 미보유 — DEX 어휘(§149)/JNI 공급**. 즉 완전 정적 바늘 인벤토리 = DEX 어휘 +
+   final_vocabulary(교정본). 가상환경 경로(`/system/vphone_space`·`com.gbox.android/vfs_data`·
+   `/etc/init.titan.sh`)는 hidden_strings.txt(DEX v3)에 평문 존재.
+3. **★미봉쇄 채널 발견: /proc/{modules,filesystems,ioports} 내용**: 디코드된 바늘에 경로
+   `/proc/modules`·`/proc/filesystems`·`/proc/ioports` + 태그 `goldfish`가 있고, 라이브 /proc/modules에
+   **goldfish_sync·virtio_* 20행 노출**(/proc/filesystems=virtiofs, /proc/ioports=virtio-pci). LKM은
+   v4.22에서 이 3종을 `/dev/.fakemod`·`.fakefs`·`.fakeio`로 redirect 추가했으나 **타깃 fake 파일
+   생성기가 없어 ENOENT였다(반쪽 구현)** — 전 세션에서 채널을 식별해 redirect만 넣고 생성기를 누락.
+   프로퍼티 원시영역(35MB 덤프)은 §181 이미지수술로 **완전 청정(0건)**이므로 잔존 간헐 라벨(§181-182)의
+   비-프로퍼티 입력 후보.
+4. **★폐쇄 + end-to-end 실증**: camow3.sh에 포괄 텔테일 필터(goldfish|virtio|vbox|qemu|vexpress|pl111|
+   hide_kmod|...) fake 생성기 추가(디코드 바늘 0건 검증·§125 0바이트 회피). target_uids에 테스트 uid
+   임시 추가 → **가드 시점 재현: /proc/modules goldfish/virtio 0건, 첫 줄=fake(zram...)** — Toss
+   실행 없이 redirect+fake가 가드 uid에게 청정 내용을 서빙함을 증명(에스컬레이션 비용 0). target_uids
+   복원 후 root는 real(59행·20건) 관측 → redirect uid 토글 정상.
+5. **라이브 [EMULATOR] 측정은 호스트 환경으로 보류**: 측정 시도 중 **QEMU vCPU 스레드 18s 스톨
+   반복(§183 "호스트 스레드 스톨 부트")** → systemui·launcher·Toss 전부 RenderThread SIGABRT 캐스케이드
+   → Toss 1s 급사(렌더 크래시, 판정 아님). 호스트 부하(load 4-5) 기인 — 카모 작업 무관. 디에스컬
+   era(자정 경과) 진입은 확인. 채널 폐쇄는 (4)로 실증됨; 라벨 확인은 호스트 안정 시 재측정 과제.
+
+### P1 증거
+- `needles_decoded.json`: 55엔트리 전수 복호(태그/FP/prop 13 + 경로 39). 교정키 맵
+  {0x3a6b→0x57,0xd1c3→0x55,0x5865→0x57,0x158→0x57,0x9936→0x50}.
+- end-to-end: `echo 10179,<uid> > target_uids` 상태에서 `grep -cE goldfish\|virtio /proc/modules`=0,
+  `head -1 /proc/modules`=zram. 복원(=10179) 후 동일 명령=20, real 59행.
+- hide_kmod.c 998-1003행: /proc/modules→/dev/.fakemod·filesystems→.fakefs·ioports→.fakeio (v4.22).
+  redirect()(376행)=경로 버퍼 제자리 재작성(타깃 부재 시 open ENOENT).
+- 호스트 스톨: /tmp/emu_camo33_r2.log "detected a hanging thread 'QEMU2 CPU0-7 thread'. No response
+  for 18490 ms" ×반복. logcat: RenderThread SIGABRT in systemui/nexuslauncher/toss.
+
+### P2 절차 (재현 — 측정)
+1. 세계: boot_recover.sh 10179 (SKIP_ZR=1 권장 — 렌더 안정) → 체크리스트 `procfake=OK/OK/OK
+   goldfish잔존=0` 확인. **호스트 adb는 TMPDIR=/tmp 필수**(sandbox 기본 TMPDIR 쓰기불가로 adb 서버
+   기동 실패 — kill-server 후 `TMPDIR=/tmp adb start-server`).
+2. 렌더 건강 선검증: `timeout 20 adb exec-out screencap -p | wc -c` >10KB (35B=wedge). 스톨 era면
+   emu kill→재기동으로 non-stall 부팅(로그 "hanging thread" 0 또는 Boot completed 이전만) 확보.
+3. `adb shell sh /data/local/tmp/run_measure.sh` ×≥5(§181 A/B 법칙). 기대: 라벨 無·생존 연장.
+   핫/콜드(§166) 간헐 고려. GL은 미건드림(§180 비결정 입력 + 변조감지 회피).
+
+### P3 교훈 (신규 법칙)
+- **★정적 아티팩트도 "반쪽 해독"일 수 있다**: final_vocabulary.json은 경로만 평문이고 태그는 XOR
+  잔존 — "확정 어휘"라는 이름을 믿지 말고 비평문 바이트는 전수 재복호하라. (사용자 지적의 핵심)
+- **★redirect 테이블 추가 ≠ 채널 폐쇄**: LKM에 redirect를 넣어도 **타깃 fake 파일 생성기가 없으면
+  ENOENT(변조신호 가능)**. redirect 추가 시 반드시 (a) 생성기(camow3 등)와 (b) boot_recover 검증
+  스텝을 같은 커밋에 넣어라.
+- **★가드 커버리지 검증법(Toss 불요)**: `target_uids`에 테스트 uid를 임시 추가하면 가드 시점의
+  redirect 결과를 직접 읽어 end-to-end 확인 가능 — 에스컬레이션/런 예산 소모 없는 결정적 검증.
+- **★호스트 adb TMPDIR 함정**: 이 샌드박스에서 기본 $TMPDIR(/var/folders/...) 쓰기불가 → adb
+  서버가 로그파일 못 열어 기동 실패("ADB server didn't ACK"). `TMPDIR=/tmp`로 export. adbd 웨지
+  (§161)와 증상 유사(출력 거짓/공백)하니 혼동 주의.
+- **호스트 스레드 스톨(§183)은 렌더 크래시 캐스케이드를 낳는다**: QEMU vCPU 18s 무응답 → GPU
+  파이프라인 wedge → 전 앱 RenderThread SIGABRT → screencap 멈춤(35B/타임아웃). 측정 전 screencap
+  건강검진 필수. 스톨은 호스트 부하 의존(간헐) — non-stall 부팅 재확보가 해법.
+- boot_recover [11] `SKIP_ZR` 미설정 변수 버그(set -u) 수리: `[ -z "${SKIP_ZR:-}" ]`.
+
+### 산출
+- `tmp-artifacts/native-engine/needles_decoded.json` (전수 복호 바늘 인벤토리)
+- camow3.sh v4.6(fakeproc 생성기), boot_recover.sh([10] procfake 검증 + SKIP_ZR 수리)
+- ARCHITECTURE [O]-10e 갱신, SKILL §185, detection-channels.md(/proc/modules 내용 채널)

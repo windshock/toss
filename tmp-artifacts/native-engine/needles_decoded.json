@@ -1,0 +1,332 @@
+[
+ {
+  "off": 50,
+  "enc": "xor:0x51",
+  "needle": "chromium",
+  "ch": "tag"
+ },
+ {
+  "off": 82,
+  "enc": "xor:0x57",
+  "needle": "generic",
+  "ch": "tag"
+ },
+ {
+  "off": 89,
+  "enc": "xor:0x57",
+  "needle": "generic",
+  "ch": "tag"
+ },
+ {
+  "off": 100,
+  "enc": "xor:0x57",
+  "needle": "generic",
+  "ch": "tag"
+ },
+ {
+  "off": 133,
+  "enc": "xor:0x55",
+  "needle": "emulator",
+  "ch": "tag"
+ },
+ {
+  "off": 227,
+  "enc": "xor:0x57",
+  "needle": "goldfish",
+  "ch": "tag"
+ },
+ {
+  "off": 332,
+  "enc": "xor:0x57",
+  "needle": "generic/sdk/generic",
+  "ch": "build-fp"
+ },
+ {
+  "off": 351,
+  "enc": "xor:0x57",
+  "needle": "generic",
+  "ch": "tag"
+ },
+ {
+  "off": 382,
+  "enc": "xor:0x57",
+  "needle": "generic/google",
+  "ch": "build-fp"
+ },
+ {
+  "off": 408,
+  "enc": "xor:0x57",
+  "needle": "generic/vbox86p/vbox86p",
+  "ch": "build-fp"
+ },
+ {
+  "off": 431,
+  "enc": "xor:0x57",
+  "needle": "google/sdk",
+  "ch": "build-fp"
+ },
+ {
+  "off": 542,
+  "enc": "xor:0x59",
+  "needle": "init.svc.qemu-props",
+  "ch": "prop"
+ },
+ {
+  "off": 859,
+  "enc": "plain",
+  "needle": "/proc/ioports",
+  "ch": "file"
+ },
+ {
+  "off": 877,
+  "enc": "plain",
+  "needle": "/proc/self/maps",
+  "ch": "file"
+ },
+ {
+  "off": 946,
+  "enc": "xor:0x54",
+  "needle": "bluestacks",
+  "ch": "tag"
+ },
+ {
+  "off": 973,
+  "enc": "plain",
+  "needle": "/data/downloads/.dp/apps.xml",
+  "ch": "file"
+ },
+ {
+  "off": 1001,
+  "enc": "plain",
+  "needle": "/proc/cpuinfo",
+  "ch": "file"
+ },
+ {
+  "off": 1022,
+  "enc": "plain",
+  "needle": "/dev/goldfish_address_space",
+  "ch": "file"
+ },
+ {
+  "off": 1049,
+  "enc": "plain",
+  "needle": "/dev/goldfish_pipe_dprctd",
+  "ch": "file"
+ },
+ {
+  "off": 1074,
+  "enc": "plain",
+  "needle": "/dev/goldfish_sync",
+  "ch": "file"
+ },
+ {
+  "off": 1092,
+  "enc": "plain",
+  "needle": "/sys/module/goldfish_battery",
+  "ch": "file"
+ },
+ {
+  "off": 1120,
+  "enc": "plain",
+  "needle": "/system/lib64/cloud_aidl_interface-cpp.so",
+  "ch": "file"
+ },
+ {
+  "off": 1234,
+  "enc": "plain",
+  "needle": "/system/bin/nemuVM-nemu-control",
+  "ch": "file"
+ },
+ {
+  "off": 1265,
+  "enc": "plain",
+  "needle": "/system/bin/nemuVM-prop",
+  "ch": "file"
+ },
+ {
+  "off": 1288,
+  "enc": "plain",
+  "needle": "/system/lib/libnemuVMprop.so",
+  "ch": "file"
+ },
+ {
+  "off": 1316,
+  "enc": "plain",
+  "needle": "/dev/nemuguest",
+  "ch": "file"
+ },
+ {
+  "off": 1343,
+  "enc": "xor:0x5c",
+  "needle": "nease.net",
+  "ch": "prop"
+ },
+ {
+  "off": 1352,
+  "enc": "plain",
+  "needle": "/proc/filesystems",
+  "ch": "file"
+ },
+ {
+  "off": 1369,
+  "enc": "xor:0x5c",
+  "needle": "nemusf",
+  "ch": "tag"
+ },
+ {
+  "off": 1569,
+  "enc": "plain",
+  "needle": "/proc/modules",
+  "ch": "file"
+ },
+ {
+  "off": 1591,
+  "enc": "plain",
+  "needle": "/system/framework/windows-system_server.jar",
+  "ch": "file"
+ },
+ {
+  "off": 1634,
+  "enc": "plain",
+  "needle": "/vendor/lib64/hw/audio.primary.windows.so",
+  "ch": "file"
+ },
+ {
+  "off": 1675,
+  "enc": "plain",
+  "needle": "/vendor/lib64/hw/hwcomposer.windows.so",
+  "ch": "file"
+ },
+ {
+  "off": 1713,
+  "enc": "plain",
+  "needle": "/data/.cpuinfo",
+  "ch": "file"
+ },
+ {
+  "off": 1775,
+  "enc": "plain",
+  "needle": "/data/misc/profiles/cur/0/com.microvirt.memuime",
+  "ch": "file"
+ },
+ {
+  "off": 1822,
+  "enc": "plain",
+  "needle": "/system/lib/libnb.so",
+  "ch": "file"
+ },
+ {
+  "off": 1842,
+  "enc": "xor:0x50",
+  "needle": "bignox",
+  "ch": "tag"
+ },
+ {
+  "off": 1848,
+  "enc": "plain",
+  "needle": "/dev/qemu_pipe",
+  "ch": "file"
+ },
+ {
+  "off": 1862,
+  "enc": "plain",
+  "needle": "/dev/socket/baseband_genyd",
+  "ch": "file"
+ },
+ {
+  "off": 1888,
+  "enc": "plain",
+  "needle": "/dev/socket/genyd",
+  "ch": "file"
+ },
+ {
+  "off": 1905,
+  "enc": "plain",
+  "needle": "/dev/socket/qemud",
+  "ch": "file"
+ },
+ {
+  "off": 1922,
+  "enc": "plain",
+  "needle": "/sys/qemu_trace",
+  "ch": "file"
+ },
+ {
+  "off": 1937,
+  "enc": "plain",
+  "needle": "/system/lib/libc_malloc_debug_qemu.so",
+  "ch": "file"
+ },
+ {
+  "off": 1974,
+  "enc": "plain",
+  "needle": "/dev/bst_gps",
+  "ch": "file"
+ },
+ {
+  "off": 1986,
+  "enc": "plain",
+  "needle": "/dev/bst_time",
+  "ch": "file"
+ },
+ {
+  "off": 1999,
+  "enc": "plain",
+  "needle": "/dev/socket/bstfolderd",
+  "ch": "file"
+ },
+ {
+  "off": 2021,
+  "enc": "plain",
+  "needle": "/system/lib/libbstfolder_jni.so",
+  "ch": "file"
+ },
+ {
+  "off": 2052,
+  "enc": "plain",
+  "needle": "/dev/bstacce",
+  "ch": "file"
+ },
+ {
+  "off": 2064,
+  "enc": "plain",
+  "needle": "/dev/bstgyro",
+  "ch": "file"
+ },
+ {
+  "off": 2076,
+  "enc": "plain",
+  "needle": "/dev/bstmegn",
+  "ch": "file"
+ },
+ {
+  "off": 2088,
+  "enc": "plain",
+  "needle": "/dev/bstorie",
+  "ch": "file"
+ },
+ {
+  "off": 2100,
+  "enc": "plain",
+  "needle": "/dev/bstvmsg",
+  "ch": "file"
+ },
+ {
+  "off": 2112,
+  "enc": "plain",
+  "needle": "/dev/bstpgaipc",
+  "ch": "file"
+ },
+ {
+  "off": 2126,
+  "enc": "plain",
+  "needle": "/dev/bst_ime",
+  "ch": "file"
+ },
+ {
+  "off": 2138,
+  "enc": "plain",
+  "needle": "/data/downloads/.xb/bstk",
+  "ch": "file"
+ }
+]

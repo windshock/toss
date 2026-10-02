@@ -9,6 +9,8 @@
 |---|---|---|
 | `/dev/__properties__/u:object_r:*qemu*` 컨텍스트 파일 | 클린런 openat 전수 | LKM deny (프롭 "값"이 아니라 컨텍스트 파일명이 시그니처 — resetprop으로 못 숨김) |
 | `/proc/misc`의 `goldfish_pipe/sync/address_space` 3행 | §2.20 vboxguest 힌트 | LKM redirect → /dev/.mi (goldfish/vbox 라인 필터본) |
+| **`/proc/modules`의 `goldfish_sync`·`virtio_*` 내용** (§185: 디코드 바늘 경로+태그 goldfish) | final_vocabulary 정적 복호 | LKM redirect → /dev/.fakemod (camow3 v4.6 포괄 텔테일 필터 fake — hide_kmod 자기라인도 제거). **v4.22 redirect는 fake 생성기 누락으로 ENOENT 반쪽구현이었음 → 생성기 필수** |
+| **`/proc/filesystems`(virtiofs)·`/proc/ioports`(virtio-pci) 내용** (§185) | final_vocabulary 정적 복호 | LKM redirect → /dev/.fakefs·/dev/.fakeio (camow3 v4.6 virtio/9p 필터 fake) |
 | `/dev` 디렉터리 readdir로 goldfish 노드 직접 탐색 | AVC 로그(`open /dev` denied) | LKM filldir64 훅 — 열거 자체에서 항목 제거 |
 | `/dev/goldfish*` access/stat 존재체크 | §3 엔진 체크 순서 | LKM do_faccessat/vfs_statx/vfs_fstatat만 -ENOENT 위조. **open은 통과(GL 보호)** |
 | `/proc/self/maps`의 frida agent 흔적 | crash/logcat | LKM redirect → /dev/.m (frida/gum 라인 필터본) |
