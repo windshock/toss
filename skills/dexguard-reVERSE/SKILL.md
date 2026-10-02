@@ -308,3 +308,9 @@ AbsAppGuard (hidden DEX "o.createFromParcel") — abstract base
 - **needle은 네이티브 평문 미보유** — 복호 풀/JNI 공급, 힙 스크래치 통과(판정 시점 힙 strings = 바늘 인벤토리의 최종 관측면).
 - **배치 디컴파일**: decomp_batch.java — dispatch_resolved.json 타깃 1,969개를 Ghidra 1회 실행으로 전량 디컴파일(1,317 실체+652 트램폴린). 발화 게이트 = afed8 내 0xaffb8(핸들러 반환 x23 → cmp #0).
 - **파일↔라이브 rw diff**가 암호문/평문 쌍을 통째로 준다 — XOR 분포로 변환 종류 즉별(단일키 XOR이면 키값 분포 집중).
+
+## 11. Offline emulation of the native engine — §172 (Unicorn)
+- **libea56 전체를 Unicorn으로 오프라인 실행 가능**: ①디스크 .so는 reloc 미적용 — R_AARCH64_RELATIVE(1027) 7,327건 직접 적용 필수(안 하면 디스패치 테이블 전부 0) ②섹션헤더 문자열표 변조 → 심볼은 PT_DYNAMIC(DT_SYMTAB/STRTAB)에서 ③GOT(type 257) 56종 = 스텁 주소 기입+코드훅 ④프로퍼티 세계/VFS를 파이썬으로 주입.
+- **afed8(0, 0x5c000000, needle) = 바늘 1건 값조회기**: 세계 foreach 순회 → 이름 매치 → malloc+값복사 → 포인터 반환(NULL=미매치). **값 비교는 Java** — 탐지 체인: Java 바늘→네이티브 값조회→Java 값비교→킬플래그.
+- **채널 소거의 정적 방법**: 세계(프로퍼티/VFS)를 주입하고 바늘×세계 매트릭스 → NULL이면 그 채널 무죗 확정. 카모33 프로퍼티 세계 41바늘 전부 NULL — 프로퍼티 채널 소거(§163 실측과 정적 일치).
+- rw 레코드: [type=06][len][암호문], 헤더 평문 — 정적 디코더 검증 앵커.
