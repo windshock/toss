@@ -225,10 +225,17 @@
     .rodata 텔레텔은 판정 결정적이지 않음**(스크럽에도 [EMULATOR] 불변). 부수: dynstr_surgery.py v1의 3결함
     (bloom 워드 인덱싱·전역이름표 버킷파괴·검증게이트 부재 → "couldn't find OpenGL ES" 시스템 크래시) 수리
     (v2 = 조인트 버킷+bionic룩업 게이트).
-10c. **★신규 [O]: 판정 결정 입력은 GL 외부에 있다(§180)** — GL 메모리 텔(dynstr 6,256+rodata) 전부 중립화해도
-    [EMULATOR] 불변. 최유력 = §162 프로퍼티 원시영역 순회(/dev/__properties__ mmap 직접 판독 — 카모 후에도
-    남는 잔여 바이트·컨텍스트명 계열). 다음: 판정창 힙 캡처 본(/tmp/vw)에서 프로퍼티 영역 포획 여부 재점검 →
-    원시 덤프 바늘 재스캔.
+10c. ~~판정 결정 입력은 GL 외부에 있다(§180)~~ → **★★프로퍼티 메타데이터 채널 = 실입력 확정·폐쇄
+    [C:§181]**: 가드는 property_info(트라이)+컨텍스트 파일을 이름으로 순회(§180 chtrace) — 카모 후에도
+    qemu/에뮬 컨텍스트 5종+트라이 접두어 잔존(resetprop 불변 영역) → system.img 수술(내장 vendor
+    포함 11라인)로 **0건화 → [EMULATOR] 라벨 프로젝트 최초 소실**(무라벨 12s ×2 재현). 단 라벨은
+    **간헐 잔존(~20-40%, 핫/콜드)** — 소거결과 잔여 최유력: ① GL dynstr 심볼(정적 제거=§180 핀 사망)
+    ② /proc/asound virtio-snd 내용(가짜 마운트=statfs 탐지 — LKM 개입 필요). 신법칙: 운용중
+    resetprop 자체가 판정 트리거(부트 경계 변경만 허용).
+10e. **★[O] 잔여 간헐 입력 폐쇄(§181)**: (a) GL dynstr = [O]-10d LKM 타이밍 재작성으로 통합 해결
+    (b) asound = LKM read 가로채기 또는 virtio-snd 장치 제거(에뮬 CLI 옵션 탐색) (c) ro.boot.
+    boot_devices=…virtio_mmio·ro.boot.hardware.gltransport=pipe 2건 props-apply 부트경계 추가.
+    (d) gralloc-mapper missing(screencap) 원인 — pre_s181 이미지 A/B.
 10d. **★신규 [O]: GL dynstr 핀 우회(§180)** — 핀이 dynstr에 한정된 이상, 런타임 타이밍 우회 가능성: 무결성 검사
     (T+0.6-1s 급사 시점) 통과 후·판정 스캔(T+3-10s) 전에 커널(LKM copy_to_user)로 dynstr 페이지 치환 →
     검사는 원본·스캔은 스크럽본. 과제: 검사 단발성 확인(2회 이상 검사면 사망). + zygote 상속 매핑 4종

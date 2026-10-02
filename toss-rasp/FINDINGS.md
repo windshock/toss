@@ -8140,3 +8140,58 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **fail-closed 검사의 우회는 '검사 통과 후 변경'(타이밍) 아니면 '검사면 교체'(관측 개입)뿐** —
   검사 입력 자체를 지우는 접근(파일 수술)은 사망. 다음 설계는 LKM copy_to_user 타이밍 창.
 - macOS `md5 -q -r`은 -q가 파일명을 지운다(해시만 출력) — 비교 스크립트는 `md5 -r` 단독 사용.
+
+## §181 (2026-10-02 심야2) — ★★프로퍼티 메타데이터 채널 = [EMULATOR] 실입력 확정·폐쇄 — 프로젝트 최초 라벨 소실 + 간헐 잔여 입력 지형
+
+### P0 결론
+1. **★★[EMULATOR] 판정의 실입력 하나를 인과로 확정·폐쇄 [C]**: 가드는 ftrace 관측대로
+   `/dev/__properties__/property_info`(트라이)와 컨텍스트 파일들을 **이름으로 연다**(§180 chtrace 증거).
+   카모 후에도 **5개 qemu/에뮬 컨텍스트 + 트라이 내 qemu 접두어**가 잔존(resetprop은 값만 지움 —
+   메타데이터 불변). system.img/vendor 수술(동일길이 '#' 치환 11라인: plat 3 + 내장 vendor 8 —
+   ※ vendor는 vendor.img가 아니라 **system.img 내장 파티션**(§144 dm-4←vda2 정합)에서) →
+   재부팅 후 컨텍스트 파일 0건·property_info 토큰 0(AOSP 공통 ro.boot/ro.kernel.qemu 조각 3만 잔존 —
+   실기기에도 있음 = 비변별) → **판정 라벨 최초 소실**(12s 무라벨 ×2 재현).
+2. **라벨은 간헐적으로 잔존(~20-40%)**: 연속 5런 계열 — 수술 전 세계는 역사적으로 **항상** [EMULATOR]
+   (수십 런), 수술 후 1/5→(가짜마운트 시대 3/5)→(rodata 스크럽 후 2/5). §166 핫/콜드 법칙과 정합:
+   심층 스캔이 도는 런에서만 잔여 입력이 발화. 잔여 후보(소거 결과): ~~su 30+ 경로 프루브~~(전부
+   차단·부재 실측) · ~~SELinux enforce~~(가드 미참조 — 트레이스에 없음) · ~~serial 톰스톤~~(없음) ·
+   ~~.rodata 텔~~(가능 매핑 11종 전체 스크럽에도 통계 불변) → **잔여 최유력 = GL dynstr 심볼 6,256건**
+   (정적 제거 = §180 핀 사망) + /proc/asound virtio-snd 내용(미폐쇄).
+3. **★신법칙: 운용 중 resetprop = 판정 트리거**: 부팅 후 런타임에서 ro.boot.boot_devices/gltransport
+   resetprop 직후 런에서 라벨 부활(값이 더 깨끗해졌는데도!) — 원시영역 변조(톰스톤/시리얼) 자체가
+   탐지 입력. §163(컨텍스트 파일 운용중 삭제=급사)의 값 버전. **모든 프로퍼티 변경은 부트 경계에서만**.
+4. **★신법칙: /proc 하위 가짜 bind-mount = 탐지됨**: /proc/asound를 tmpfs성 디렉토리로 덮자 라벨율
+   상승(1/5→3/5) — statfs(/proc/asound)=ext4·/proc/mounts 이상 노출 추정. 콘텐츠 위조는 LKM
+   read 가로채기 수준이 아니면 불가.
+5. /proc/asound/cards = "virtio-snd - VirtIO SoundCard at pci/0000:00:01.0/virtio7" — **앱 uid 가시
+   그대로**(§171 바늘 그대로). hw.audioInput/Output=no(36.x)로도 virtio-snd 장치 미제거 —
+   config.ini 원복함. 폐쇄는 LKM 콘텐츠 개입 과제.
+6. 부수: ro.boot.boot_devices=a003600.virtio_mmio·ro.boot.hardware.gltransport=pipe 텔 발견
+   (부트 경계에서 처리해야 — props-apply 추가 후보).
+7. 부수 이슈: gralloc-mapper missing(screencap 불가, 신선한 부트에서도) — 앱 런타임·측정은 무영향.
+   원인 미상(수술 부작용 여부 — pre_s181 이미지 A/B로 차기 검증).
+
+### P1 증거
+- §180 chtrace: 가드의 /dev/__properties__/property_info·u:object_r:* 파일 open(이름별 순회) + su
+  패밀리 30+ 경로 프루브(apex/bin/su 등 ×2, /system/xbin/su ×10 — 전부 앱 uid ENOENT/부재 실측).
+- 수술 전후 프로퍼티 영역 덤프(/tmp/props_raw·/tmp/props_now): 컨텍스트 5종+트라이 qemu → 0.
+- 측정 계열: [A] 12s 무라벨, [B] 12s 무라벨(재부팅 후 재현), [C] resetprop 후 13s [EMULATOR],
+  [D] 재부팅 후 11s [EMULATOR], [E] 5런 1/5, [F] 가짜마운트 3/5, [G] rodata 스크럽 2/5.
+- 이미지 백업: system.img.pre_s181_backup(오버레이 수술 포함 상태), vendor.img.pre_s181_backup,
+  config.ini.pre_s181_audio.
+
+### P2 절차(재현)
+1. plat/vendor property_contexts에서 qemu/에뮬 컨텍스트 라인 추출(pull 후 grep) → 원시 이미지에서
+   라인 시작(\n 직후) 앵커 검색 → 동일길이 '#' 치환 → 냉부트 → /dev/__properties__ 검증
+   (컨텍스트 grep 0·property_info 토큰 0).
+2. boot_recover → run_measure 계열 측정(≥5런으로 통계).
+
+### P3 교훈
+- **판정 입력은 "값"이 아니라 "메타데이터"에도 있다** — 트라이·컨텍스트 파일명은 resetprop 불변.
+  프로퍼티 계통 스크럽은 원시 덤프(/dev/__properties__ 통째)로 검증해야 한다.
+- **A/B는 1런이 아니라 계열로**: 간헐 입력(핫/콜드)이 섞이면 1런 차이로 인과 오판(무라벨 2런을
+  '폐쇄 완료'로 오독할 뻔) — 최소 5런.
+- **위장 부작물의 탐지면**: 가짜 파일/마운트는 콘텐츠 이전에 파일시스템 지문(statfs·mounts)으로
+  들킨다 — /proc 하위 위조는 커널 개입 없이 불가.
+- vendor 파티션의 실체 확인(§144 재확인): AVD의 /vendor는 system.img 내장 — vendor.img 파일
+  패치는 무효, system.img 내부 사본(라인 시작 앵커)을 패치할 것.

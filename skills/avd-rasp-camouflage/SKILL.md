@@ -462,3 +462,16 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   전 센티넬 크기·boot_recover [3] 바이트 검증)로 상시 방지.
 - **법칙: 크래시 캐스케이드는 첫 사망 타임라인으로 분리** — 앱 급사 → HAL 재시작 폭풍(gralloc-mapper
   missing 등)의 2차 어보트를 원인으로 오독 금지.
+
+## §181 성과 요약 (2026-10-02 심야2) + 신규 법칙
+- **★★프로퍼티 메타데이터 = [EMULATOR] 실입력 확정·폐쇄**: 가드는 /dev/__properties__/property_info
+  (트라이)+컨텍스트 파일을 이름으로 순회. resetprop은 값만 지움 — **컨텍스트명·트라이 접두어는 이미지
+  수술로만 제거**(plat_property_contexts 3라인 + system.img 내장 vendor 8라인, 동일길이 '#' 치환 —
+  AVD의 /vendor는 system.img 내장이므로 vendor.img 패치는 무효). 수술 후 라벨 최초 소실(간헐 잔존).
+- **★법칙: 판정 입력 A/B는 ≥5런 계열로** — 핫/콜드(§166) 간헐 스캔이 섞인 세계에서 1런 차이는 인과 아님.
+- **★법칙: 운용 중 resetprop = 판정 트리거** — 런타임 값 변경/삭제 자체가 탐지(톰스톤/시리얼). 부트
+  경계(props-apply+[6b] 스크럽 순)에서만 변경할 것.
+- **★법칙: /proc 하위 가짜 bind-mount = 탐지됨** — statfs(파일시스템 지문)·/proc/mounts로 노출.
+  procfs 콘텐츠 위조는 LKM read 가로채기 없이 불가.
+- **법칙: hw.audioInput/Output=no(에뮬 36.x)는 virtio-snd 장치를 못 지움** — asound 폐쇄는 별도 과제.
+- 프로퍼티 계통 스크럽 검증은 getprop이 아니라 /dev/__properties__ 통덤프 스캔으로.
