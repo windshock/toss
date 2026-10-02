@@ -14,6 +14,9 @@ export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 
 dsh() { adb shell "$@"; }
 
+echo "[0b] 디스크 여유 점검 (§175: ENOSPC가 가짜 '드리프트' 조기사멸을 냄 — 덤프 누적 방지)"
+dsh "su 0 sh -c 'df -h /data | tail -1; U=\$(df /data | tail -1 | awk \"{print \\$5}\" | tr -d %); [ \"\$U\" -gt 90 ] && { rm -rf /data/local/tmp/hd /data/local/tmp/dmp2 /data/local/tmp/heap* /data/local/tmp/rf_* /data/local/tmp/*.tar 2>/dev/null; sync; echo \"  [!] 디스크 정리 완료\"; } || echo \"  OK(\${U}%)\"" 2>/dev/null || echo "  (root 전 — [1] 후 재확인)"
+
 echo "[1] 부팅 완료 대기 + adb root"
 for i in $(seq 1 90); do
   B=$(dsh getprop sys.boot_completed 2>/dev/null | tr -d '\r')

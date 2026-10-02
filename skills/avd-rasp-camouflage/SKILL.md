@@ -406,3 +406,11 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   절대 주소 비교 금지, 쌍별 델타로 검증.
 - **hits 카운터는 누적** — 실험 판정은 반드시 델타.
 - 작성기 정체: 0x93aa0=복호화 루프(테이블 0x2747ba), 0x157200=128B 복사기, 0x101920/0xd1d30=상태·디스패치.
+
+## §175 성과 요약 (2026-10-02) — ★"드리프트 시대"의 정체 = 디스크 풀
+- **앱 1-3s 조기 사멸("드리프트")의 근원은 RASP가 아니라 ENOSPC**: `posix_fallocate() failed: No space
+  left on device`(Realm DB 생성 크래시, 가드 실행 전) — 덤프 파일 누적(hd 1.5GB 等)이 userdata 100%를 채움.
+  **청소(3.2G 확보) 즉시 11.8s 정상 복귀** — §158 이래 "드리프트"로 기록된 현상 전부 소명.
+- **진단 순서 법칙**: 조기 사멸 시 logcat am_crash에서 ENOSPC/Realm부터 확인 → `df -h /data` →
+  `/data/local/tmp` 대형 덤프 정리. "드리프트 재부팅 대기"는 디스크가 원인이 아닐 때만 유효.
+- boot_recover [0b]: 부팅 직후 디스크 사용률 점검 스텝(상시화).
