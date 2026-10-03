@@ -54,3 +54,10 @@ python3 scripts/sms_bridge.py --direction in --from +8215887882,01012345678
   브릿지 dry-run 감지 ✅
 - 수신: chat.db 감지("모니모 인증번호 [xxxxxx]") → 주입 → raw 2→3행 증가 ✅
   → Messages 앱 기동 후 inbox 저장 확인 ✅
+
+## §191 수정
+- **첫 실행 백로그 재생 버그 수리**: 상태파일(mac_rowid) 없으면 0부터 시작해 chat.db **전체
+  히스토리가 에뮬로 재주입**되던 동작 → 이제 첫 실행 시 `MAX(ROWID)`부터(신규만). 전체 재생이
+  필요하면(테스트) 상태 디렉토리 삭제 후 `--replay-history` 없이… 는 미지원 — 필요 시
+  mac_rowid 파일에 0을 직접 기입.
+- **typedstream 쓰레기 스킵**: META_WORDS 2개 이상 포함 또는 `X$`/`)a` 시작 본문은 미주입.

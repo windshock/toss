@@ -121,6 +121,10 @@ def fetch_mac_inbound(last_rowid, sender_filter):
         body = (text or "").strip() or extract_from_blob(blob)
         if not body:
             continue
+        # §191: typedstream 구조 메타가 다수 섞인 본문(사람 글 아님)은 주입하지 않는다
+        meta_hits = sum(1 for w in META_WORDS if w in body)
+        if meta_hits >= 2 or body.lstrip()[:2] in ("X$", ")a"):
+            continue
         if sender_filter and sender not in sender_filter:
             continue
         out.append({"rowid": rid, "sender": sender or "unknown", "body": body})
@@ -151,11 +155,20 @@ def save_json(path, data):
 
 
 def load_mac_rowid():
+    """상태 없으면 None (첫 실행) — 0을 반환하면 chat.db 전체 히스토리가 재생된다(§191 사고)."""
     try:
         with open(MAC_ROWID_FILE) as f:
             return int(f.read().strip())
     except Exception:
-        return 0
+        return None
+
+
+def fetch_max_mac_rowid():
+    con = sqlite3.connect(f"file:{CHAT_DB}?mode=ro", uri=True)
+    try:
+        return con.execute("SELECT ifnull(MAX(ROWID),0) FROM message").fetchone()[0]
+    finally:
+        con.close()
 
 
 def save_mac_rowid(rid):
@@ -178,6 +191,11 @@ def main():
 
     seen = set(load_json(STATE_FILE, []))
     last_mac = load_mac_rowid()
+    if last_mac is None:
+        last_mac = fetch_max_mac_rowid()
+        save_mac_rowid(last_mac)
+        print(f"[sms-bridge] 첫 실행 — 현재(rowid={last_mac}) 이후 신규 메시지만 처리 "
+              f"(히스토리 재생 안 함)", flush=True)
     sender_filter = {s.strip() for s in args.senders.split(",") if s.strip()} or None
     print(f"[sms-bridge] 시작 (direction={args.direction}, "
           f"emu→Mac={'SEND' if args.send else 'DRY-RUN'}, interval={args.interval}s)")
