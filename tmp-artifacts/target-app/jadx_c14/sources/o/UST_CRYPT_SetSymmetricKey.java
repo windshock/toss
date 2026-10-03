@@ -1,0 +1,37 @@
+package o;
+
+import android.view.View;
+import android.widget.TextView;
+import kotlin.jvm.internal.Intrinsics;
+import org.jetbrains.annotations.NotNull;
+import viva.republica.toss.R;
+
+/* loaded from: /Users/1004276/Downloads/toss/tmp-artifacts/target-app/dex/toss_alldex/classes14.dex */
+public final class UST_CRYPT_SetSymmetricKey extends UST_CRYPT_VerifyHASH {
+    private final View ICustomTabsCallback;
+    private final TextView extraCallback;
+
+    /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+    public UST_CRYPT_SetSymmetricKey(@NotNull View view) {
+        super(view);
+        Intrinsics.checkNotNullParameter(view, "");
+        this.ICustomTabsCallback = view.findViewById(R.id.rootView);
+        this.extraCallback = (TextView) view.findViewById(R.id.text);
+    }
+
+    @Override // o.UST_CRYPT_VerifyHASH, o.UST_CRYPT_VerifyMAC
+    /* renamed from: onWarmupCompleted */
+    public void IAuthTabCallback(@NotNull UST_CMS_EncryptedData uST_CMS_EncryptedData) {
+        Intrinsics.checkNotNullParameter(uST_CMS_EncryptedData, "");
+        super.IAuthTabCallback(uST_CMS_EncryptedData);
+        UST_CRYPT_GenerateHASHFile uST_CRYPT_GenerateHASHFile = (UST_CRYPT_GenerateHASHFile) uST_CMS_EncryptedData;
+        this.extraCallback.setGravity(uST_CRYPT_GenerateHASHFile.onWarmupCompleted());
+        TextView textView = this.extraCallback;
+        Intrinsics.checkNotNullExpressionValue(textView, "");
+        UST_CMP_Revoke_Rp.onExtraCallbackWithResult(textView, uST_CRYPT_GenerateHASHFile.onExtraCallbackWithResult(), uST_CRYPT_GenerateHASHFile.asInterface());
+        Integer numOnNavigationEvent = uST_CRYPT_GenerateHASHFile.onNavigationEvent();
+        if (numOnNavigationEvent != null) {
+            this.ICustomTabsCallback.setBackgroundColor(numOnNavigationEvent.intValue());
+        }
+    }
+}

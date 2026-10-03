@@ -1,0 +1,94 @@
+package o;
+
+import kotlin.enums.EnumEntries;
+
+/* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
+/* JADX WARN: Unknown enum class pattern. Please report as an issue! */
+/* loaded from: /Users/1004276/Downloads/toss/tmp-artifacts/target-app/dex/toss_alldex/classes14.dex */
+public final class getFormatWidth {
+    private static final /* synthetic */ EnumEntries $ENTRIES;
+    private static final /* synthetic */ getFormatWidth[] $VALUES;
+    private static int IAuthTabCallback = 1;
+    private static int onExtraCallbackWithResult = 1;
+    private static int onNavigationEvent;
+    private static int onWarmupCompleted;
+    public static final getFormatWidth NONE = new getFormatWidth("NONE", 0);
+    public static final getFormatWidth INCOME = new getFormatWidth("INCOME", 1);
+    public static final getFormatWidth EXPENSE = new getFormatWidth("EXPENSE", 2);
+
+    private static final /* synthetic */ getFormatWidth[] $values() {
+        int i = 2 % 2;
+        int i2 = onExtraCallbackWithResult + 61;
+        int i3 = i2 % 128;
+        onNavigationEvent = i3;
+        int i4 = i2 % 2;
+        getFormatWidth[] getformatwidthArr = {NONE, INCOME, EXPENSE};
+        int i5 = i3 + 43;
+        onExtraCallbackWithResult = i5 % 128;
+        int i6 = i5 % 2;
+        return getformatwidthArr;
+    }
+
+    public static EnumEntries<getFormatWidth> getEntries() {
+        int i = 2 % 2;
+        int i2 = onNavigationEvent;
+        int i3 = i2 + 47;
+        onExtraCallbackWithResult = i3 % 128;
+        int i4 = i3 % 2;
+        EnumEntries<getFormatWidth> enumEntries = $ENTRIES;
+        int i5 = i2 + 109;
+        onExtraCallbackWithResult = i5 % 128;
+        if (i5 % 2 == 0) {
+            int i6 = 67 / 0;
+        }
+        return enumEntries;
+    }
+
+    public static getFormatWidth valueOf(String str) {
+        int i = 2 % 2;
+        int i2 = onNavigationEvent + 25;
+        onExtraCallbackWithResult = i2 % 128;
+        int i3 = i2 % 2;
+        Object obj = null;
+        getFormatWidth getformatwidth = (getFormatWidth) Enum.valueOf(getFormatWidth.class, str);
+        if (i3 == 0) {
+            obj.hashCode();
+            throw null;
+        }
+        int i4 = onNavigationEvent + 17;
+        onExtraCallbackWithResult = i4 % 128;
+        if (i4 % 2 != 0) {
+            return getformatwidth;
+        }
+        obj.hashCode();
+        throw null;
+    }
+
+    public static getFormatWidth[] values() {
+        int i = 2 % 2;
+        int i2 = onNavigationEvent + 59;
+        onExtraCallbackWithResult = i2 % 128;
+        int i3 = i2 % 2;
+        getFormatWidth[] getformatwidthArr = (getFormatWidth[]) $VALUES.clone();
+        int i4 = onNavigationEvent + 19;
+        onExtraCallbackWithResult = i4 % 128;
+        if (i4 % 2 != 0) {
+            return getformatwidthArr;
+        }
+        Object obj = null;
+        obj.hashCode();
+        throw null;
+    }
+
+    private getFormatWidth(String str, int i) {
+    }
+
+    static {
+        getFormatWidth[] getformatwidthArr$values = $values();
+        $VALUES = getformatwidthArr$values;
+        $ENTRIES = access15300.onExtraCallbackWithResult(getformatwidthArr$values);
+        int i = IAuthTabCallback + 105;
+        onWarmupCompleted = i % 128;
+        int i2 = i % 2;
+    }
+}

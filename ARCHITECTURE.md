@@ -2,7 +2,7 @@
 
 > **최상위 탐색 출입구이자 "현재 이해"의 유일한 완결판.** FINDINGS.md는 증거 아카이브(§1~§186)이고,
 > **읽기 쉬운 현재 구조는 항상 이 문서에 반영된다** — 새 실험/해독이 나오면 이 문서를 먼저 갱신한다(§5).
-> 최종 갱신: 2026-10-03 §187 — **[EMULATOR] 판정 소멸 달성** 시점.
+> 최종 갱신: 2026-10-03 §188 — **양 평면 완결: 로컬 [EMULATOR] 소멸(§187) + FDS 서버 제한 해제(§188), 앱 메인 홈 도달**.
 > 증거수준 태그: **[C]** CONFIRMED · **[S]** SUPPORTED · **[O]** OPEN · **[R]** REFUTED
 
 ---
@@ -73,18 +73,22 @@
 └────────────────────────────────────────────────────┘
 
 ┌────────────────────────────────────────────────────┐
-│ [서버 평면 — 로컬 킬과 별개 채널] [C:분리]           │
-│ Telemetry(auth·logstore → lc.toss.im 200)          │
-│ device identity(Widevine id=이미지 상수+L3, TNK)   │
-│ → Toss backend/FDS → 403(api-gateway.toss.im)      │
+│ [서버 평면 — §188 완결: 차단 해제·정상 동작]         │
+│ FDS 블록 키 = device_id = MD5(per-app SSAID) [C]   │
+│   (settings_ssaid.xml ABX·서명키 귀속·pm clear 불변)│
+│   → 파일 삭제 회전 = 새 device_id = 403 소멸        │
+│   → 본인인증 → 메인 홈 도달 (스크린샷 증보)         │
+│ 신원 전송: X-Toss-Tsn=요청별 nonce·Tsp=설치 상수    │
+│   본문 tss 암호화(ApiCipherInterceptor=o.Native    │
+│   AdBaseImage) — 본문 평문 필드=networkType+        │
+│   usimCount뿐                                    │
 └────────────────────────────────────────────────────┘
 ```
 
-**판정 라벨**: ~~[EMULATOR] 1건 발화, 9일 불변~~ → **★§187 소멸 달성 [C]**: 판정 입력은
-파티션 변형 프롭 정체성 불일치(ro.product.system.manufacturer="Google" 등 14종 + ro.build.host=AVD
-호스트). afed8 라이브 캡처로 확정 → props-apply 파티션 스푸프로 **5/5 런 40s+ 생존·라벨 0건**.
-**집행 타이밍**: (소멸 전) 무차단 표준 T+12s. §154 "syscall 무흔적 메모리 검사"의 실체 = 프로퍼티
-영역 mmap 직접 판독(§162 [C] 재확인) — 값 비교는 Java(§172).
+**판정 라벨**: **양 평면 소멸 [C:§187+§188]** — 로컬: §187 파티션 프롭 정체성 일관화로 5/5 런
+40s+ 생존·라벨 0건. 서버: §188 ssaid 회전으로 FDS 403 소멸 → 본인인증 → 메인 홈.
+**집행 타이밍**: (§187 이전) 무차단 표준 T+12s. §154 "syscall 무흔적 메모리 검사"의 실체 = 프로퍼티
+영역 mmap 직접 판독(§162 [C]) — 값 비교는 Java(§172).
 
 ---
 
@@ -140,7 +144,7 @@
 | 하행 | api-gateway 403 3건 + **TUBA 원격설정(tuba-static variables/v2/default)** + **sec/dinitialize(비밀 발급)** |
 | **★dword 채널 [C:§155 추기12+§156]** | dwordStore.xml(비밀 UUID+유효창). 신선+오프라인→캐시 정책으로 집행. **다이얼로그 분기의 입력 = 서버가 마지막 dinitialize에서 발급한 message_present 비트** — 오프라인 dword 조작만으로 재현 불가(§156). validity 파괴 sed = refresh 재시도(~10회)→fail-closed 즉시 EXIT |
 | [C] | 서버(dword)는 **집행 정책(경로: 다이얼로그/직접)**을 내린다 — 킬 여부는 로컬 판정. **§157 정정: 집행 '지연'은 dword 정책이 아니라 네트워크 보고 체인 소요** — 통제 A/B(동일 dword, 차단만 토글): 무차단 11.2-11.6s vs REJECT 차단 1.5-1.9s(각 3런 [C]). §156 에스컬레이션 가설 기각. §155 "신선+차단=11-12s"는 DNS웨지식 느린 실패 vs REJECT 즉시실패의 차이. §154 "postDelayed" 해석 약화(침묵 구간=보고 체인 가능) |
-| [O] | dword 메시지 본문 회수(TLS 언피닝) · 403 지문(로컬 통과 후) |
+| ~~[O] dword 본문 회수~~ | **★완결 [C:§187-188추기]**: peekBody 캡처로 회수 — session/init이 HTTP 200에 앱레벨 403·message_present. **403 지문 = device_id(MD5(SSAID)) 블랙리스트** — ssaid 회전으로 소멸(§188) |
 
 ---
 
@@ -153,7 +157,7 @@
 | 호스트 dylib GL 패치 | GL 문자열(Adreno 740) | `avd-camouflage/host-patch/`, `host-patch-root/` |
 | ~~§142 램덤명~~ → **plausible 수술 완료(§155)**: GfxPerfCollector/glcommon/vulkanqti/renderctrl/glesv1·2qti, hw/ 의존자 재배선 · §146 GL 반환필터 | 라이브러리명·GL 반환 | dm-33 · 도구 `tools/name_surgery.py` |
 | **procfs 내용 redirect(§185 완성)** | /proc/modules(goldfish_sync·virtio_*)·/proc/filesystems(virtiofs)·/proc/ioports(virtio-pci) — 디코드 바늘 경로+태그 "goldfish" 매치. LKM v4.22 redirect는 fake 파일 생성기 누락(ENOENT 반쪽구현)이었음 → camow3 포괄필터 fake 생성+boot_recover 검증 | `camow3.sh`(.fakemod/.fakefs/.fakeio), `hide_kmod.c` 998-1003 |
-| **잔여 미봉쇄** | ① /proc/self/fd readdir 도트파일명 ② .dynstr goldfish_*/emugl*(§180 — 판정 비결정, 변조감지 핀) ③ Widevine L3/device_id ④ /proc/{devices,iomem} virtio(바늘 미포함) | — |
+| **잔여 미봉쇄** | ① /proc/self/fd readdir 도트파일명 ② .dynstr goldfish_*/emugl*(§180 — 판정 비결정·변조감지 핀) ③ ~~Widevine L3/device_id~~ → **[R:§188 — FDS 키 아님(교체·재생성에도 403 유지), 파생식=MD5(SSAID)]** ④ /proc/{devices,iomem} virtio(바늘 미포함) — 전부 현 세계에서 판정·차단 무관(메인 홈 도달) | — |
 
 **운영 불변식**: `pvm_block=0`(차단=ART 파손), `sc_log=0`(관측기 기본 OFF), frida-server 테스트 후 종료.
 **frida 운영법(§155 추기2)**: 주입 성공률은 **부트별 상태성**(이전 부트 1/3~1/5, 어떤 부트는 0/19) —

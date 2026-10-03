@@ -583,3 +583,22 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
 - **★매치 판정 코드 함정**: frida NativePointer.isNull()로 판정 — toString() 문자열 비교("0" vs
   "0x0")는 버그. cat 실패 = read 오류일 수 있어 open 성공과 구별 필요(exec 3< 시험).
 - 스플래시 잔존(메인 미전환)은 서버 평면(dword/auth) — 로컬 탐지 소멸과 별개 경계.
+
+## §188 (2026-10-03) — ★FDS 서버 차단 해제: 신원 = MD5(per-app SSAID)
+- **★★법칙: 토스 FDS의 기기 신원 = MD5(per-app SSAID)** — 파생 코드 체인: 트래커 페이로드
+  deviceId ← `o.RealDrawScopeSizeResolver.onTransact`(seed getter, "seed" 키 MMKV 캐시) ←
+  `o.EstimateFaceQualityFromBGRImage.onExtraCallbackWithResult`(MD5-of-string 헬퍼) ← 입력 =
+  Settings.Secure android_id = **per-app SSAID**(`/data/system/users/0/settings_ssaid.xml`, ABX,
+  서명키 귀속). 검증: MD5("7c5559c1d1c86494")=314872ec…(logstore device_id) 바이트 일치.
+- **★신원 회전 레시피**: `cp settings_ssaid.xml …bak; rm settings_ssaid.xml; sync` → 재부팅 →
+  시스템이 앱별 새 ssaid 발급 → pm clear 후 기동. **`settings put secure android_id`는 무효**
+  (전역값 — 앱은 per-app 값을 읽음), **pm clear도 무효**(SSAID는 서명키 귀속으로 재발급 안 함),
+  Widevine 재생성도 무효(파생 입력 아님).
+- **★법칙: 서버 200 안의 앱레벨 403** — session/init 제한은 HTTP 200에 errorCode 403 본문.
+  헤더 `X-Toss-Tsn`=요청별 nonce, `X-Toss-Tsp`=설치 상수 — 오판 금지. 본문은 tss 암호화
+  (ApiCipherInterceptor = o.NativeAdBaseImage, classes14.dex).
+- **★DexGuard 난독 클래스 실체 특정法**: `Request$Builder.addHeader` 훅 + 호출 스택 → 난독
+  클래스명(o.*) → jadx 트리(grep)에서 열기. 헤더명이 암호화돼 있어도 이 경로는 항상 뚫린다.
+- **★digest 동적 추적 함정**: digest() 시 입력 누적 없음 = update가 무장 이전(lazy 초기화).
+  인스턴스 추적보다 스택의 헬퍼 메서드를 정적으로 읽는 것이 빠르다(동적→정적 하이브리드).
+- 블랙리스트형 서버 차단은 로컬 클린과 독립 — 양쪽 다 닫아야 앱이 동작함(§187+188 실증).
