@@ -146,4 +146,10 @@ dsh "/data/local/tmp/magisk resetprop ro.hardware.egl adreno" >/dev/null 2>&1
 dsh "/data/local/tmp/magisk resetprop ro.hardware.vulkan default" >/dev/null 2>&1
 dsh "wm density 450; wm size 1080x2340" >/dev/null 2>&1
 echo "  post-zygote: model=$(dsh getprop ro.product.model) egl=$(dsh getprop ro.hardware.egl) boot=$B"
+
+echo "[12] 프로퍼티 부활 재폐쇄 (§186: [11]의 stop;start가 init 재기입을 트리거 — [6b2]로 지운 init.svc.ranchu-setup 등 4건 + 트라이 토큰이 부활해 프로퍼티 원시스캔(확정 판정입력 §181)을 재오염시킴. [11] 이후에 반드시 재실행)"
+dsh "su 0 sh -c '/data/local/tmp/magisk resetprop --delete init.svc.ranchu-setup; /data/local/tmp/magisk resetprop --delete init.svc_debug_pid.ranchu-setup; /data/local/tmp/magisk resetprop --delete ro.boottime.ranchu-setup; /data/local/tmp/magisk resetprop --delete vendor.qemu.dev.bootcomplete'" >/dev/null 2>&1
+dsh "su 0 sh /data/local/tmp/.prop_scrub.sh" 2>&1 | tail -1
+dsh "su 0 sh -c 'grep -aobE \"qemu|goldfish|ranchu\" /dev/__properties__/property_info 2>/dev/null | while IFS=: read off tok; do L=\${#tok}; F=\$(printf \"%*s\" \$L \"\" | tr \" \" \"x\"); printf \"%s\" \"\$F\" | dd of=/dev/__properties__/property_info bs=1 seek=\$off count=\$L conv=notrunc 2>/dev/null; done'" >/dev/null 2>&1
+echo "  부활프롭=$(dsh "getprop | grep -ciE 'qemu|goldfish|ranchu'") 원시토큰=$(dsh "su 0 sh -c 'for f in /dev/__properties__/u:object_r:*; do strings \$f 2>/dev/null; done; strings /dev/__properties__/property_info 2>/dev/null' | grep -ciE 'qemu|goldfish|ranchu'")"
 fi

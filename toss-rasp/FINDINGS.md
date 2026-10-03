@@ -8499,3 +8499,62 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - `toss-rasp/session186/s186_verify.sh` v2(가동 중) / `native-engine/audit_static_complete.py`
 - `vendor_bind_setup.sh` build 리터럴 패치 통합 / .vl64 클린 재빌드+리터럴 패치 적용 세계
 - SKILL.md §186 법칙 반영 / ARCHITECTURE [O] 갱신
+
+## §186 추기 (2026-10-03 오전 — 사용자 문의 대응: "지금도 탐지되서 죽는데?") — 실측 누수 4건 추가 폐쇄 + 판정 입력은 미지(메모리 검사)로 재확정
+
+### P0 결론
+1. **오전 관측**: 사용자 수동 런 4건 — 5523=11.4s System.exit(0)·9198=101s 생존 후 System.exit(0)
+   (스택에 IAuthTabCallback 킬플래그 체인 §149-7f). logstore로 **앱 Build 정체성 = samsung/SM-S916N
+   확인**(§155 Build 누출 채널 폐쇄 유지) — 판정은 exitPlan=EXIT·caller=RASP 로컬 [EMULATOR] 정상
+   경로. 서버 에스컬(1-2s 즉시킬)은 **소멸**(오전 런들이 11s+ 생존) → dword 재발급 확인
+   (dinitialize UUID 0730fc0f→a7343ec2).
+2. **★프로퍼티 부활 재폐쇄(§163 법칙의 실시간 재현)**: [11] stop;start가 init 재기입을 트리거 —
+   [6b2]로 지운 init.svc.ranchu-setup 등 4건 + property_info 트라이 "qemu" 노드(오프셋 53404,
+   **부트마다 결정적 배치**)가 부활. 원시영역+트라이 재스크럽으로 0건화 → **boot_recover [12] 신설**
+   ([11] 이후 재삭제+스크럽+감사). 단독으로는 판정 불변 → 비원인.
+3. **★goldfish 디바이스 open 존재채널 발견·폐쇄(v4.30)**: stat/access는 acc-stat이 ENOENT 위장하지만
+   **open은 클론 redirect로 '성공'** — 가드의 open 기반 needle 검사(/dev/goldfish_sync 등 어휘 바늘)
+   가 존재로 판정. ftrace로 가드의 바늘 스캔 시퀀스 포착(9475 스레드: goldfish_address_space →
+   qemu_pipe → qemud → qemu_trace → malloc_debug_qemu 연속 프로브). **수리: openat flags로 차별화 —
+   GL 전송=0x802(O_RDWR|O_NONBLOCK)만 클론 redirect, O_RDONLY 프로브는 /Z(ENOENT)** + gf_probe_hits
+   카운터. 실측: 게이트 uid cat→ENOENT·hits 증가, O_RDWR→클론 OK, 렌더 무영향. **단독 판정 불변 → 비원인.**
+   (주의: magisk su는 20179 등 비-앱범위 uid 거부("bad uid") — 게이트 검증은 반드시 su 10179로.)
+4. **★statfs/stat 속성 지문 발견·폐쇄(v4.31)**: redirect 가짜(/dev/.q7zm4h 등)로 resolve되는
+   /proc/self/maps·status·mounts·cpuinfo의 **statfs f_type=tmpfs·st_size≠0·st_dev=tmpfs** — proc
+   파일은 st_size=0이므로 속성만으로 위조판별 가능(§181 statfs 지문 법칙의 redirect 판). **수리:
+   redirect를 open 계열 syscall(openat=56/openat2=437, NR=task_pt_regs->regs[8])에만 적용** —
+   stat/statfs/access는 실제 proc 파일로 통과 → 속성 완전 정합(실측: stat -f → "proc"). **단독 판정
+   불변 → 비원인.** 잔여 [O]: fstat/fstatfs(열린 fd 기반)는 여전히 가짜 inode — 차기 단계.
+5. **★camow3 maps 필터 보강**: 필터 패턴이 LKM is_emu_vma_name보다 좁아 GL 전송 스택 7종
+   (libGLESv1/2_enc·libOpenglSystemCommon·libGfxPerfCollector·lib_renderControl_enc·libandroidemu·
+   libvulkan_enc) 28라인이 가짜 maps에 노출 → 패턴에 _enc|OpenglSystem|GfxPerf|androidemu|vulkan_enc|
+   xhook|CodecCommon 추가 → 가짜 maps 텔레텔 0건. **단독 판정 불변 → 비원인(§155 이름 비인과와 정합).**
+6. **판정 입력 최종 소거 상태**: 위 4종+§181-185 전체 폐쇄 후에도 5/5 [EMULATOR](12s 일관) → 판정
+   입력은 **네이티브의 프로세스 내 메모리 직접 검사(§154 T+3-10s syscall 무흔적 구간)**로 재확정 —
+   ARCHITECTURE [O]-1(ART 구조 오프셋 의미분석/hwbp)이 다음 유일 공략점. dword 정책(재발급)이 스캔
+   빈도(핫/콜드)를 좌우할 가능성 [S] — 오전 101s 생존 런(1차 스캔 통과) 존재.
+
+### P1 증거
+- run_measure 계열: s186_v430_5runs.txt(5/5)·s186_v431_5runs.txt(5/5)·s186_mapsfilter_5runs.txt(5/5)
+- v4.30 실증: su 10179 cat goldfish_sync → "No such file or directory"(차단), exec 3<> → OK(클론),
+  gf_probe_hits 0→1. **주의: magisk su 20179 = "bad uid"로 무효 — 게이트 검증은 su 10179 필수.**
+- v4.31 실증: su 10179 stat -f /proc/self/maps → Type: tmpfs(수정 전) → proc(수정 후)
+- ftrace 바늘 스캔 시퀀스: instances/flag19 + main buffer 캡처(채널트레이스)
+- logstore: RealmDbManager manufacturer=samsung model=SM-S916N(빌드 정체성 청정) + fds_detected_debug
+  exitPlan=EXIT caller=RASP
+
+### P2 절차
+- goldfish 플래그 검증: `su 10179 sh -c 'cat /dev/goldfish_sync'` → ENOENT = 차단 정상 / hit 카운터
+  `/sys/module/hide_kmod/parameters/gf_probe_hits`
+- statfs 검증: `su 10179 stat -f -c %T /proc/self/maps` → proc
+- 트라이 토큰: 부트마다 53404 오프셋 재출현(결정적) — [12] 루프가 한 번에 못 잡으면 수동 1회 재fill
+
+### P3 교훈
+- **★open과 stat의 위장 분리는 필수**: 경로 존재채널은 stat(ENOENT 위장)과 open(redirect 성공)이
+  정반대 값을 내놓는다 — 바늘 검증은 반드시 **양쪽 모두** 게이트 uid로.
+- **★가짜 파일은 속성이 밀고한다**: 내용이 아무리 완벽해도 st_size/st_dev/f_type이 tmpfs면 proc이
+  아님. redirect 설계 시 syscall NR 게이트(open 계열만)가 정석.
+- **magisk su의 비-앱 uid 거부**: "bad uid" → 조용히 root로 빠져 NOT 게이트 테스트가 된다. 검증
+  uid는 반드시 실제 앱 uid(10179 등).
+- [11] stop;start = 프로퍼티 재오염 트리거 — 부트 복구 스크립트의 프레임워크 재시작 이후에는 항상
+  재감사(§163 법칙의 워크플로판).

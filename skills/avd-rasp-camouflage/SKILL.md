@@ -550,3 +550,22 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   (정적 해독 완결성 감사 — 누락 0건 증명용).
 - **부수**: 호스트 부하 절감 위해 미사용 redroid qemu를 monitor quit로 정상 종료 가능(198% CPU
   점유가 측정 창을 오염). Toss 부트 리시버 자동시작은 런 전 force-stop으로 방어(run_measure 내장).
+
+## §186 추기 (2026-10-03 오전) + 신규 법칙 — open/stat 위장 분리 + 가짜 파일 속성 지문
+- **★법칙: 경로 존재채널은 open과 stat가 정반대** — stat/access는 acc-stat 훅이 ENOENT 위장해도
+  open은 클론 redirect로 '성공'한다. 가드가 open 기반 needle 검사를 쓰면 goldfish 디바이스가
+  존재로 판정됨(§186 ftrace로 가드 바늘 스캔 시퀀스 포착). **v4.30 수리: openat flags
+  (task_pt_regs->regs[2])로 차별화 — O_RDWR(GL 0x802)만 클론, O_RDONLY 프로브는 /Z.**
+  검증: `su 10179 cat /dev/goldfish_sync` → ENOENT / `exec 3<>` → OK / gf_probe_hits 카운터.
+- **★법칙: 가짜 파일은 속성이 밀고한다** — redirect된 /proc 가짜는 f_type=tmpfs·st_size≠0·
+  st_dev=tmpfs로 proc 아님이 즉시 판별(실기기 /proc 파일은 st_size=0). **v4.31 수리: redirect를
+  open 계열 syscall(openat=56/openat2=437, NR=regs[8])에만 적용 — stat/statfs/access는 실제
+  proc 파일로 통과.** 잔여 [O]: fstat/fstatfs(fd 기반) 속성.
+- **★함정: magisk su의 비-앱 uid 거부** — `su 20179`는 "bad uid"로 실패하고 뒤 명령이 root로
+  실행될 수 있다 → 게이트 테스트는 반드시 실제 앱 uid(예: su 10179). 게이트 여부는 stat 기대값
+  대조(가짜 ENOENT vs 실존)로 확인.
+- **★법칙: [11] stop;start = 프로퍼티 재오염 트리거** — init.svc.ranchu-setup 등 4건+property_info
+  트라이 "qemu" 노드(부트마다 오프셋 53404 결정적 출현)가 부활 → **boot_recover [12] 신설**([11]
+  후 재삭제+스크럽). 부트 복구의 프레임워크 재시작 뒤에는 항상 프로퍼티 재감사.
+- **판정 입력 현재 위치**: 위 4종+기존 전체 폐쇄 후에도 [EMULATOR] 5/5(12s) → 입력은 §154의
+  프로세스 내 메모리 검사(미지) — ART 구조 오프셋 의미분석/hwbp가 다음 관측면([O]-1).

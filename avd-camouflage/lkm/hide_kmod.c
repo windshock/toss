@@ -107,6 +107,9 @@ static int emu_lib_block;
 module_param_named(emu_lib_block, emu_lib_block, int, 0644);
 static ulong emulib_hits;
 module_param(emulib_hits, ulong, 0444);
+/* v4.30 §186: goldfish needle 프로브(비-O_RDWR open) 차단 카운터 */
+static ulong gf_probe_hits;
+module_param(gf_probe_hits, ulong, 0444);
 static int is_emu_gl_lib(const char *n)
 {
 	if (!n)
@@ -951,12 +954,33 @@ static int rewrite_ret(struct kretprobe_instance *ri, struct pt_regs *regs)
 	 * 보다 먼저 와야 qemu_pipe 차단을 우회해 클론으로 열린다. */
 	/* v4.22: qemu_pipe는 clone 재지향 제거 — GL은 goldfish_pipe만 쓰고, qemu_pipe
 	 * 존재 확인은 에뮬 텔테일이라 path_blocked로 ENOENT 시켜야 함(존재 누수 차단). */
-	if (strcmp(name, "/dev/goldfish_pipe") == 0)
-		redirect(name, "/dev/.wq517h");
-	else if (strcmp(name, "/dev/goldfish_address_space") == 0)
-		redirect(name, "/dev/.tr482w");
-	else if (strcmp(name, "/dev/goldfish_sync") == 0)
-		redirect(name, "/dev/.un394z");
+	/* v4.30: ★goldfish open 존재채널 폐쇄(§186) — stat/access는 acc-stat이 ENOENT
+	 * 위장하지만 open은 클론으로 '성공'해서 가드의 open 기반 needle 검사
+	 * (/dev/goldfish_sync 등이 final_vocabulary 바늘)가 존재로 판정 → [EMULATOR].
+	 * 실측: GL 전송 open은 flags=0x802(O_RDWR|O_NONBLOCK), 가드 프로브는 O_RDONLY
+	 * 계열 → O_ACCMODE!=O_RDWR open은 /Z(ENOENT), O_RDWR만 클론 redirect.
+	 * flags는 task_pt_regs(current)->regs[2] (openat(dirfd,path,flags) x2). */
+	if (strcmp(name, "/dev/goldfish_pipe") == 0 ||
+	    strcmp(name, "/dev/goldfish_address_space") == 0 ||
+	    strcmp(name, "/dev/goldfish_sync") == 0) {
+		struct pt_regs *uregs = task_pt_regs(current);
+		unsigned long oflags = uregs ? uregs->regs[2] : 0;
+
+		if ((oflags & O_ACCMODE) == O_RDWR) {
+			if (name[14] == 'p') /* goldfish_pipe */
+				redirect(name, "/dev/.wq517h");
+			else if (name[14] == 'a') /* goldfish_address_space */
+				redirect(name, "/dev/.tr482w");
+			else /* goldfish_sync */
+				redirect(name, "/dev/.un394z");
+		} else {
+			gf_probe_hits++;
+			name[0] = '/';
+			name[1] = 'Z';
+			name[2] = '\0';
+			return 0;
+		}
+	}
 
 	if (path_blocked(name)) {
 		name[0] = '/';
@@ -969,37 +993,49 @@ static int rewrite_ret(struct kretprobe_instance *ri, struct pt_regs *regs)
 	 * v4.0: smaps는 smaps 형식(Size:/Rss:/Pss:...) 파일로 별도 서비스 —
 	 * maps 형식을 주면 파서가 판정 입력으로 삼을 수 있다(토스가 smaps 직접
 	 * 읽는 것을 실측). smaps_rollup은 드물어 기존 maps 파일로 유지. */
-	if (!maps_off && proc_self_file(name, "smaps"))
+	/* v4.31 §186: ★redirect를 open 계열 syscall에만 적용 — stat/statfs가 가짜
+	 * (tmpfs) 파일로 resolve되면 f_type=tmpfs·st_size≠0·st_dev=tmpfs로 proc
+	 * 파일 아님이 즉시 판별됨(실측: 게이트 uid stat -f /proc/self/maps →
+	 * "Type: tmpfs", §181 statfs 지문 법칙의 redirect 판). syscall NR =
+	 * task_pt_regs->regs[8]: openat=56, openat2=437만 redirect, 그 외
+	 * (stat/statfs/access)는 실제 proc 파일로 통과 → 속성 완전 정합.
+	 * 잔여 [O]: fstat/fstatfs(열린 fd 기반)는 fd가 가짜를 가리킴 — 차기 단계. */
+	{
+		struct pt_regs *sregs = task_pt_regs(current);
+		unsigned long snr = sregs ? sregs->regs[8] : 56;
+		int is_open = (snr == 56 || snr == 437);
+
+	if (is_open && !maps_off && proc_self_file(name, "smaps"))
 		redirect(name, "/dev/.pk832d");
-	else if (!maps_off && (proc_self_file(name, "maps") ||
+	else if (is_open && !maps_off && (proc_self_file(name, "maps") ||
 		 proc_self_file(name, "smaps_rollup")))
 		redirect(name, "/dev/.q7zm4h");
-	else if (proc_self_file(name, "status"))
+	else if (is_open && proc_self_file(name, "status"))
 		redirect(name, "/dev/.w2nvk9");
-	else if (proc_self_file(name, "mounts"))
+	else if (is_open && proc_self_file(name, "mounts"))
 		redirect(name, "/dev/.jt38xs");
-	else if (is_self_task_comm(name))
+	else if (is_open && is_self_task_comm(name))
 		redirect(name, "/dev/.ns582t");
-	else if (strcmp(name, "/proc/net/unix") == 0)
+	else if (is_open && strcmp(name, "/proc/net/unix") == 0)
 		redirect(name, "/dev/.ra965d");
-	else if (strcmp(name, "/proc/net/tcp") == 0)
+	else if (is_open && strcmp(name, "/proc/net/tcp") == 0)
 		redirect(name, "/dev/.vy42mq");
-	else if (strcmp(name, "/proc/misc") == 0)
+	else if (is_open && strcmp(name, "/proc/misc") == 0)
 		redirect(name, "/dev/.ew471v");   /* goldfish 디바이스 등록 테이블 (§2.20) */
-	else if (strncmp(name, "/sys/devices/system/cpu/", 24) == 0 &&
+	else if (is_open && strncmp(name, "/sys/devices/system/cpu/", 24) == 0 &&
 		 (strcmp(name + 24, "online") == 0 || strcmp(name + 24, "present") == 0 ||
 		  strcmp(name + 24, "possible") == 0))
 		redirect(name, "/dev/.pl728v");  /* 2코어 → 8코어 위장 (판정 직전 마지막 읽기 실측) */
-	else if (strcmp(name, "/proc/cpuinfo") == 0 && !dis_cpuinfo)
+	else if (is_open && strcmp(name, "/proc/cpuinfo") == 0 && !dis_cpuinfo)
 		redirect(name, "/dev/.zc7h4u");
-	else if (strcmp(name, "/proc/version") == 0)
+	else if (is_open && strcmp(name, "/proc/version") == 0)
 		redirect(name, "/dev/.kb913x");
 	/* v4.22: 모듈/파일시스템/ioports 가상화 텔테일 — 필터된 fake로 재지향 */
-	else if (strcmp(name, "/proc/modules") == 0)
+	else if (is_open && strcmp(name, "/proc/modules") == 0)
 		redirect(name, "/dev/.fakemod");
-	else if (strcmp(name, "/proc/filesystems") == 0)
+	else if (is_open && strcmp(name, "/proc/filesystems") == 0)
 		redirect(name, "/dev/.fakefs");
-	else if (strcmp(name, "/proc/ioports") == 0)
+	else if (is_open && strcmp(name, "/proc/ioports") == 0)
 		redirect(name, "/dev/.fakeio");
 	/* v4.4: uid sysstats — 실기기(삼성)엔 있고 GKI 에뮬엔 없는 3종(가드 dex 어휘
 	 * 실측 2026-09-21). 존재 위장. 내용은 camow3가 생성 */
@@ -1040,6 +1076,7 @@ static int rewrite_ret(struct kretprobe_instance *ri, struct pt_regs *regs)
 	 * 없는 상태에서는 실제값을 보여주는 쪽이 안전. */
 
 	/* v3.9 위장 파일 .oq306f는 하위호환용으로만 유지(camow3가 생성) */
+	} /* v4.31 is_open 게이트 블록 종료 */
 
 	/* CPU 토폴로지 정규화 — 2코어 에뮬에서 엔진이 cpu2..7을 열어 ENOENT로
 	 * 코어수 판정(52회 폴링 실측). cpuN → cpu0로 한 글자 교체(동일 길이라
@@ -2142,7 +2179,7 @@ static int __init hide_init(void)
 	pr_info("hide_kmod v4.22a: armed (nuid=%d) + vdso worker (page=0x%lx)\n",
 		n_target_uids, vdso_page_addr);
 
-	pr_info("hide_kmod v4.17: armed (nuid=%d, deny+redirect+acc-stat+getdents+dpath+mrs 필터)\n",
+	pr_info("hide_kmod v4.30: armed (nuid=%d, deny+redirect+acc-stat+getdents+dpath+mrs+gf_flag 필터)\n",
 		n_target_uids);
 	return 0;
 }

@@ -100,12 +100,12 @@ while true; do
     [ -n "$PID" ] && break
   done
   if [ -n "$PID" ]; then
-    grep -vE 'frida|gum|\.rs9|linjector|goldfish|emulation|ranchu|qemu' /proc/$PID/maps > /dev/$F_MAPS.tmp 2>/dev/null
+    grep -vE 'frida|gum|\.rs9|linjector|goldfish|emulation|ranchu|qemu|_enc|OpenglSystem|GfxPerf|androidemu|vulkan_enc|xhook|CodecCommon' /proc/$PID/maps > /dev/$F_MAPS.tmp 2>/dev/null
     [ -s /dev/$F_MAPS.tmp ] && mv /dev/$F_MAPS.tmp /dev/$F_MAPS
     # v4.2: smaps는 블록 단위 필터 — 헤더만 지우면 Size:/VmFlags: 고아 블록이 남아
     # (실측: headers 3502 vs Size: 3510) 파서가 변형 스트림을 먹고 자폭 분기 진입.
     awk 'BEGIN{skip=0}
-        /^[0-9a-f]+-[0-9a-f]+ /{ if ($0 ~ /frida|gum|\.rs9|linjector|goldfish|emulation|ranchu|qemu/) skip=1; else { skip=0; print }; next }
+        /^[0-9a-f]+-[0-9a-f]+ /{ if ($0 ~ /frida|gum|\.rs9|linjector|goldfish|emulation|ranchu|qemu|_enc|OpenglSystem|GfxPerf|androidemu|vulkan_enc|xhook|CodecCommon/) skip=1; else { skip=0; print }; next }
         { if (!skip) print }' /proc/$PID/smaps > /dev/$F_SMAPS.tmp 2>/dev/null
     [ -s /dev/$F_SMAPS.tmp ] && mv /dev/$F_SMAPS.tmp /dev/$F_SMAPS
     sed 's/TracerPid:.*/TracerPid:\t0/' /proc/$PID/status > /dev/$F_STAT.tmp 2>/dev/null

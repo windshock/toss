@@ -2,7 +2,7 @@
 
 > **최상위 탐색 출입구이자 "현재 이해"의 유일한 완결판.** FINDINGS.md는 증거 아카이브(§1~§186)이고,
 > **읽기 쉬운 현재 구조는 항상 이 문서에 반영된다** — 새 실험/해독이 나오면 이 문서를 먼저 갱신한다(§5).
-> 최종 갱신: 2026-10-03 §186 종료 시점.
+> 최종 갱신: 2026-10-03 §186 추기(오전) 시점.
 > 증거수준 태그: **[C]** CONFIRMED · **[S]** SUPPORTED · **[O]** OPEN · **[R]** REFUTED
 
 ---
@@ -157,14 +157,22 @@
 **frida 운영법(§155 추기2)**: 주입 성공률은 **부트별 상태성**(이전 부트 1/3~1/5, 어떤 부트는 0/19) —
   0이면 에뮬 재부팅이 최단 해법. 서버 헬스체크(settings attach) 선행 필수. 도구: hook_safecopy_watch.js,
   hook_rw_diff.js(rw 세그먼트 diff — 판정 상태변수 지도용, 다음 부트에서 실행 대기), hwbp_global.sh.
-**현재 세계**: SM-S916N/egl=adreno/LKM=v4.29d(트리프와이어·K2/레코드 덤프 내장)/uid=10179 —
-   기준선 **[EMULATOR] EXIT ~11.5s(디스크 여유 시)** · 디스크 풀 시 1-3s 가짜 드리프트(ENOSPC — [0b] 방지).
+**현재 세계**: SM-S916N/egl=adreno/LKM=**v4.31**(goldfish open 플래그 차단·redirect NR 게이트)/uid=10179 —
+   기준선 **[EMULATOR] EXIT ~12s** · 디스크 풀 시 1-3s 가짜 드리프트(ENOSPC — [0b] 방지).
 **★§186 세계 수리**: "렌더 웨지"(§183/§185 블로커 B)의 진짜 원인 = **.vl64 오염 매퍼**(§180 dynstr
    수술본이 10/2 20:14 재빌드에서 재유입 → passthrough 스캔이 로드하다 abort → gralloc-mapper
    missing → 그래픽 스택 전체 사망). 클린 재빌드(md5 스톡 일치 확인)+리터럴 패치(build에 영구
    통합)로 해소 — 마운트 후 렌더 1.36MB 유지·mapper abort 0건. **bind-less 부분카모는 앱 EGL
    자체가 LKM deny로 사망**(uid 10179 open 실증) — GL 생략 A/B는 성립하지 않음. 표준 세계 =
    클린 bind+egl=adreno+[11] 포함 boot_recover.
+**★§186 추기 — 실측 누수 4건 추가 폐쇄(전부 독립 실증 후 비원인 확정)**:
+   ① [11] stop;start가 init.svc.ranchu-setup 등 4건+트라이 "qemu" 노드를 **재부활**(§163 실시간판) →
+   boot_recover **[12] 신설**(재삭제+스크럽) ② goldfish 디바이스 **open 존재채널**(stat=ENOENT vs
+   open=클론 성공 — openat flags 0x802=GL/0=프로브 차별화, **v4.30**) ③ redirect 가짜의
+   **statfs/stat 속성 지문**(f_type=tmpfs·st_size≠0 — **v4.31: redirect를 open 계열 NR(56/437)로
+   한정**, stat은 실제 proc 통과) ④ camow3 maps 필터 패턴 갱신(GL 전송 7종 노출 → 0건).
+   → **판정 입력은 네이티브 프로세스 내 메모리 검사(§154 미지 입력)로 재확정** — [O]-1이 유일 공략점.
+   주의: magisk su는 20179 등 비-앱 uid 거부("bad uid") — 게이트 검증은 su 10179 필수.
 
 ---
 
