@@ -623,3 +623,10 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   APFS clone(cp -c, 0공간)으로.
 - **★법칙: 패치 사양엔 why를 같이 내장** — 전/후 바이트만 있으면 재현은 되지만 유지보수 불능.
   각 사양 "why" 필드 = 채널 근거+기법 이유+실측 효과. `--why` 플래그로 확인.
+
+## §191 (2026-10-03 심야) — 한글 키보드 헤드리스 레시피
+- **★에뮬 로케일 = cmd locale set-app-locales가 유일 경로**: persist.sys.locale/-prop 시딩 무효(API 33
+  google_apis 실측). Gboard 자신에 ko-KR 부여+pkill 재시작 → Korean(2-Bulsik) 자동 추가(ㅂㅈㄷ 실증).
+  시스템 앱(settings/systemui/launcher/messaging/dialer)에도 부여 → 한국어 UI.
+- SMS 브릿지(sms_bridge.py)는 스킬 자산 — 배포판에서 sms.sh 런처로 제공(start/status/stop).
+- **replace는 assert 없이 믿지 말 것**: 인용 불일치로 "고쳤다" 착각한 grep 패턴이 재발(§191).

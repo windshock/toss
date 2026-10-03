@@ -8792,3 +8792,22 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   라벨 최초 소실) ④벨트앤서스펜더 항목 구분(manifest 1B·vendor.img 사본).
 - `--why` 플래그: verify/apply 출력에 근거 주석. 교훈 일반화: **패치 사양에는 전/후 바이트와
   근거를 같이 커밋할 것** — 근거는 FINDINGS 절 참조만으로는 부족, 도구 자체가 자기설명적이어야.
+
+## §191 (2026-10-03 심야) — 배포판 실용 기능: 한글 키보드(per-app 로케일) + SMS 브릿지 런처 통합
+
+### P0
+1. **API 33 google_apis 이미지의 로케일 함정 [C]**: `persist.sys.locale`(setprop/-prop/재부팅)과
+   `settings system system_locales` 모두 무효(시딩 안 됨·키 없음·user 로케일은 ABX 바이너리).
+   **유일한 헤드리스 경로 = `cmd locale set-app-locales`** — 시스템 앱(settings/systemui/launcher/
+   messaging/dialer)과 **Gboard 자신**에게 ko-KR 부여 → Gboard가 언어 목록에 **Korean(2-Bulsik)**을
+   자동 반영(실증: 설정 검색창 ㅂㅈㄷ 두벌식 자판·UI 한국어). Gboard 재시작(pkill) 후 효과.
+   중간 과정 관찰: per-app 로케일 적용 전 잔상 자판이 중국어 병음으로 뜬 적 있음 — 재시작+재포커스로
+   해소(서브타입 null 해석 일시 혼란).
+2. **sms.sh 런처**(배포판): 스킬의 실측된 sms_bridge.py를 래핑(start/status/stop, --send/--from
+   패스스루). 전제 확인: Mac 터미널 Full Disk Access(chat.db 읽힘 28,399행 ✓)·Google Messages 존재 ✓.
+3. oneclick 통합: korean.sh 호출(설치 직후), `-prop` 사(dead) 제거, 검증 grep 'LABEL=$' 버그 수정
+   (이전 수정이 인용 불일치로 미반영 — **무효 replace는 assert로 잡아야** 하는 재확인).
+
+### P3
+- **★로케일 헤드리스 설정은 cmd locale set-app-locales가 정답**(에뮬 이미지 공통 함정: prop 시딩 불신).
+- **문자/레이아웃 자동화 전 Gboard 언어 목록 확인 먼저** — per-app 로케일만으로 추가돼 있었음(UI 자동화 불필요).
