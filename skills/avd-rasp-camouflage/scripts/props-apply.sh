@@ -22,6 +22,20 @@ $M ro.build.characteristics nosdcard 2>/dev/null
 $M ro.build.flavor dm2qksx-user  2>/dev/null
 $M ro.build.fingerprint "samsung/dm2qksx/dm2q:13/TP1A.220624.014/S916NKSU1AWC2:user/release-keys" 2>/dev/null
 
+# ── §187: 파티션 변형 product 프롭 — AVD 이미지가 google/Google로 설정해 두어
+#    가드의 ro.product.system.manufacturer 등 직접 조회가 samsung 본체와 불일치
+#    (2026-10-03 afed8 라이브 캡처 실측: system.manufacturer="Google" 2회,
+#    ro.build.host="r-8891092928c26a74-s7wc"(Google Cloud Build) 8회).
+#    실기기는 파티션 변형까지 전부 samsung으로 일관. 부트 경계에서만 변경(§181).
+for P in bootimage odm product system system_ext vendor vendor_dlkm; do
+  $M ro.product.$P.brand samsung        2>/dev/null
+  $M ro.product.$P.manufacturer samsung 2>/dev/null
+  $M ro.product.$P.device dm2q          2>/dev/null
+  $M ro.product.$P.model SM-S916N       2>/dev/null
+  $M ro.product.$P.name dm2qksx         2>/dev/null
+done
+$M ro.build.host SWDC2601         2>/dev/null
+
 # ── 에뮬레이터 텔테일 제거 ─────────────────────────────────────────────────
 $M --delete ro.kernel.qemu       2>/dev/null
 $M --delete ro.boot.qemu         2>/dev/null

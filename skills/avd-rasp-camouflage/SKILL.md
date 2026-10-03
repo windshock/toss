@@ -569,3 +569,17 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   후 재삭제+스크럽). 부트 복구의 프레임워크 재시작 뒤에는 항상 프로퍼티 재감사.
 - **판정 입력 현재 위치**: 위 4종+기존 전체 폐쇄 후에도 [EMULATOR] 5/5(12s) → 입력은 §154의
   프로세스 내 메모리 검사(미지) — ART 구조 오프셋 의미분석/hwbp가 다음 관측면([O]-1).
+
+## §187 (2026-10-03) — ★[EMULATOR] 판정 소멸: 스푸프는 신원 트리 전체에
+- **★★법칙: 가드는 본체-파티션 프롭 "일관성"을 검증한다** — ro.product.manufacturer=samsung으로
+  스푸프해도 **ro.product.system.manufacturer="Google"**(파티션 변형 14종)이 남으면 위조로 판정.
+  수리: props-apply에 bootimage/odm/product/system/system_ext/vendor/vendor_dlkm 7파티션×
+  {brand,manufacturer,device,model,name}+ro.build.host 스푸프. 결과: **5/5 런 40s+ 생존·[EMULATOR]
+  라벨 0건**(판정 소멸 — §187 전).
+- **★afed8 라이브 캡처 = 최종 진단기**: 정적 바늘 어휘(55종)는 부분집합 — 가드는 일반 신원 프롭
+  (ro.build.host 8회, ro.product.system.* 등)도 조회. frida attach(hook_afed8_verdict.js:
+  entry=needle 문자열, leave=반환 포인터, non-NULL=매치+값 덤프)로 "무엇이 어떤 값을 반환하나"를
+  직접 확인. attach 실패(signal 11)는 부트 상태성 → 재부팅이 최단(§155).
+- **★매치 판정 코드 함정**: frida NativePointer.isNull()로 판정 — toString() 문자열 비교("0" vs
+  "0x0")는 버그. cat 실패 = read 오류일 수 있어 open 성공과 구별 필요(exec 3< 시험).
+- 스플래시 잔존(메인 미전환)은 서버 평면(dword/auth) — 로컬 탐지 소멸과 별개 경계.

@@ -8558,3 +8558,56 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   uid는 반드시 실제 앱 uid(10179 등).
 - [11] stop;start = 프로퍼티 재오염 트리거 — 부트 복구 스크립트의 프레임워크 재시작 이후에는 항상
   재감사(§163 법칙의 워크플로판).
+
+## §187 (2026-10-03 오전) — ★★★[EMULATOR] 판정 소멸 달성: 판정 입력 = 파티션 변형 프롭 정체성 불일치 (ro.product.system.manufacturer="Google" 등 14종 + ro.build.host)
+
+목표: "토스가 애뮬레이터로 탐지하지 못하게" → **달성. 5/5 런 40s+ 생존·라벨 0건(직전 5/5 12s 사망 대비 전환).**
+
+### P0 결론
+1. **★판정 입력의 정체 = 정체성 불일치, 미지의 바늘이 아니었다**: afed8 라이브 캡처(frida attach,
+   hook_afed8_verdict.js)로 가드의 **실시간 프로퍼티 질의 전수**를 확보 — 55종 암호화 바늘 어휘보다
+   훨씬 넓은 일반 신원 프롭(ro.product.*/ro.build.host/ro.*.build.fingerprint 9종/ro.secure 등
+   35종)을 조회. 그중 **samsung 본체와 불일치하는 값 2계열이 유일한 이상 신호**:
+   - `ro.product.system.manufacturer` = **"Google"** (2회 조회) — 파티션 변형 14종
+     (ro.product.{bootimage,odm,product,system,system_ext,vendor,vendor_dlkm}.{brand,manufacturer}
+     = google/Google) 전체가 AVD 이미지 값 그대로. props-apply는 베이스 ro.product.*만 스푸프.
+   - `ro.build.host` = **"r-8891092928c26a74-s7wc"** (8회 조회) — AVD 이미지의 Google Cloud Build
+     호스트. 실기기는 삼성 빌드 호스트(SWDC…).
+   실기기는 파티션 변형까지 전부 samsung으로 일관 — **본체는 일치하고 변형이 google인 것 자체가
+   "위조 신원" 판정 근거**(§149 Java 값 매칭의 실체: 목록 매칭이 아니라 **일관성/기대값 비교**).
+2. **수리**: props-apply.sh에 파티션 변형 7파티션×5키(brand/manufacturer/device/model/name=samsung
+   계열)+ro.build.host=SWDC2601 추가(부트 경계 적용 — §181 운용중 resetprop 금지 법칙 준수).
+3. **★결과 — 판정 소멸 [C]**: 수리 후 frida 재캡처 = 가드가 읽는 값 전부 samsung/SWDC2601 일관.
+   frida 종료 후 클린 5런: **40s+ 생존 ×5, result 라벨 0건**(직전 동일 세계 5/5 [EMULATOR] 12s).
+   3점 검증: 프로세스 3분+ 생존(pid 유지)·topResumedActivity=Toss 스플래시·렌더 정상. 가드의
+   주기 재스캔(maps 재독 등)도 계속되나 판정 없음.
+4. **기존 폐쇄 채널들의 기여 재평가**: v4.30(goldfish open)/v4.31(statfs 지문)/maps 필터/프로퍼티
+   부활 폐쇄는 각각 단독 비원인이었으나 **실 leak 폐쇄**로서 유지 — 특히 statfs 지문·goldfish open은
+   정체성 수리만으로는 커버 안 되는 독립 탐지면. 종합: **환경 탐지면 전부 폐쇄 + 정체성 일관 = 판정 소멸.**
+5. **잔존 상태**: 앱은 스플래시에서 네트워크 활동 지속(메인 전환은 서버 평면 — dword/auth, [O] "403
+   지문" 영역 — 로컬 탐지와 별개 경계). setUnauthorized 로그는 서버 인가 평면.
+
+### P1 증거
+- toss-rasp/session187/afed8_capture_google_leak.log(수리 전: system.manufacturer="Google"·
+  host="r-889…" 캡처) / afed8_capture_after_fix.log(수리 후: samsung/SWDC2601) /
+  s187_identity_5runs.txt(5/5 생존·라벨 0)
+- props-apply.sh §187 블록(파티션 7×5키+host)
+- 대조: s186_v430/v431/mapsfilter_5runs.txt = 5/5 [EMULATOR](정체성 수리 전)
+
+### P2 절차 (재현)
+1. props-apply.sh에 §187 블록 확인 → 재부팅 → boot_recover(전체, [12] 포함) → [11] 후 트라이
+   토큰 53404 재fill([12] 루프 1회 누락분 — 2회 돌리면 잡힘)
+2. 검증: `getprop | grep -iE 'google'` = 0 (product 계열) / `su 10179 stat -f -c %T
+   /proc/self/maps` = proc / `su 10179 cat /dev/goldfish_sync` = ENOENT
+3. 측정: run_measure ×5 → 40s+ 생존·라벨 0
+
+### P3 교훈 (신규 법칙)
+- **★판정은 "목록 매칭"이 아니라 "일관성"이다**: 가드는 본체 프롭과 파티션 변형 프롭의 **상호
+  일관성**을 검증한다 — 본체만 스푸프하면 오히려 불일치가 위조 신호. 스푸프는 **신원 트리 전체**
+  (파티션 변형 포함)에 동일 정체성을 발라야 한다.
+- **★afed8 라이브 캡처가 최종 진단기**: 정적 어휘(55종)는 바늘의 부분집합 — 가드는 일반 신원
+  프롭도 조회한다. "어떤 바늘이 어떤 값을 반환하나"는 frida attach(entry=needle 문자열/leave=반환
+  포인터)로만 보인다. 관찰자 효과로 사망경로는 네이티브로 바뀌나 **읽힌 값은 유효**(§143 재확인).
+- **★frida attach 성공률은 부트 상태성**(§155 재확인) — attach 실패(signal 11) 시 재부팅이 최단.
+- 스크립트 결함이 진단을 왜곡한다: NULL 반환 판정(r.toString() "0" vs "0x0"), su의 비-앱 uid 거부,
+  cat의 read 오류를 open 실패로 오독 — 관측기 자체 검증이 먼저(§165 법칙 재확인).
