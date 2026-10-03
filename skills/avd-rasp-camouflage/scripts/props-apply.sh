@@ -111,8 +111,7 @@ for p in \
   vendor.qemu.dev.bootcomplete \
   vendor.qemu.sf.fake_camera \
   vendor.qemu.timezone \
-  vendor.qemu.vport.bluetooth \
-  vendor.qemu.vport.modem; do
+  ; do
   $M --delete $p >/dev/null 2>&1
 done
 $M vendor.rild.libpath /vendor/lib64/libsec-ril.so 2>/dev/null

@@ -8825,3 +8825,26 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
   SmsManager 경로만(레퍼런스 기존 기록). Android 13은 content query sms도 default-app-only로
   shell 조회 불가(진단 시 앱 UI가 원천).
 - sms.sh start에 role 보장+앱 기동 스텝 자동화(재발 방지).
+
+## §192 (2026-10-04) — ★SMS 발신 완성: §181 수술의 통신 회귀(vport 컨텍스트) 복원 — 양방향 실증
+
+### P0
+1. **§181 수술의 부작용 규명 [C]**: 컨텍스트 8줄 '#' 처리에 vendor.qemu.vport.{modem,bluetooth} 포함 →
+   SELinux가 qemu-props의 설정 거부(AVC denied, permissive=0) → rild가 qemu_modem_port 획득 실패
+   ("opening qemu_modem_port -1!" 10s 루프) → SIM 부재·SMS 발신 불가·수신 미저장(메모리 표시뿐)·
+   블루투스 크래시 루프("블루투스 계속 중단됨" 다이얼로그) — 전부 §181 이후 회귀.
+2. **수리 = s192 수술**: 8줄 중 통신 2줄(modem/bluetooth)만 원복, 6줄은 '#' 유지(가드 노출 최소).
+   부팅 시 qemu-props가 modem=/dev/vport9p1·bt=/dev/vport8p2 자동 설정 → **SIM=LOADED·HSPA**.
+   props-apply의 vport 2키 삭제도 제외(값이 rild에 필요 — 원래 값은 경로 문자열).
+3. **★양방향 실증 [C]**: 수신 — provider 영구 저장(type=1)+앱 표시+토스 인증번호 실전 주입(639518).
+   발신 — 에뮬 Messages 입력 → 라디오 ack → **sent 박스(type=2) 기록** → 브릿지 --send →
+   Mac Messages 실제 발송 → 사용자 폰 수신("Mac bridge outbound TEST - s192 OK" SENT 로그).
+4. **카모 무회귀 [C]**: s192 이름 2건 재노출 상태로 5런 — 40-41s 생존 ×5·라벨 0건.
+5. 수신함 이력 소실 설명: SIM 부재 시대 메시지는 provider 미기록(메모리 표시뿐)이라 재부팅으로 소실.
+
+### P3 법칙
+- **★시스템 수술은 플랫폼 기능 의존 프롭의 컨텍스트를 침범하지 말 것** — 'qemu' 이름 = 가드 텔이자
+  동시에 rild/bluetooth의 기능 키. 방어-기능 상호작용은 A/B(5런+통신)로 양쪽 검증 후 확정.
+- SMS 발신 체인의 실제 전달자는 Mac(브릿지 --send) — 에뮬 라디오는 프레임워크 경로(sent 기록·
+  UI 상태)를 정상화할 뿐 메시지는 가상망으로 사라짐. 브릿지가 이를 릴레이.
+- SIM 부재 시 수신은 표시만 되고 저장 안 됨 — 수신 영구 저장 = 라디오 건강의 지표.
