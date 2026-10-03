@@ -8611,3 +8611,40 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **★frida attach 성공률은 부트 상태성**(§155 재확인) — attach 실패(signal 11) 시 재부팅이 최단.
 - 스크립트 결함이 진단을 왜곡한다: NULL 반환 판정(r.toString() "0" vs "0x0"), su의 비-앱 uid 거부,
   cat의 read 오류를 open 실패로 오독 — 관측기 자체 검증이 먼저(§165 법칙 재확인).
+
+## §187 추기2 (2026-10-03 오전2) — 서버 평면 규명: 제한 다이얼로그 = verify/guest/session/init의 앱레벨 403 + 신원 전송 계층(X-Toss-Tsn) 확보
+
+### P0 결론
+1. **제한 다이얼로그의 발화점 확정 [C]**: `POST /api/v3.1/verify/guest/session/init`이 **HTTP 200에
+   앱레벨 에러를 반환** — `{"resultType":"FAIL","error":{"errorType":0,"errorCode":"403",
+   "reason":"비정상적인 시도가 감지되어 서비스 이용이 제한되었습니다…(다이얼로그 문구와 동일)","data":{}}}`.
+   HTTP 상태는 200이라 4xx 모니터링으로는 안 보임 — **본문 peek(§155 [O] "dword 본문 회수") 달성**.
+   로그인토큰(find/login-token)은 200 성공(서버가 이 기기의 토큰을 보유 = 기기를 인식).
+2. **신원 전송 계층 확보**: 요청 헤더에 `X-Toss-Tsn`(24hex 기기 토큰)·`X-Toss-Tsp`(16hex)·
+   `X-Toss-Content-Encoding: tss`(토스 자체 암호화 본문 495B)·UA="TossApp/5.276.0 (Native;
+   Android 13; samsung SM-S916N;)". Tsn은 **shared_prefs에 미저장 파생값** — pm clear에도 생존.
+3. **신원 리셋 매트릭스(전부 시험, 전부 제한 유지)**: pm clear(설치 ID/캐시 전면) · Widevine L3
+   상태 재생성(/data/vendor/mediadrm/IDM1013/L3 삭제 → ay64* 전부 새 값) · android_id 교체 ·
+   MediaDrm deviceUniqueId frida 교체(11223344…) · ro.serialno 교체(RZ8T41C2D3E4). → **서버의
+   블록 키는 위 신원 중 어느 것도 아님** — 파생 Tsn의 입력(우리가 상수로 설정하는 스푸프 값들
+   — fingerprint/serialno 등 — 또는 그 조합)이거나, IP/TLS 지문/서버 FDS 행동이력 기반.
+4. **과거 판정 정정**: did3 런의 "다이얼로그 통과"는 **본문 미검사 오판** — did4 본문 캡처에서
+   동일 403 확인(14회 재시도 = 실패 재시도였음). did3/did4 모두 MediaDrm 교체 상태에서 403 →
+   와이드바인 ID 단독이 블록 키가 아님.
+5. **§155와의 정합**: §155에서 403을 Build 텔레메트리 누출로 보고 "zygote 갱신 시 미재현"했으나,
+   현재는 Build 청정(§187)에도 403 → **누적 FDS 상태(9일간 device_id=314872ec…로 업로드된
+   [EMULATOR] 이력) 또는 IP/TLS 지문 기반 서버측 기억**으로 재해석. dwordStore의
+   clockValidUntil=10:58(당일)까지 캐시 정책 유효 — 만료/재발급 사이클과 무관히 지속.
+
+### P1 도구
+- hook_did4/5/6.js (okhttp 체인 요청헤더+응답본문 캡처; okio는 DexGuard 리패키징으로 클래스명
+  난독화 — 본문 파싱은 peekBody 경로로만 가능)
+- 증거: session187/did3_capture_login_phase.log, /tmp/did4_capture.log(세션 보존 권장)
+
+### P3 교훈
+- **★서버 평면 진단은 응답 "본문"에서만 가능**: HTTP 200 안에 errorCode 403을 실어 보내므로
+  상태코드 모니터링은 무용지물. peekBody로 앱레벨 에러 본문을 회수하라(§155 [O] 소화).
+- **★앱 okio는 DexGuard 리패키징** — okio.Buffer 클래스명 부재. 요청바디 회수는 헤더 경로 또는
+  클래스 검색 기반으로.
+- **★신원 리셋의 한계**: 파생 기기 토큰(Tsn)은 저장값이 아니라 파생값 — pm clear로 안 지워진다.
+  파생 입력(스푸프 상수들)을 바꿔야 Tsn이 바뀐다.
