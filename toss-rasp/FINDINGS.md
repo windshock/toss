@@ -8752,3 +8752,34 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 - **엔드투엔드 재빌드 검증**: 이식형 스크립트로 재빌드한 .ko가 검증본과 **md5 3중 일치**
   (a37852815b0b424d6619082dc7f29cd5 — 배포판·저장소·백업) — clang LTO 빌드의 결정론성 확인.
 - ack-kernel(1.2GB+)은 미복제(디스크 여유 8GB 상태에서 부피 과대) — 자동 탐색+클론 안내(README).
+
+## §190 (2026-10-03 밤) — ★시스템 이미지 수술의 완전 스크립트화: 백업 3세대 diff 역산 → 치환 사양 7건 → 바이트 100% 재현 검증 (이미지 공유 문제 해소)
+
+목표(사용자): "큰 이미지 공유 불가? 수술 스크립트는 스킬에 없어?" → **스크립트화+재현 검증 완료.**
+
+### P0 결론
+1. **수술은 스크립트가 아니었다(공백)**: §151/§181 수술이 FINDINGS 절차 기록만으로 시행돼 커밋된
+   도구가 없었음 — 이미지 통째 배포 외에 재현 수단이 없는 상태였음(사용자 지적 적중).
+2. **★역산 방법 = 백업 3세대 바이트 diff**: pre_s151→pre_s178→pre_s181→현재 전수 비교로 변경
+   영역을 카탈로그(놀랍게도 총 ~1.4KB/8.6GB) → 각 영역 전/후 바이트를 추출해 **7건의 동일길이
+   치환 사양**으로 확정:
+   - §151: dirent 리네임(goldfish_overlay…apk → connectivity_res_overlay_google_go01..bin 41B) +
+     arsc UTF-16 "goldfish.overlay"→"g0ldfish.overlay"(1B) + manifest 1B 손상(2e→4a) +
+     제2 dirent "apk"→"bin"(3B — 64B 컨텍스트 윈도로 유일화: 단독 3B는 4,129곳 중복)
+   - §181: plat 3라인(persist.debug.user_mode_emulation/qemu.hw.mainkeys/qemu.sf.lcd_density —
+     사이 주석 라인 보존) + 내장 vendor 8라인(vendor.qemu.*) + vendor.img 동일 8라인
+3. **★완전 재현 검증 [C]**: 스톡 백업(pre_s151/pre_s181)을 APFS 클론(cp -c)에 스크립트 적용 →
+   현재 수술본과 **cmp 바이트 100% 일치**(system 6건·vendor 1건, md5 단일값).
+   → **8.6GB 이미지 통째 공유 불필요 — 12KB 스크립트(사양 내장)로 스톡에서 재현.**
+4. **도구**: `skills/avd-rasp-camouflage/scripts/system_img_surgery.py`(배포판 img-surgery/에 동일)
+   — mmap 스캔(8.6GB RAM 무적재)+제자리 pwrite(전체 재작성 금지 — 디스크 풀 사고 방지)+
+   멱등(skip=이미 적용)+모호 패턴 중단+verify/apply 모드+경로명 vendor 판별.
+   oneclick 사전 점검 통합: 미적용 시 백업(cp -c) 후 자동 적용.
+
+### P3 교훈
+- **★이미지 수술은 반드시 사양(전/후 바이트 쌍)을 스크립트로 커밋하라**: 수행만 하면 재현 불능이
+  되고, 배포는 GB 단위가 된다. diff 역산으로 언제든 복원 가능하지만 그마저 백업 세대가 있어야.
+- **★대용량 in-place 패치 금지사항**: bytearray 전체 재작성 = 파일 크기만큼 디스크 필요(8.6GB
+  풀 사고 실화) — mmap 스캔 + r+b 제자리 pwrite가 정석. 테스트는 APFS clone(cp -c)로 0공간.
+- 3바이트 같은 단편 패턴은 전역 중복("apk" 4,129곳) — 컨텍스트 윈도(±32B)로 유일화.
+- 치환 사양에 오프셋은 '힌트'로만(이미지 버전 따라 이동 가능) — 적용 판정은 패턴 탐색으로.

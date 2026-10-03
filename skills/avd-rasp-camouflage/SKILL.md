@@ -612,3 +612,12 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
 - **에뮬레이터 디스크 헤드룸**: 부팅에 data(6GB)+~1.4GB 자유 필요 — "Not enough space to create
   userdata partition" FATAL 시 docker 빌드캐시/임시 파일 정리부터.
 - 신규 AVD = 신규 SSAID = 신규 device_id(§188) → FDS 블록리스트와 무관하게 시작.
+
+## §190 (2026-10-03 밤) — 시스템 이미지 수술의 스크립트화
+- **★scripts/system_img_surgery.py**: §151(골드핏 오버레이 소멸 4건)+§181(프로퍼티 컨텍스트
+  3+8+8라인) 수술을 치환 사양(전/후 바이트 쌍)으로 내장 — 백업 3세대 diff 역산, **스톡에서
+  적용하면 현재 수술본과 바이트 100% 재현 검증**. verify/apply 모두 mmap 스캔+제자리 pwrite.
+- **★법칙: 이미지 수술 = 사양 커밋이 의무** (수행만 하면 GB 배포 또는 재현 불능). 8.6GB 이미지
+  공유 대신 12KB 스크립트. 새 머신: 스톡 이미지 + cp -c 백업 + apply system/vendor.
+- **★법칙: 대용량 패치는 bytearray 전체 재작성 금지** — 디스크 풀(전체 크기만큼 필요). 테스트는
+  APFS clone(cp -c, 0공간)으로.
