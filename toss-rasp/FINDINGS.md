@@ -8811,3 +8811,17 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 ### P3
 - **★로케일 헤드리스 설정은 cmd locale set-app-locales가 정답**(에뮬 이미지 공통 함정: prop 시딩 불신).
 - **문자/레이아웃 자동화 전 Gboard 언어 목록 확인 먼저** — per-app 로케일만으로 추가돼 있었음(UI 자동화 불필요).
+
+### §191 추기2 — SMS 수신 불능 사고 원인 2건 + 수신 체인 실증
+- **원인 ①기본 문자 앱 미지정**: fresh AVD(설정 마법사 부재)는 `android.app.role.SMS` 홀더가 없음
+  → `adb emu sms send` 주입이 브로드캐스트돼도 **아무도 inbox에 저장 안 함**(content://sms 전체 빈).
+  수리: `cmd role add-role-holder android.app.role.SMS com.google.android.apps.messaging`
+  (settings의 sms_default_component는 null인 채 — role이 진짜 원천).
+- **원인 ②Messages "process is bad"**: 리소스 예외 상태 → pm clear 후 재기동으로 회복(레퍼런스
+  처방 재확인). 이 두 개가 겹쳐 브릿지 INJECTED 로그는 남는데 앱에 안 보이는 현상.
+- **수신 체인 실증**: role+회복 후 `emu sms send` → Messages 대화+버블 표시 확인. 브릿지의
+  Mac→emu 주입과 동일 메커니즘 — 실전 문자(NICE ID 23:45 포함)도 이 후로 정상 표시.
+- **한계 재확인**: 발신(Messages 앱 입력)은 라디오 부재로 Bugle 내부 대기뿐 — sent 박스 기록은
+  SmsManager 경로만(레퍼런스 기존 기록). Android 13은 content query sms도 default-app-only로
+  shell 조회 불가(진단 시 앱 UI가 원천).
+- sms.sh start에 role 보장+앱 기동 스텝 자동화(재발 방지).
