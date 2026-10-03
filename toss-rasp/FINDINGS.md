@@ -8744,3 +8744,11 @@ T+11s    메인: getuid→writev×2(fd3) → exit_group(0)   ← "clean exit 0"�
 ### 산출
 - ~/Downloads/avd-camoflage/ (원클릭 배포판, git 외부 — 토스 저장소엔 본 §와 README 사본 없음:
   진실 소스는 배포판 README가 참조)
+
+### §189 추기 — LKM 소스·docker 빌드 환경 포함 (배포판 자급 완결)
+- `avd-camoflage/lkm-src/`: hide_kmod.c(v4.31)+Makefile+bisect 변형+versions/ + **이식형
+  build-in-docker.sh**(스크립트 위치 상대경로·ack-kernel 자동 탐색[폴더→toss 저장소]·vermagic
+  자동 감지[adb uname -r→폴백 상수]·산출물 런타임 경로 자동 배치).
+- **엔드투엔드 재빌드 검증**: 이식형 스크립트로 재빌드한 .ko가 검증본과 **md5 3중 일치**
+  (a37852815b0b424d6619082dc7f29cd5 — 배포판·저장소·백업) — clang LTO 빌드의 결정론성 확인.
+- ack-kernel(1.2GB+)은 미복제(디스크 여유 8GB 상태에서 부피 과대) — 자동 탐색+클론 안내(README).
