@@ -621,3 +621,5 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
   공유 대신 12KB 스크립트. 새 머신: 스톡 이미지 + cp -c 백업 + apply system/vendor.
 - **★법칙: 대용량 패치는 bytearray 전체 재작성 금지** — 디스크 풀(전체 크기만큼 필요). 테스트는
   APFS clone(cp -c, 0공간)으로.
+- **★법칙: 패치 사양엔 why를 같이 내장** — 전/후 바이트만 있으면 재현은 되지만 유지보수 불능.
+  각 사양 "why" 필드 = 채널 근거+기법 이유+실측 효과. `--why` 플래그로 확인.
