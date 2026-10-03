@@ -602,3 +602,13 @@ scripts/vendor_bind_setup.sh all     # 부팅마다: mount → stop;start → pr
 - **★digest 동적 추적 함정**: digest() 시 입력 누적 없음 = update가 무장 이전(lazy 초기화).
   인스턴스 추적보다 스택의 헬퍼 메서드를 정적으로 읽는 것이 빠르다(동적→정적 하이브리드).
 - 블랙리스트형 서버 차단은 로컬 클린과 독립 — 양쪽 다 닫아야 앱이 동작함(§187+188 실증).
+
+## §189 (2026-10-03 저녁) — 원클릭 재현 배포판
+- **★fresh AVD 암묵 의존 3종**: ①/data/local/tmp/magisk(resetprop — 미push 시 props-apply **무음 실패**,
+  getprop(model=SM-S916N?)로만 탐지) ②시스템 이미지 수술본(**공유 베이스**에 적용 — 신규 AVD 자동
+  상속, 백업 *.pre_s181_backup 존재로 확인) ③호스트 dylib 패치. 원클릭 레시피: oneclick.sh
+  (~/Downloads/avd-camoflage — AVD 생성→magisk push→.vl64 빌드→설치(-i vending)→uid 탐지→
+  boot_recover→검증).
+- **에뮬레이터 디스크 헤드룸**: 부팅에 data(6GB)+~1.4GB 자유 필요 — "Not enough space to create
+  userdata partition" FATAL 시 docker 빌드캐시/임시 파일 정리부터.
+- 신규 AVD = 신규 SSAID = 신규 device_id(§188) → FDS 블록리스트와 무관하게 시작.
